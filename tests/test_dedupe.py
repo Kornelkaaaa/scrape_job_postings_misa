@@ -41,6 +41,18 @@ def test_fallback_hash_dedupe_when_no_url(tmp_path):
     conn.close()
 
 
+def test_known_row_gets_url_refreshed(tmp_path):
+    conn = connect(tmp_path / "test.db")
+    old = make_opp(url="https://ads.example.com/1?se=old", dedupe_override="key-1")
+    insert_new(conn, [old])
+    fresh = make_opp(url="https://ads.example.com/2?se=new", dedupe_override="key-1")
+
+    assert insert_new(conn, [fresh]) == 0  # not new, but...
+    stored = conn.execute("SELECT url FROM opportunities WHERE dedupe_key='key-1'").fetchone()
+    assert stored["url"] == "https://ads.example.com/2?se=new"  # ...link was refreshed
+    conn.close()
+
+
 def test_list_since_filters_by_type(tmp_path):
     conn = connect(tmp_path / "test.db")
     insert_new(conn, [

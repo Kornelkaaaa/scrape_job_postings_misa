@@ -127,7 +127,7 @@ def test_adzuna_dedupes_same_job_across_ad_ids(make_source):
     payload = {"results": [
         {"title": "AI Compliance Analyst", "company": {"display_name": "Acme"},
          "location": {"display_name": "Charleston, West Virginia"},
-         "redirect_url": "https://www.adzuna.com/land/ad/111?se=aaa&v=E46",
+         "redirect_url": "https://www.adzuna.com/land/ad/111?se=aaa&utm_medium=api&utm_source=secret_app_id&v=E46",
          "created": "2026-07-01T00:00:00Z"},
         {"title": "AI Compliance Analyst", "company": {"display_name": "Acme"},
          "location": {"display_name": "Charleston, West Virginia"},
@@ -138,7 +138,9 @@ def test_adzuna_dedupes_same_job_across_ad_ids(make_source):
     opportunities = adzuna.parse(source, payload)
 
     assert opportunities[0].dedupe_key == opportunities[1].dedupe_key
-    assert "?" not in opportunities[0].url  # tracking params (incl. app_id) stripped
+    # utm_* (incl. app_id) stripped, but the se redirect token must survive
+    assert "se=aaa" in opportunities[0].url
+    assert "utm" not in opportunities[0].url
 
 
 def test_adzuna_fetch_skips_without_credentials(make_source, monkeypatch):

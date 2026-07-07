@@ -37,7 +37,12 @@ def connect(db_path: str | Path) -> sqlite3.Connection:
 
 
 def insert_new(conn: sqlite3.Connection, opportunities: list[Opportunity]) -> int:
-    """Insert only rows whose dedupe_key is unseen. Returns number inserted."""
+    """Insert only rows whose dedupe_key is unseen. Returns number inserted.
+
+    Already-known rows get their URL refreshed: some sources (Adzuna) serve
+    short-lived redirect links, so the newest link is the one most likely to
+    still work in the newsletter.
+    """
     now = datetime.now(timezone.utc).isoformat(timespec="seconds")
     inserted = 0
     for opp in opportunities:
@@ -52,7 +57,13 @@ def insert_new(conn: sqlite3.Connection, opportunities: list[Opportunity]) -> in
                 opp.posted_date, now, json.dumps(opp.tags), opp.dedupe_key,
             ),
         )
-        inserted += cur.rowcount
+        if cur.rowcount:
+            inserted += 1
+        elif opp.url:
+            conn.execute(
+                "UPDATE opportunities SET url = ? WHERE dedupe_key = ? AND url != ?",
+                (opp.url, opp.dedupe_key, opp.url),
+            )
     conn.commit()
     return inserted
 

@@ -14,12 +14,21 @@ from __future__ import annotations
 import hashlib
 import logging
 import os
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 from ..models import Opportunity, normalize_date
 
 log = logging.getLogger(__name__)
 
 API_URL = "https://api.adzuna.com/v1/api/jobs/{country}/search/1"
+
+
+def _clean_url(url: str) -> str:
+    """Drop only utm_* params (utm_source embeds our app_id); the rest of the
+    query (se, v) is required for Adzuna's redirect to resolve."""
+    parts = urlsplit(url)
+    query = [(k, v) for k, v in parse_qsl(parts.query) if not k.lower().startswith("utm_")]
+    return urlunsplit((parts.scheme, parts.netloc, parts.path, urlencode(query), ""))
 
 
 def parse(source, payload: dict) -> list[Opportunity]:
@@ -29,8 +38,7 @@ def parse(source, payload: dict) -> list[Opportunity]:
         org = (job.get("company") or {}).get("display_name", "")
         location = (job.get("location") or {}).get("display_name", "")
         # Adzuna serves the same posting under multiple ad ids with per-request
-        # tracking params, so dedupe on content and strip the query (which also
-        # carries our app_id) from the stored URL
+        # tracking params, so dedupe on content rather than URL
         content = f"{title.lower()}|{org.lower()}|{location.lower()}"
         opportunities.append(Opportunity(
             opportunity_type=source.opportunity_type,
@@ -38,7 +46,7 @@ def parse(source, payload: dict) -> list[Opportunity]:
             title=title,
             org=org,
             location=location,
-            url=job.get("redirect_url", "").split("?")[0],
+            url=_clean_url(job.get("redirect_url", "")),
             description=(job.get("description") or "")[:1000],
             posted_date=normalize_date(job.get("created")),
             tags=[(job.get("category") or {}).get("label", "")],

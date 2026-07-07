@@ -18,7 +18,11 @@
       "Bash(git commit -q -m 'Fix Adzuna dedupe and secret hygiene; enable keyed sources *)",
       "Bash(gh auth *)",
       "Bash(git fetch *)",
-      "Bash(grep -c \"^\\\\.env$\")"
+      "Bash(grep -c \"^\\\\.env$\")",
+      "Bash(git remote *)",
+      "Bash(git pull *)",
+      "Bash(git commit -q -m 'Fix broken Adzuna links: keep redirect tokens, refresh URLs on re-scrape *)",
+      "Bash(git push *)"
     ]
   }
 }
