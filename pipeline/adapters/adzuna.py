@@ -11,6 +11,7 @@ options:
 """
 from __future__ import annotations
 
+import hashlib
 import logging
 import os
 
@@ -24,16 +25,24 @@ API_URL = "https://api.adzuna.com/v1/api/jobs/{country}/search/1"
 def parse(source, payload: dict) -> list[Opportunity]:
     opportunities = []
     for job in payload.get("results", []):
+        title = job.get("title", "").replace("<strong>", "").replace("</strong>", "")
+        org = (job.get("company") or {}).get("display_name", "")
+        location = (job.get("location") or {}).get("display_name", "")
+        # Adzuna serves the same posting under multiple ad ids with per-request
+        # tracking params, so dedupe on content and strip the query (which also
+        # carries our app_id) from the stored URL
+        content = f"{title.lower()}|{org.lower()}|{location.lower()}"
         opportunities.append(Opportunity(
             opportunity_type=source.opportunity_type,
             source=source.name,
-            title=job.get("title", "").replace("<strong>", "").replace("</strong>", ""),
-            org=(job.get("company") or {}).get("display_name", ""),
-            location=(job.get("location") or {}).get("display_name", ""),
-            url=job.get("redirect_url", ""),
+            title=title,
+            org=org,
+            location=location,
+            url=job.get("redirect_url", "").split("?")[0],
             description=(job.get("description") or "")[:1000],
             posted_date=normalize_date(job.get("created")),
             tags=[(job.get("category") or {}).get("label", "")],
+            dedupe_override="adzuna:" + hashlib.sha256(content.encode()).hexdigest(),
         ))
     return opportunities
 
@@ -48,10 +57,11 @@ def fetch(source, client) -> list[Opportunity]:
     params = {
         "app_id": app_id,
         "app_key": app_key,
-        "what": source.options.get("what", ""),
         "results_per_page": 50,
         "content-type": "application/json",
     }
+    if source.options.get("what"):  # empty params cause 400s
+        params["what"] = source.options["what"]
     if source.options.get("where"):
         params["where"] = source.options["where"]
     if source.options.get("company"):

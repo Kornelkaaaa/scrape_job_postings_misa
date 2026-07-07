@@ -225,21 +225,30 @@ sources:
     opportunity_type: job
     options: {country: us, company: EY, what: analyst, max_days_old: 30}
 
+  # Adzuna's company filter needs their canonical name; plain "CGI" returns 400
   - name: Adzuna CGI
     type: adzuna
     opportunity_type: job
-    options: {country: us, company: CGI, what: analyst, max_days_old: 30}
+    options: {country: us, company: CGI Technologies and Solutions, what: analyst, max_days_old: 30}
 
   - name: Adzuna Microsoft
     type: adzuna
     opportunity_type: job
     options: {country: us, company: Microsoft, what: analyst, max_days_old: 30}
 
-  # WVU itself runs on Taleo (JS-rendered, unscrapeable) - covered via Adzuna.
+  # WVU itself runs on Taleo (JS-rendered, unscrapeable). Adzuna's company
+  # filter 400s on every "West Virginia University*" variant (their API bug,
+  # verified 2026-07-07), so WVU postings arrive via the WV-wide searches below.
   - name: Adzuna WVU
     type: adzuna
+    enabled: false
     opportunity_type: job
     options: {country: us, company: West Virginia University, where: West Virginia, max_days_old: 30}
+
+  - name: Adzuna WV interns
+    type: adzuna
+    opportunity_type: job
+    options: {country: us, what: intern, where: West Virginia, max_days_old: 30}
 
   # Not automatable (verified 2026-07-07): Bravo Consulting embeds an Angular
   # AgileATS widget, Trilogy Innovations hires via careers@ email, NextGen

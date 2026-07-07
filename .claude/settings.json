@@ -12,7 +12,10 @@
       "Bash(git commit -q -m 'Focus on West Virginia: location filters + USAJobs adapter *)",
       "Bash(sed -i '/include_keywords: \\\\[\\\\]/d; /# Adzuna query already targets relevant roles/d; /# search already targets analyst roles/d; /# query already targets relevant roles/d' sources.yaml)",
       "Bash(python -c \"from pipeline.config import load_config; c = load_config\\(\\); print\\(len\\(c.sources\\), 'sources parse OK'\\)\")",
-      "Bash(git commit -q -m 'Load API keys from gitignored .env file; add .env.example template *)"
+      "Bash(git commit -q -m 'Load API keys from gitignored .env file; add .env.example template *)",
+      "Bash(python scraper.py run --source \"Adzuna WVU\")",
+      "Bash(python scraper.py run --source \"Adzuna CGI\")",
+      "Bash(git commit -q -m 'Fix Adzuna dedupe and secret hygiene; enable keyed sources *)"
     ]
   }
 }

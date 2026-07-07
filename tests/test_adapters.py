@@ -123,6 +123,24 @@ def test_usajobs_fetch_skips_without_credentials(make_source, monkeypatch):
     assert usajobs.fetch(source, client=None) == []
 
 
+def test_adzuna_dedupes_same_job_across_ad_ids(make_source):
+    payload = {"results": [
+        {"title": "AI Compliance Analyst", "company": {"display_name": "Acme"},
+         "location": {"display_name": "Charleston, West Virginia"},
+         "redirect_url": "https://www.adzuna.com/land/ad/111?se=aaa&v=E46",
+         "created": "2026-07-01T00:00:00Z"},
+        {"title": "AI Compliance Analyst", "company": {"display_name": "Acme"},
+         "location": {"display_name": "Charleston, West Virginia"},
+         "redirect_url": "https://www.adzuna.com/land/ad/222?se=bbb&v=A88",
+         "created": "2026-07-02T00:00:00Z"},
+    ]}
+    source = make_source(name="Adzuna", type="adzuna", options={})
+    opportunities = adzuna.parse(source, payload)
+
+    assert opportunities[0].dedupe_key == opportunities[1].dedupe_key
+    assert "?" not in opportunities[0].url  # tracking params (incl. app_id) stripped
+
+
 def test_adzuna_fetch_skips_without_credentials(make_source, monkeypatch):
     monkeypatch.delenv("ADZUNA_APP_ID", raising=False)
     monkeypatch.delenv("ADZUNA_APP_KEY", raising=False)

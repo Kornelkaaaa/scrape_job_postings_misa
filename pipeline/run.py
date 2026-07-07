@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+import re
 from dataclasses import dataclass
 
 from .adapters import ADAPTERS
@@ -11,6 +12,12 @@ from .filters import filter_relevant
 from .http_client import DEFAULT_USER_AGENT, PoliteClient
 
 log = logging.getLogger(__name__)
+
+
+def _scrub_secrets(text: str) -> str:
+    """Error messages can embed request URLs; never let API keys reach logs."""
+    return re.sub(r"\b(app_id|app_key|api_key|apikey|key|token)=[^&\s]+",
+                  r"\1=***", text, flags=re.I)
 
 
 @dataclass
@@ -53,7 +60,7 @@ def run(config: Config, opportunity_type: str | None = None,
             try:
                 fetched = adapter.fetch(source, client)
             except Exception as exc:
-                result.error = f"{type(exc).__name__}: {exc}"
+                result.error = _scrub_secrets(f"{type(exc).__name__}: {exc}")
                 log.error("%s: fetch failed - %s", source.name, result.error)
                 continue
 

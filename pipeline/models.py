@@ -62,10 +62,15 @@ class Opportunity:
     description: str = ""
     posted_date: str | None = None  # YYYY-MM-DD
     tags: list[str] = field(default_factory=list)
+    # adapters set this when their URLs are unstable (e.g. Adzuna serves the
+    # same job under multiple ad ids); it wins over URL-based dedupe
+    dedupe_override: str | None = None
 
     @property
     def dedupe_key(self) -> str:
-        """URL-based when possible, else a content hash."""
+        """Adapter override first, then URL, else a content hash."""
+        if self.dedupe_override:
+            return self.dedupe_override
         normalized = normalize_url(self.url)
         if normalized:
             return normalized
