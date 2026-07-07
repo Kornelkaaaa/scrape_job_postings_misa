@@ -12,9 +12,11 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import os
 import re
 import sys
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 
 from pipeline.config import load_config
 from pipeline.db import connect, list_since
@@ -24,6 +26,19 @@ from pipeline.run import format_summary, run
 
 _SINCE_PATTERN = re.compile(r"^(\d+)([hdw])$")
 _SINCE_UNITS = {"h": "hours", "d": "days", "w": "weeks"}
+
+
+def load_dotenv(path: Path = Path(".env")) -> None:
+    """Load KEY=value lines from .env (gitignored) so API keys don't need to be
+    set as shell env vars on every run. Real env vars take precedence."""
+    if not path.exists():
+        return
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, _, value = line.partition("=")
+        os.environ.setdefault(key.strip(), value.strip().strip("'\""))
 
 
 def parse_since(value: str) -> str:
@@ -63,6 +78,7 @@ def main(argv: list[str] | None = None) -> int:
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(errors="replace")
 
+    load_dotenv()
     args = parser.parse_args(argv)
     logging.basicConfig(
         level=logging.DEBUG if args.verbose else logging.INFO,
