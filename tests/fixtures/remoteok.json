@@ -1,0 +1,12 @@
+[
+  {"legal": "API terms of use notice — this first element carries no job data."},
+  {
+    "position": "Junior Data Analyst",
+    "company": "RemoteCo",
+    "location": "Worldwide",
+    "url": "https://remoteok.com/remote-jobs/12345",
+    "date": "2026-07-02T00:00:00+00:00",
+    "tags": ["data", "analyst", "sql"],
+    "description": "Entry level analyst role."
+  }
+]

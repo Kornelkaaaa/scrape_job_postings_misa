@@ -1,0 +1,21 @@
+{
+  "jobs": [
+    {
+      "id": 101,
+      "title": "Business Analyst Intern",
+      "absolute_url": "https://boards.greenhouse.io/acme/jobs/101?utm_source=feed",
+      "updated_at": "2026-07-01T10:30:00-04:00",
+      "location": {"name": "Toronto, ON"},
+      "departments": [{"name": "Operations"}]
+    },
+    {
+      "id": 102,
+      "title": "Senior Staff Engineer",
+      "absolute_url": "https://boards.greenhouse.io/acme/jobs/102",
+      "updated_at": "2026-06-28T08:00:00-04:00",
+      "location": {"name": "Remote"},
+      "departments": []
+    }
+  ],
+  "meta": {"total": 2}
+}

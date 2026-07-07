@@ -1,0 +1,10 @@
+# CI force-adds data/ and output/ so weekly results persist in the repo;
+# locally they stay ignored to avoid noisy diffs while testing.
+data/
+output/
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+.env

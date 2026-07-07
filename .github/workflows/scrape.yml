@@ -1,0 +1,48 @@
+name: Weekly opportunity scrape
+
+on:
+  schedule:
+    - cron: "0 7 * * 1"   # Mondays 07:00 UTC
+  workflow_dispatch: {}    # allow manual runs from the Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Run tests
+        run: pytest -q
+
+      - name: Scrape all sources
+        env:
+          ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
+          ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
+        run: python scraper.py run
+
+      - name: Generate newsletter
+        run: python scraper.py newsletter --since 7d
+
+      - name: Commit updated database and newsletter
+        run: |
+          git config user.name "misa-opportunity-bot"
+          git config user.email "actions@github.com"
+          git add -f data/opportunities.db output/
+          git diff --cached --quiet || git commit -m "Weekly scrape: $(date -u +%F)"
+          git push
+
+      - name: Upload newsletter artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: newsletter
+          path: output/

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Example Job Feed</title>
+    <link>https://example.org/jobs</link>
+    <item>
+      <title>Graduate Business Analyst</title>
+      <link>https://example.org/jobs/graduate-business-analyst</link>
+      <pubDate>Wed, 01 Jul 2026 09:00:00 GMT</pubDate>
+      <author>Example Org</author>
+      <category>analytics</category>
+      <description>Join our graduate program as a business analyst.</description>
+    </item>
+    <item>
+      <title>AI Research Intern</title>
+      <link>https://example.org/jobs/ai-research-intern</link>
+      <pubDate>Thu, 02 Jul 2026 12:00:00 GMT</pubDate>
+      <description>Summer internship in applied machine learning.</description>
+    </item>
+  </channel>
+</rss>

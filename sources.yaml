@@ -1,0 +1,134 @@
+# MISA opportunity pipeline — source configuration.
+#
+# Adding a source = adding an entry here; no code changes needed.
+# Types: greenhouse | lever | rss | json_api | html | adzuna
+# Set enabled: false to skip a source (e.g. if it starts blocking us).
+
+settings:
+  db_path: data/opportunities.db
+  output_dir: output
+  delay_seconds: 2.0
+  # user_agent: override if you want a custom one
+
+# Global relevance filter for MISA members (junior/intern BA, consulting, AI).
+# Matched (whole-word, case-insensitive) against title + tags.
+# A source can override with its own include_keywords / exclude_keywords.
+filters:
+  include_keywords:
+    - intern
+    - internship
+    - junior
+    - graduate
+    - entry level
+    - entry-level
+    - working student
+    - business analyst
+    - data analyst
+    - analyst
+    - consultant
+    - consulting
+    - ai
+    - artificial intelligence
+    - machine learning
+  exclude_keywords:
+    - senior
+    - staff
+    - principal
+    - director
+    - lead
+    - manager
+
+sources:
+  # ---- Greenhouse boards (company career sites backed by Greenhouse) ------
+  # Find the token: company careers page URL like boards.greenhouse.io/<token>,
+  # or view-source and search for "greenhouse".
+  - name: Stripe
+    type: greenhouse
+    opportunity_type: job
+    org: Stripe
+    options:
+      board_token: stripe
+
+  - name: Datadog
+    type: greenhouse
+    opportunity_type: job
+    org: Datadog
+    options:
+      board_token: datadog
+
+  # ---- Lever boards --------------------------------------------------------
+  # Slug is the path at jobs.lever.co/<company>.
+  - name: Palantir
+    type: lever
+    opportunity_type: job
+    org: Palantir
+    options:
+      company: palantir
+
+  # ---- Aggregators / feeds -------------------------------------------------
+  - name: RemoteOK
+    type: json_api
+    opportunity_type: job
+    url: https://remoteok.com/api
+    options:
+      items_path: ""            # payload itself is the list (first item is metadata, auto-skipped)
+      fields:
+        title: position
+        org: company
+        location: location
+        url: url
+        description: description
+        posted_date: date
+        # RemoteOK auto-stuffs tags like "analyst"/"exec" onto every posting,
+        # which breaks keyword filtering - so we deliberately don't map them
+
+  - name: WeWorkRemotely
+    type: rss
+    opportunity_type: job
+    url: https://weworkremotely.com/remote-jobs.rss   # all-jobs feed; global filters narrow it down
+
+  # ---- Adzuna API (free key from https://developer.adzuna.com) -------------
+  # Needs ADZUNA_APP_ID + ADZUNA_APP_KEY env vars; skipped with a warning otherwise.
+  - name: Adzuna BA interns
+    type: adzuna
+    opportunity_type: job
+    options:
+      country: us               # 2-letter code: us, gb, ca, pl, de, ...
+      what: business analyst intern
+      max_days_old: 30
+    include_keywords: []        # Adzuna query already targets relevant roles
+
+  # ---- Official company career pages (plain HTML) ---------------------------
+  # Template — fill in the real URL + CSS selectors for each company you want.
+  # Only works for server-rendered pages; if jobs load via JavaScript, look for
+  # the underlying Greenhouse/Lever/Workday API instead.
+  - name: Example Company Careers
+    type: html
+    enabled: false
+    opportunity_type: job
+    org: Example Company
+    url: https://example.com/careers
+    options:
+      selectors:
+        item: ".job-listing"
+        title: ".job-title"
+        link: "a"
+        location: ".job-location"
+        date: ".job-date"
+
+  # ---- Phase 2: hackathons & conferences ------------------------------------
+  # Same pipeline, different opportunity_type. Enable/extend when ready.
+  - name: Devpost hackathons
+    type: json_api
+    enabled: false
+    opportunity_type: hackathon
+    url: https://devpost.com/api/hackathons
+    options:
+      items_path: hackathons
+      fields:
+        title: title
+        org: organization_name
+        location: displayed_location.location
+        url: url
+        posted_date: submission_period_dates
+    include_keywords: []
