@@ -1,8 +1,22 @@
 # MISA Opportunity Pipeline
 
 Scrapes job postings (and later hackathons/conferences) relevant to MISA members
-from a configurable list of sources, stores them in SQLite, dedupes across runs,
-and generates a Markdown + HTML newsletter of what's new.
+— West Virginia students — from a configurable list of sources, stores them in
+SQLite, dedupes across runs, and generates a Markdown + HTML newsletter of
+what's new.
+
+**Location focus:** the global `include_locations` filter in `sources.yaml`
+keeps jobs in West Virginia (Morgantown, Charleston, Clarksburg, ...) plus
+anything explicitly remote. Remote-only boards (RemoteOK, WeWorkRemotely) opt
+out with `include_locations: ["*"]` since every posting there is doable from WV.
+
+**Where WV-local jobs come from:** WVU's job site (Taleo) and the WV state jobs
+portal (NEOGOV/governmentjobs.com) render listings with JavaScript, so they
+can't be scraped directly. Local coverage instead comes from two free APIs that
+index them: Adzuna (`where: West Virginia`) and USAJOBS (federal employers are
+big in WV — FBI CJIS in Clarksburg, NIOSH in Morgantown). Register both keys
+to get local postings; without keys those sources are skipped and you'll only
+see remote roles.
 
 ## Setup
 
@@ -39,7 +53,8 @@ Edit `sources.yaml` — no code changes needed. Each entry has a `name`, `type`,
 | `rss` | any RSS/Atom feed | just `url` |
 | `json_api` | any public JSON endpoint (e.g. RemoteOK, Devpost) | `items_path`, `fields` dot-paths |
 | `html` | server-rendered career pages | `selectors` (CSS) |
-| `adzuna` | Adzuna aggregator API | `country`, `what`; needs env keys |
+| `adzuna` | Adzuna aggregator API | `country`, `what`, `where`; needs env keys |
+| `usajobs` | USAJOBS federal API | `keyword`, `location_name`; needs env keys |
 
 Tips for official company sites: open the careers page, view source — many are
 actually backed by Greenhouse/Lever/Ashby, in which case use that adapter (much
@@ -53,11 +68,15 @@ junior/intern BA, consulting, and AI roles (whole-word match against
 title/tags). Any source can override with its own
 `include_keywords` / `exclude_keywords` (empty list = keep everything).
 
-## Adzuna key (optional)
+## API keys (both free, both recommended for WV coverage)
 
-Register free at https://developer.adzuna.com, then set `ADZUNA_APP_ID` and
-`ADZUNA_APP_KEY` (locally as env vars; on GitHub as repo secrets). Without them
-the Adzuna source is skipped with a warning.
+- **Adzuna:** register at https://developer.adzuna.com, set `ADZUNA_APP_ID`
+  and `ADZUNA_APP_KEY`.
+- **USAJOBS:** request a key at https://developer.usajobs.gov, set
+  `USAJOBS_API_KEY` and `USAJOBS_EMAIL` (the email you registered with).
+
+Set them locally as env vars and on GitHub as repo secrets. Sources with
+missing keys are skipped with a warning, never crash the run.
 
 ## Deduplication
 

@@ -20,6 +20,8 @@ class Source:
     options: dict = field(default_factory=dict)   # adapter-specific (selectors, paths, ...)
     include_keywords: list[str] = field(default_factory=list)
     exclude_keywords: list[str] = field(default_factory=list)
+    include_locations: list[str] = field(default_factory=list)  # ["*"] = opt out of location filter
+    exclude_locations: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -31,6 +33,8 @@ class Config:
     delay_seconds: float = 2.0
     include_keywords: list[str] = field(default_factory=list)  # global relevance filter
     exclude_keywords: list[str] = field(default_factory=list)
+    include_locations: list[str] = field(default_factory=list)
+    exclude_locations: list[str] = field(default_factory=list)
 
 
 def load_config(path: str | Path = "sources.yaml") -> Config:
@@ -50,6 +54,8 @@ def load_config(path: str | Path = "sources.yaml") -> Config:
             options=entry.get("options", {}),
             include_keywords=entry.get("include_keywords", []),
             exclude_keywords=entry.get("exclude_keywords", []),
+            include_locations=entry.get("include_locations", []),
+            exclude_locations=entry.get("exclude_locations", []),
         )
         if source.opportunity_type not in OPPORTUNITY_TYPES:
             raise ValueError(
@@ -65,4 +71,6 @@ def load_config(path: str | Path = "sources.yaml") -> Config:
         delay_seconds=float(settings.get("delay_seconds", 2.0)),
         include_keywords=filters.get("include_keywords", []),
         exclude_keywords=filters.get("exclude_keywords", []),
+        include_locations=filters.get("include_locations", []),
+        exclude_locations=filters.get("exclude_locations", []),
     )

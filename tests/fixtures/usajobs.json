@@ -1,0 +1,29 @@
+{
+  "SearchResult": {
+    "SearchResultCount": 2,
+    "SearchResultItems": [
+      {
+        "MatchedObjectDescriptor": {
+          "PositionTitle": "Management and Program Analyst",
+          "PositionURI": "https://www.usajobs.gov/job/834501200",
+          "OrganizationName": "Federal Bureau of Investigation",
+          "PositionLocationDisplay": "Clarksburg, West Virginia",
+          "PublicationStartDate": "2026-07-01",
+          "JobCategory": [{"Name": "Management And Program Analysis"}],
+          "UserArea": {"Details": {"JobSummary": "Support the CJIS Division with data analysis."}}
+        }
+      },
+      {
+        "MatchedObjectDescriptor": {
+          "PositionTitle": "IT Specialist (Student Trainee)",
+          "PositionURI": "https://www.usajobs.gov/job/834501300",
+          "OrganizationName": "Centers for Disease Control and Prevention",
+          "PositionLocationDisplay": "Morgantown, West Virginia",
+          "PublicationStartDate": "2026-07-03T00:00:00.0000000",
+          "JobCategory": [],
+          "UserArea": {"Details": {"JobSummary": "NIOSH internship in information technology."}}
+        }
+      }
+    ]
+  }
+}

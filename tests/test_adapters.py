@@ -1,4 +1,4 @@
-from pipeline.adapters import adzuna, greenhouse, html_page, json_api, lever, rss
+from pipeline.adapters import adzuna, greenhouse, html_page, json_api, lever, rss, usajobs
 
 
 def test_greenhouse_parse(fixture, make_source):
@@ -79,6 +79,29 @@ def test_html_parse(fixture, make_source):
     assert first.posted_date == "2026-06-30"
     assert first.tags == ["consulting", "analytics"]
     assert opportunities[1].url == "https://example.com/careers/consultant-junior"
+
+
+def test_usajobs_parse(fixture, make_source):
+    source = make_source(name="USAJobs WV", type="usajobs",
+                         options={"keyword": "analyst", "location_name": "West Virginia"})
+    opportunities = usajobs.parse(source, fixture("usajobs.json"))
+
+    assert len(opportunities) == 2
+    first = opportunities[0]
+    assert first.title == "Management and Program Analyst"
+    assert first.org == "Federal Bureau of Investigation"
+    assert first.location == "Clarksburg, West Virginia"
+    assert first.posted_date == "2026-07-01"
+    assert first.tags == ["Management And Program Analysis"]
+    assert opportunities[1].posted_date == "2026-07-03"
+
+
+def test_usajobs_fetch_skips_without_credentials(make_source, monkeypatch):
+    monkeypatch.delenv("USAJOBS_API_KEY", raising=False)
+    monkeypatch.delenv("USAJOBS_EMAIL", raising=False)
+    source = make_source(name="USAJobs", type="usajobs", options={"keyword": "analyst"})
+
+    assert usajobs.fetch(source, client=None) == []
 
 
 def test_adzuna_fetch_skips_without_credentials(make_source, monkeypatch):

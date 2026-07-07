@@ -8,7 +8,8 @@
       "Bash(python scraper.py newsletter --since 7d)",
       "Bash(python scraper.py list-new --since 7d)",
       "Bash(git add *)",
-      "Bash(git commit -q -m 'Phase 1: config-driven opportunity scraping pipeline *)"
+      "Bash(git commit -q -m 'Phase 1: config-driven opportunity scraping pipeline *)",
+      "Bash(git commit -q -m 'Focus on West Virginia: location filters + USAJobs adapter *)"
     ]
   }
 }

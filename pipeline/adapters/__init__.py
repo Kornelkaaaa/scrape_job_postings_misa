@@ -5,7 +5,7 @@
 
 Adding a new source type = one new module here, no core changes.
 """
-from . import adzuna, greenhouse, html_page, json_api, lever, rss
+from . import adzuna, greenhouse, html_page, json_api, lever, rss, usajobs
 
 ADAPTERS = {
     "greenhouse": greenhouse,
@@ -14,4 +14,5 @@ ADAPTERS = {
     "json_api": json_api,
     "html": html_page,
     "adzuna": adzuna,
+    "usajobs": usajobs,
 }

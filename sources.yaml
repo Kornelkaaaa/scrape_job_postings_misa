@@ -11,9 +11,25 @@ settings:
   # user_agent: override if you want a custom one
 
 # Global relevance filter for MISA members (junior/intern BA, consulting, AI).
-# Matched (whole-word, case-insensitive) against title + tags.
-# A source can override with its own include_keywords / exclude_keywords.
+# Keywords matched (whole-word, case-insensitive) against title + tags.
+# Locations matched against the location field; items with NO location info
+# pass through. A source can override any list; include_locations: ["*"]
+# opts a source out of location filtering (for remote-only boards).
 filters:
+  # WV students: keep West Virginia jobs + anything explicitly remote
+  include_locations:
+    - west virginia
+    - wv
+    - morgantown
+    - charleston
+    - huntington
+    - clarksburg
+    - fairmont
+    - wheeling
+    - parkersburg
+    - martinsburg
+    - beckley
+    - remote
   include_keywords:
     - intern
     - internship
@@ -70,6 +86,7 @@ sources:
     type: json_api
     opportunity_type: job
     url: https://remoteok.com/api
+    include_locations: ["*"]    # remote-only board; location = company HQ, still doable from WV
     options:
       items_path: ""            # payload itself is the list (first item is metadata, auto-skipped)
       fields:
@@ -86,17 +103,33 @@ sources:
     type: rss
     opportunity_type: job
     url: https://weworkremotely.com/remote-jobs.rss   # all-jobs feed; global filters narrow it down
+    include_locations: ["*"]    # remote-only board
 
   # ---- Adzuna API (free key from https://developer.adzuna.com) -------------
   # Needs ADZUNA_APP_ID + ADZUNA_APP_KEY env vars; skipped with a warning otherwise.
-  - name: Adzuna BA interns
+  # Best coverage of WV-local jobs. WVU (Taleo) and the WV state jobs portal
+  # (NEOGOV) render listings with JavaScript, so aggregator APIs like this are
+  # the reliable way to see local postings.
+  - name: Adzuna WV analysts
     type: adzuna
     opportunity_type: job
     options:
-      country: us               # 2-letter code: us, gb, ca, pl, de, ...
-      what: business analyst intern
+      country: us
+      what: analyst
+      where: West Virginia
       max_days_old: 30
     include_keywords: []        # Adzuna query already targets relevant roles
+
+  # ---- USAJOBS API (free key from https://developer.usajobs.gov) ------------
+  # Federal jobs are a major WV employer (FBI CJIS Clarksburg, NIOSH Morgantown).
+  # Needs USAJOBS_API_KEY + USAJOBS_EMAIL env vars; skipped with a warning otherwise.
+  - name: USAJobs WV
+    type: usajobs
+    opportunity_type: job
+    options:
+      keyword: analyst
+      location_name: West Virginia
+    include_keywords: []        # query already targets relevant roles
 
   # ---- Official company career pages (plain HTML) ---------------------------
   # Template — fill in the real URL + CSS selectors for each company you want.
