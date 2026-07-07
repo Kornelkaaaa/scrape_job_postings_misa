@@ -15,7 +15,10 @@
       "Bash(git commit -q -m 'Load API keys from gitignored .env file; add .env.example template *)",
       "Bash(python scraper.py run --source \"Adzuna WVU\")",
       "Bash(python scraper.py run --source \"Adzuna CGI\")",
-      "Bash(git commit -q -m 'Fix Adzuna dedupe and secret hygiene; enable keyed sources *)"
+      "Bash(git commit -q -m 'Fix Adzuna dedupe and secret hygiene; enable keyed sources *)",
+      "Bash(gh auth *)",
+      "Bash(git fetch *)",
+      "Bash(grep -c \"^\\\\.env$\")"
     ]
   }
 }
