@@ -54,6 +54,8 @@ def fetch(source, client) -> list[Opportunity]:
     }
     if source.options.get("where"):
         params["where"] = source.options["where"]
+    if source.options.get("company"):
+        params["company"] = source.options["company"]
     if source.options.get("max_days_old"):
         params["max_days_old"] = source.options["max_days_old"]
 

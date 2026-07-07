@@ -1,4 +1,5 @@
-from pipeline.adapters import adzuna, greenhouse, html_page, json_api, lever, rss, usajobs
+from pipeline.adapters import (adzuna, greenhouse, html_page, json_api, lever,
+                               rss, usajobs, workday)
 
 
 def test_greenhouse_parse(fixture, make_source):
@@ -79,6 +80,24 @@ def test_html_parse(fixture, make_source):
     assert first.posted_date == "2026-06-30"
     assert first.tags == ["consulting", "analytics"]
     assert opportunities[1].url == "https://example.com/careers/consultant-junior"
+
+
+def test_workday_parse(fixture, make_source):
+    source = make_source(
+        name="WVU Medicine", type="workday", org="WVU Medicine",
+        options={"host": "wvumedicine.wd1.myworkdayjobs.com",
+                 "tenant": "wvumedicine", "site": "WVUH"},
+    )
+    opportunities = workday.parse(source, fixture("workday.json"))
+
+    assert len(opportunities) == 2
+    first = opportunities[0]
+    assert first.title == "Business Systems Analyst"
+    assert first.org == "WVU Medicine"
+    assert first.location == "Morgantown, WV"
+    assert first.url == ("https://wvumedicine.wd1.myworkdayjobs.com/en-US/WVUH"
+                         "/job/Morgantown-WV/Business-Systems-Analyst_JR26-12345")
+    assert first.posted_date is None  # Workday only reports relative ages
 
 
 def test_usajobs_parse(fixture, make_source):

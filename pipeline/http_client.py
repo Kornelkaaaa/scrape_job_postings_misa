@@ -52,3 +52,10 @@ class PoliteClient:
         response = self.session.get(url, timeout=self.timeout, **kwargs)
         response.raise_for_status()
         return response
+
+    def post_json(self, url: str, payload: dict, **kwargs) -> dict:
+        """POST a JSON body (some job APIs, e.g. Workday, are POST-only)."""
+        self._throttle()
+        response = self.session.post(url, json=payload, timeout=self.timeout, **kwargs)
+        response.raise_for_status()
+        return response.json()

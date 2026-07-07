@@ -53,8 +53,14 @@ Edit `sources.yaml` — no code changes needed. Each entry has a `name`, `type`,
 | `rss` | any RSS/Atom feed | just `url` |
 | `json_api` | any public JSON endpoint (e.g. RemoteOK, Devpost) | `items_path`, `fields` dot-paths |
 | `html` | server-rendered career pages | `selectors` (CSS) |
-| `adzuna` | Adzuna aggregator API | `country`, `what`, `where`; needs env keys |
+| `adzuna` | Adzuna aggregator API | `country`, `what`, `where`, `company`; needs env keys |
 | `usajobs` | USAJOBS federal API | `keyword`, `location_name`; needs env keys |
+| `workday` | employers on `*.myworkdayjobs.com` (e.g. WVU Medicine) | `host`, `tenant`, `site`, `search_text` |
+
+Ashby-hosted boards (OpenAI, Cohere, ...) work through `json_api` pointed at
+`https://api.ashbyhq.com/posting-api/job-board/<company>`. Companies with no
+public feed at all (KPMG, Deloitte, EY, CGI, Microsoft, WVU's Taleo site) are
+covered via Adzuna `company:` searches instead.
 
 Tips for official company sites: open the careers page, view source — many are
 actually backed by Greenhouse/Lever/Ashby, in which case use that adapter (much

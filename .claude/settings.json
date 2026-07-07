@@ -9,7 +9,9 @@
       "Bash(python scraper.py list-new --since 7d)",
       "Bash(git add *)",
       "Bash(git commit -q -m 'Phase 1: config-driven opportunity scraping pipeline *)",
-      "Bash(git commit -q -m 'Focus on West Virginia: location filters + USAJobs adapter *)"
+      "Bash(git commit -q -m 'Focus on West Virginia: location filters + USAJobs adapter *)",
+      "Bash(sed -i '/include_keywords: \\\\[\\\\]/d; /# Adzuna query already targets relevant roles/d; /# search already targets analyst roles/d; /# query already targets relevant roles/d' sources.yaml)",
+      "Bash(python -c \"from pipeline.config import load_config; c = load_config\\(\\); print\\(len\\(c.sources\\), 'sources parse OK'\\)\")"
     ]
   }
 }

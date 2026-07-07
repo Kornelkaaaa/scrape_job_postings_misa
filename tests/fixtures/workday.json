@@ -1,0 +1,19 @@
+{
+  "total": 2,
+  "jobPostings": [
+    {
+      "title": "Business Systems Analyst",
+      "externalPath": "/job/Morgantown-WV/Business-Systems-Analyst_JR26-12345",
+      "locationsText": "Morgantown, WV",
+      "postedOn": "Posted 3 Days Ago",
+      "bulletFields": ["JR26-12345"]
+    },
+    {
+      "title": "Benefits Configuration Analyst",
+      "externalPath": "/job/Remote/Benefits-Configuration-Analyst_JR26-37299",
+      "locationsText": "Remote",
+      "postedOn": "Posted Today",
+      "bulletFields": ["JR26-37299"]
+    }
+  ]
+}

@@ -38,6 +38,8 @@ filters:
     - entry level
     - entry-level
     - working student
+    - student
+    - trainee
     - business analyst
     - data analyst
     - analyst
@@ -72,6 +74,34 @@ sources:
     options:
       board_token: datadog
 
+  - name: Anthropic
+    type: greenhouse
+    opportunity_type: job
+    org: Anthropic
+    options:
+      board_token: anthropic
+
+  - name: Scale AI
+    type: greenhouse
+    opportunity_type: job
+    org: Scale AI
+    options:
+      board_token: scaleai
+
+  - name: Databricks
+    type: greenhouse
+    opportunity_type: job
+    org: Databricks
+    options:
+      board_token: databricks
+
+  - name: xAI
+    type: greenhouse
+    opportunity_type: job
+    org: xAI
+    options:
+      board_token: xai
+
   # ---- Lever boards --------------------------------------------------------
   # Slug is the path at jobs.lever.co/<company>.
   - name: Palantir
@@ -80,6 +110,63 @@ sources:
     org: Palantir
     options:
       company: palantir
+
+  - name: Mistral AI
+    type: lever
+    opportunity_type: job
+    org: Mistral AI
+    options:
+      company: mistral
+
+  # ---- Ashby boards (public JSON, works via the generic json_api adapter) ---
+  - name: OpenAI
+    type: json_api
+    opportunity_type: job
+    org: OpenAI
+    url: https://api.ashbyhq.com/posting-api/job-board/openai
+    options:
+      items_path: jobs
+      fields:
+        title: title
+        location: location
+        url: jobUrl
+        posted_date: publishedAt
+
+  - name: Cohere
+    type: json_api
+    opportunity_type: job
+    org: Cohere
+    url: https://api.ashbyhq.com/posting-api/job-board/cohere
+    options:
+      items_path: jobs
+      fields:
+        title: title
+        location: location
+        url: jobUrl
+        posted_date: publishedAt
+
+  # ---- Workday sites ---------------------------------------------------------
+  # WVU Medicine is one of WV's largest employers; searchText keeps the result
+  # set small (their full board is thousands of clinical roles).
+  - name: WVU Medicine (analyst)
+    type: workday
+    opportunity_type: job
+    org: WVU Medicine
+    options:
+      host: wvumedicine.wd1.myworkdayjobs.com
+      tenant: wvumedicine
+      site: WVUH
+      search_text: analyst
+
+  - name: WVU Medicine (intern)
+    type: workday
+    opportunity_type: job
+    org: WVU Medicine
+    options:
+      host: wvumedicine.wd1.myworkdayjobs.com
+      tenant: wvumedicine
+      site: WVUH
+      search_text: intern
 
   # ---- Aggregators / feeds -------------------------------------------------
   - name: RemoteOK
@@ -118,7 +205,45 @@ sources:
       what: analyst
       where: West Virginia
       max_days_old: 30
-    include_keywords: []        # Adzuna query already targets relevant roles
+
+  # Companies with no public job feed (KPMG, Deloitte, EY, CGI use
+  # Avature/SuccessFactors/custom portals; Microsoft's careers API has a broken
+  # TLS cert) are covered via Adzuna company searches. The global location
+  # filter then keeps only WV + remote postings.
+  - name: Adzuna KPMG
+    type: adzuna
+    opportunity_type: job
+    options: {country: us, company: KPMG, what: analyst, max_days_old: 30}
+
+  - name: Adzuna Deloitte
+    type: adzuna
+    opportunity_type: job
+    options: {country: us, company: Deloitte, what: analyst, max_days_old: 30}
+
+  - name: Adzuna EY
+    type: adzuna
+    opportunity_type: job
+    options: {country: us, company: EY, what: analyst, max_days_old: 30}
+
+  - name: Adzuna CGI
+    type: adzuna
+    opportunity_type: job
+    options: {country: us, company: CGI, what: analyst, max_days_old: 30}
+
+  - name: Adzuna Microsoft
+    type: adzuna
+    opportunity_type: job
+    options: {country: us, company: Microsoft, what: analyst, max_days_old: 30}
+
+  # WVU itself runs on Taleo (JS-rendered, unscrapeable) - covered via Adzuna.
+  - name: Adzuna WVU
+    type: adzuna
+    opportunity_type: job
+    options: {country: us, company: West Virginia University, where: West Virginia, max_days_old: 30}
+
+  # Not automatable (verified 2026-07-07): Bravo Consulting embeds an Angular
+  # AgileATS widget, Trilogy Innovations hires via careers@ email, NextGen
+  # Federal lists no machine-readable postings. Check those manually.
 
   # ---- USAJOBS API (free key from https://developer.usajobs.gov) ------------
   # Federal jobs are a major WV employer (FBI CJIS Clarksburg, NIOSH Morgantown).
@@ -129,7 +254,6 @@ sources:
     options:
       keyword: analyst
       location_name: West Virginia
-    include_keywords: []        # query already targets relevant roles
 
   # ---- Official company career pages (plain HTML) ---------------------------
   # Template — fill in the real URL + CSS selectors for each company you want.
@@ -164,4 +288,3 @@ sources:
         location: displayed_location.location
         url: url
         posted_date: submission_period_dates
-    include_keywords: []
