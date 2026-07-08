@@ -20,7 +20,7 @@ import html
 import json
 import re
 import sqlite3
-from datetime import date
+from datetime import date, timedelta
 from pathlib import Path
 
 # Section headings per opportunity type - the schema supports hackathons and
@@ -38,22 +38,31 @@ CAREER_FAIR_HEADING = "🎓 WVU Career Fair Employers"
 # these expire and must not be advertised after the fact
 EVENT_TYPES = ("hackathon", "conference")
 
+# Minimum days of runway an event needs to be worth advertising. A hackathon
+# whose submission deadline is 4 days out isn't realistically joinable by
+# newsletter readers; a conference can still be attended tomorrow.
+MIN_LEAD_DAYS = {"hackathon": 5, "conference": 0}
+
 
 def _drop_past_events(rows: list[sqlite3.Row]) -> list[sqlite3.Row]:
-    """Never advertise a hackathon whose deadline already passed.
+    """Never advertise an event that's over - or too close to join.
 
     For event rows, posted_date holds the event/deadline date (see the
     devpost/mlh adapters). ISO dates compare correctly as plain strings.
     Rows without a date are kept - better to show a maybe-stale event than
     silently hide a live one.
     """
-    today = date.today().isoformat()
-    return [
-        r for r in rows
-        if r["opportunity_type"] not in EVENT_TYPES
-        or not r["posted_date"]
-        or r["posted_date"] >= today
-    ]
+    today = date.today()
+    kept = []
+    for r in rows:
+        opp_type = r["opportunity_type"]
+        if opp_type not in EVENT_TYPES or not r["posted_date"]:
+            kept.append(r)
+            continue
+        cutoff = (today + timedelta(days=MIN_LEAD_DAYS.get(opp_type, 0))).isoformat()
+        if r["posted_date"] >= cutoff:
+            kept.append(r)
+    return kept
 
 
 def is_career_fair_org(org: str, career_fair_orgs: list[str]) -> bool:

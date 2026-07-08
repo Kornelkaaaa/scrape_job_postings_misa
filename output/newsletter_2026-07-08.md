@@ -1,6 +1,6 @@
 # MISA Opportunities Newsletter — 2026-07-08
 
-*186 new opportunities found in the last 7d.*
+*184 new opportunities found in the last 7d.*
 
 ## 💼 Jobs & Internships
 
@@ -378,8 +378,6 @@
   Dialogate · Online · 2026-09-05 · IoT, Machine Learning/AI, Beginner Friendly
 - **[Hoobit Hacks 2026](https://hoobit-hacks-2026.devpost.com/)**
   Hoobit · Online · 2026-07-18 · Beginner Friendly, Machine Learning/AI, Social Good
-- **[LUMA Hackathon (July 3rd - 10th)](https://luma-hackathon-500.devpost.com/)**
-  LUMA · Online · 2026-07-10 · Beginner Friendly, Machine Learning/AI, Open Ended
 - **[Next Byte Hacks V3](https://next-byte-hacks-v3.devpost.com/)**
   Next Bytes · Online · 2026-07-15 · Beginner Friendly, Open Ended, Social Good
 - **[Slack Agent Builder Challenge](https://slackhack.devpost.com/)**
@@ -408,11 +406,6 @@
 
 - **[Brainwave 2026](https://brainwaves.devpost.com/)**
   ACT House · Online · 2026-08-09 · AR/VR, Blockchain, Communication
-
-### 🌍 Social Good & Education
-
-- **[Beyond Tomorrow Summit](https://beyond-tomorrow-summit-30094.devpost.com/)**
-  beyond Tomorrow Summit · Online · 2026-07-08 · Cybersecurity, E-commerce/Retail, Health
 
 ---
 *Generated automatically by the MISA opportunity pipeline.*

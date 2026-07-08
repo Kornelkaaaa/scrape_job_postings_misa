@@ -89,14 +89,20 @@ def test_hackathon_categories_independent_of_job_categories(tmp_path):
 def test_newsletter_drops_past_events_keeps_past_jobs(tmp_path):
     conn = connect(tmp_path / "test.db")
     past = (date.today() - timedelta(days=3)).isoformat()
+    soon = (date.today() + timedelta(days=3)).isoformat()     # < 5-day lead
     future = (date.today() + timedelta(days=30)).isoformat()
+    tomorrow = (date.today() + timedelta(days=1)).isoformat()
     insert_new(conn, [
         Opportunity(opportunity_type="hackathon", source="T", title="Ended Hackathon",
                     url="https://e.com/1", posted_date=past),
+        Opportunity(opportunity_type="hackathon", source="T", title="Deadline Too Soon Hackathon",
+                    url="https://e.com/5", posted_date=soon),
         Opportunity(opportunity_type="hackathon", source="T", title="Upcoming Hackathon",
                     url="https://e.com/2", posted_date=future),
         Opportunity(opportunity_type="hackathon", source="T", title="Undated Hackathon",
                     url="https://e.com/3"),
+        Opportunity(opportunity_type="conference", source="T", title="Conference Tomorrow",
+                    url="https://e.com/6", posted_date=tomorrow),
         Opportunity(opportunity_type="job", source="T", title="Old Job Posting",
                     url="https://e.com/4", posted_date=past),
     ])
@@ -104,7 +110,9 @@ def test_newsletter_drops_past_events_keeps_past_jobs(tmp_path):
     md = render_markdown(rows, "7d")
 
     assert "Ended Hackathon" not in md
+    assert "Deadline Too Soon Hackathon" not in md  # < 5 days of runway
     assert "Upcoming Hackathon" in md
-    assert "Undated Hackathon" in md   # no date -> benefit of the doubt
-    assert "Old Job Posting" in md     # jobs never expire by posted_date
+    assert "Undated Hackathon" in md     # no date -> benefit of the doubt
+    assert "Conference Tomorrow" in md   # conferences have no lead requirement
+    assert "Old Job Posting" in md       # jobs never expire by posted_date
     conn.close()
