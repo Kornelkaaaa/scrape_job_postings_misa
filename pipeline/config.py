@@ -55,6 +55,7 @@ class Config:
     career_fair_orgs: list[str] = field(default_factory=list)  # highlighted in newsletter
     categories: dict = field(default_factory=dict)  # newsletter job topic sections, ordered
     hackathon_categories: dict = field(default_factory=dict)  # same idea, hackathon themes
+    internship_keywords: list[str] = field(default_factory=list)  # split into own section
 
 
 def load_config(path: str | Path = "sources.yaml") -> Config:
@@ -101,4 +102,5 @@ def load_config(path: str | Path = "sources.yaml") -> Config:
         career_fair_orgs=raw.get("career_fair_orgs") or [],
         categories=raw.get("categories") or {},
         hackathon_categories=raw.get("hackathon_categories") or {},
+        internship_keywords=raw.get("internship_keywords") or [],
     )

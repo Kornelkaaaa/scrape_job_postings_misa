@@ -36,6 +36,12 @@ TYPE_HEADINGS = {
 TYPE_SLUGS = {"job": "jobs", "hackathon": "hackathons",
               "conference": "conferences", "other": "other"}
 CAREER_FAIR_HEADING = "🎓 WVU Career Fair Employers"
+INTERNSHIPS_HEADING = "🎯 Internships & Co-ops"
+
+
+def _is_internship(row: sqlite3.Row, keywords: list[str]) -> bool:
+    haystack = f"{row['title']} {' '.join(json.loads(row['tags'] or '[]'))}"
+    return any(re.search(rf"\b{re.escape(k)}\b", haystack, re.I) for k in keywords)
 
 # opportunity types whose date means "when it happens" (vs "when posted") -
 # these expire and must not be advertised after the fact
@@ -128,8 +134,17 @@ def _group_by_category(rows: list[sqlite3.Row], categories: dict) -> dict[str, l
     return {name: items for name, items in groups.items() if items}
 
 
+def _make_section(slug: str, heading: str, items: list[sqlite3.Row], cats: dict) -> dict:
+    subs = []
+    if cats:
+        for i, (name, cat_items) in enumerate(_group_by_category(items, cats).items()):
+            subs.append({"slug": f"{slug}-{i}", "heading": name, "items": cat_items})
+    return {"slug": slug, "heading": heading, "items": items, "subs": subs}
+
+
 def _section_plan(rows: list[sqlite3.Row], career_fair_orgs: list[str],
-                  type_categories: dict) -> tuple[list[dict], int]:
+                  type_categories: dict,
+                  internship_keywords: list[str] | None = None) -> tuple[list[dict], int]:
     """Shared outline both renderers (and the nav) walk: a list of
     {slug, heading, items, subs} dicts. Computing this ONCE guarantees the
     navigation links and the actual sections can never disagree."""
@@ -142,12 +157,18 @@ def _section_plan(rows: list[sqlite3.Row], career_fair_orgs: list[str],
     for opp_type, items in _group_by_type(rest).items():
         slug = TYPE_SLUGS.get(opp_type, opp_type)
         cats = type_categories.get(opp_type) or {}
-        subs = []
-        if cats:
-            for i, (name, cat_items) in enumerate(_group_by_category(items, cats).items()):
-                subs.append({"slug": f"{slug}-{i}", "heading": name, "items": cat_items})
-        plan.append({"slug": slug, "heading": TYPE_HEADINGS.get(opp_type, opp_type.title()),
-                     "items": items, "subs": subs})
+        heading = TYPE_HEADINGS.get(opp_type, opp_type.title())
+        # internships get their own section ABOVE the remaining jobs -
+        # they're the postings members care about most. Kept flat (no
+        # category subsections): a couple dozen internships don't need them.
+        if opp_type == "job" and internship_keywords:
+            internships = [r for r in items if _is_internship(r, internship_keywords)]
+            if internships:
+                plan.append(_make_section("internships", INTERNSHIPS_HEADING,
+                                          internships, {}))
+                items = [r for r in items if not _is_internship(r, internship_keywords)]
+                heading = "💼 Jobs"  # no longer "& Internships" - they moved up
+        plan.append(_make_section(slug, heading, items, cats))
     return plan, len(rows)
 
 
@@ -175,11 +196,13 @@ def _md_items(row_list: list[sqlite3.Row]) -> list[str]:
 def render_markdown(rows: list[sqlite3.Row], since_label: str,
                     career_fair_orgs: list[str] | None = None,
                     categories: dict | None = None,
-                    hackathon_categories: dict | None = None) -> str:
+                    hackathon_categories: dict | None = None,
+                    internship_keywords: list[str] | None = None) -> str:
     today = date.today().isoformat()
     # each opportunity type can have its own category scheme
     type_categories = {"job": categories or {}, "hackathon": hackathon_categories or {}}
-    plan, total = _section_plan(rows, career_fair_orgs or [], type_categories)
+    plan, total = _section_plan(rows, career_fair_orgs or [], type_categories,
+                                internship_keywords)
     lines = [
         f"# MISA Opportunities Newsletter — {today}",
         "",
@@ -267,10 +290,12 @@ def _html_nav(plan: list[dict]) -> str:
 def render_html(rows: list[sqlite3.Row], since_label: str,
                 career_fair_orgs: list[str] | None = None,
                 categories: dict | None = None,
-                hackathon_categories: dict | None = None) -> str:
+                hackathon_categories: dict | None = None,
+                internship_keywords: list[str] | None = None) -> str:
     today = date.today().isoformat()
     type_categories = {"job": categories or {}, "hackathon": hackathon_categories or {}}
-    plan, total = _section_plan(rows, career_fair_orgs or [], type_categories)
+    plan, total = _section_plan(rows, career_fair_orgs or [], type_categories,
+                                internship_keywords)
     rows_count = total
     sections = []
     if plan:
@@ -302,7 +327,8 @@ def write_newsletter(rows: list[sqlite3.Row], output_dir: str | Path,
                      since_label: str,
                      career_fair_orgs: list[str] | None = None,
                      categories: dict | None = None,
-                     hackathon_categories: dict | None = None) -> tuple[Path, Path]:
+                     hackathon_categories: dict | None = None,
+                     internship_keywords: list[str] | None = None) -> tuple[Path, Path]:
     """Render both formats and write date-stamped files; returns their paths."""
     out = Path(output_dir)
     out.mkdir(parents=True, exist_ok=True)
@@ -310,9 +336,11 @@ def write_newsletter(rows: list[sqlite3.Row], output_dir: str | Path,
     md_path = out / f"newsletter_{stamp}.md"       # pathlib's / joins paths
     html_path = out / f"newsletter_{stamp}.html"
     md_path.write_text(render_markdown(rows, since_label, career_fair_orgs,
-                                       categories, hackathon_categories),
+                                       categories, hackathon_categories,
+                                       internship_keywords),
                        encoding="utf-8")
     html_path.write_text(render_html(rows, since_label, career_fair_orgs,
-                                     categories, hackathon_categories),
+                                     categories, hackathon_categories,
+                                     internship_keywords),
                          encoding="utf-8")
     return md_path, html_path

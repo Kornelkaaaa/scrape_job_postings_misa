@@ -149,7 +149,8 @@ def main(argv: list[str] | None = None) -> int:
         md_path, html_path = write_newsletter(rows, args.out or config.output_dir,
                                               args.since, config.career_fair_orgs,
                                               config.categories,
-                                              config.hackathon_categories)
+                                              config.hackathon_categories,
+                                              config.internship_keywords)
         print(f"{len(rows)} items -> {md_path} and {html_path}")
         return 0
 

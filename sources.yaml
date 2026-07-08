@@ -163,6 +163,18 @@ career_fair_orgs:
   - WV Department of Transportation
   - West Virginia Department of Transportation
 
+# Job postings whose title/tags match these get pulled out of the Jobs
+# section into a dedicated "Internships & Co-ops" section shown above it.
+internship_keywords:
+  - intern
+  - internship
+  - co-op
+  - coop
+  - student trainee
+  - working student
+  - summer analyst
+  - graduate program
+
 # Newsletter topic categories for jobs. Order matters: the first category
 # whose keywords match a posting's title/tags wins; unmatched jobs land in
 # "Other". Edit freely - names and emoji appear as-is in the newsletter.

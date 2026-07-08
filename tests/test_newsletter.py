@@ -88,6 +88,30 @@ def test_html_has_category_subsections(tmp_path):
     assert "✨ Other" not in page
 
 
+def test_internships_get_their_own_section(tmp_path):
+    conn = connect(tmp_path / "test.db")
+    insert_new(conn, [
+        Opportunity(opportunity_type="job", source="T", title="Business Analyst Intern",
+                    org="Acme", url="https://e.com/1"),
+        Opportunity(opportunity_type="job", source="T", title="Junior Business Analyst",
+                    org="Acme", url="https://e.com/2"),
+    ])
+    rows = list_since(conn, "2000-01-01T00:00:00+00:00")
+    md = render_markdown(rows, "7d", internship_keywords=["intern", "internship"])
+
+    interns_pos = md.index("## 🎯 Internships & Co-ops")
+    jobs_pos = md.index("## 💼 Jobs")  # renamed from "& Internships" after the split
+    assert interns_pos < jobs_pos                    # internships come first
+    assert interns_pos < md.index("Business Analyst Intern") < jobs_pos
+    assert md.index("Junior Business Analyst") > jobs_pos
+    assert "(#internships)" in md                    # present in the jump-to nav
+
+    # without the keywords everything stays in one Jobs section
+    md_plain = render_markdown(rows, "7d")
+    assert "Internships & Co-ops" not in md_plain
+    conn.close()
+
+
 def test_career_fair_section_in_html(tmp_path):
     rows = seed(tmp_path)
     page = render_html(rows, "7d", career_fair_orgs=["Leidos"])
