@@ -37,8 +37,8 @@ jobs:
 
       - name: Commit updated database and newsletter
         run: |
-          git config user.name "misa-opportunity-bot"
-          git config user.email "actions@github.com"
+          git config user.name "Kornelia"
+          git config user.email "kornelia.buszka@gmail.com"
           git add -f data/opportunities.db output/
           git diff --cached --quiet || git commit -m "Weekly scrape: $(date -u +%F)"
           git push
