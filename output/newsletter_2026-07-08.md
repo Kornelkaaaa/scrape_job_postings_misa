@@ -1,6 +1,6 @@
 # MISA Opportunities Newsletter — 2026-07-08
 
-*177 new opportunities found in the last 7d.*
+*168 new opportunities found in the last 7d.*
 
 ## 💼 Jobs & Internships
 
@@ -14,14 +14,6 @@
   Anthropic · Remote-Friendly (Travel-Required) | San Francisco, CA | New York City, NY · 2026-04-23
 - **[AI Engineer - FDE (Forward Deployed Engineer)](https://databricks.com/company/careers/open-positions/job?gh_jid=8099751002)**
   Databricks · Remote - India · 2026-07-06
-- **[Solutions Architect - Strategic AI Natives](https://databricks.com/company/careers/open-positions/job?gh_jid=8487768002)**
-  Databricks · Remote - California; Remote - Colorado; Remote - Oregon; Remote - Washington · 2026-07-01
-- **[Sr. Delivery Solutions Architect - AI Native](https://databricks.com/company/careers/open-positions/job?gh_jid=8469076002)**
-  Databricks · Remote - California; Remote - Colorado; Remote - Oregon; Remote - Washington · 2026-07-01
-- **[Sr. Solutions Architect - AI Natives Business](https://databricks.com/company/careers/open-positions/job?gh_jid=8541221002)**
-  Databricks · Remote - California; Remote - Oregon; Remote - Washington · 2026-07-01
-- **[Sr. Solutions Engineer - AI Natives Business](https://databricks.com/company/careers/open-positions/job?gh_jid=8563183002)**
-  Databricks · Remote - California; Remote - Colorado; Remote - Oregon; Remote - Washington · 2026-07-01
 - **[Strategic Genie and AI Sales Specialist](https://databricks.com/company/careers/open-positions/job?gh_jid=8441890002)**
   Databricks · Remote - New York · 2026-07-01
 - **[AI Security Engineer](https://www.adzuna.com/land/ad/5777233429?se=aghAg9R68RGY7JK76yOanA&v=4DCA3E436F14267DB458DF29F6558622EAE6E6FA)**
@@ -123,8 +115,6 @@
   GovCIO · Charleston, Kanawha County · 2026-07-02 · IT Jobs
 - **[Information Systems Security Officer (ISSO)](https://www.adzuna.com/land/ad/5774367527?se=aghAg9R68RGY7JK76yOanA&v=DFE6BAABC0B3F2FE8D450E51D9EA9A8CFA4FE828)**
   GovCIO · Charleston, Kanawha County · 2026-06-24 · IT Jobs
-- **[SR INFORMATION SECURITY ENGINEER - Cybersecurity Incident Response](https://www.adzuna.com/land/ad/5777233467?se=aghAg9R68RGY7JK76yOanA&v=4A1D74B04AAED257F1AD1764B462CA33C983C36B)**
-  Lumen · Charleston, Kanawha County · 2026-06-26 · IT Jobs
 - **[Junior Security Engineer](https://www.adzuna.com/land/ad/5758024097?se=aghAg9R68RGY7JK76yOanA&v=86BB64C4F782F533ABCBDC343760C2D02DFBEED7)**
   Maximus · Charleston, Kanawha County · 2026-06-10 · IT Jobs
 - **[Junior Security Engineer](https://www.adzuna.com/land/ad/5758023049?se=aghAg9R68RGY7JK76yOanA&v=95C837A0FBBB4E6C9DF0C3EE9A3D22F707DD58AF)**
@@ -175,8 +165,6 @@
   Stripe · US Remote,Toronto, CA-Remote-Ontario · 2026-06-26
 - **[Operations Insights, Tax](https://stripe.com/jobs/search?gh_jid=7997542)**
   Stripe · US Remote · 2026-06-26
-- **[SVP, Chief Accounting Officer](https://www.adzuna.com/land/ad/5768965712?se=qKzEgNR68RGY7JK76yOanA&v=4A9B7FDC88B160649EBC2D3D3A6E2A2811C1042B)**
-  Teradata · Charleston, Kanawha County · 2026-06-19 · Accounting & Finance Jobs
 - **[ACCOUNTING TECHNICIAN I (Guthrie Agricultural Center, Guthrie, WV)](https://www.adzuna.com/details/5786454452)**
   WV Department of Agriculture · Charleston, Kanawha County · 2026-07-03 · Accounting & Finance Jobs
 - **[Supportyourapp: (fluent German & English) Customer Support Consultant, Banking (remotely)](https://weworkremotely.com/remote-jobs/supportyourapp-fluent-german-english-customer-support-consultant-banking-remotely)**
@@ -185,8 +173,6 @@
   WeWorkRemotely · Anywhere in the World · 2026-06-22 · Management and Finance
 - **[Harris Global Business Services: Financial Accountant](https://weworkremotely.com/remote-jobs/harris-global-business-services-financial-accountant)**
   WeWorkRemotely · Anywhere in the World · 2026-06-22 · Management and Finance
-- **[Head of Global Revenue Accounting](https://www.adzuna.com/land/ad/5763206714?se=qKzEgNR68RGY7JK76yOanA&v=35DF08B652B7285498411D2C09AFC60A18346D19)**
-  Zoom · Charleston, Kanawha County · 2026-06-14 · Accounting & Finance Jobs
 
 ### 💼 Business & Consulting
 
@@ -277,10 +263,6 @@
   Oracle · Charleston, Kanawha County · 2026-06-30 · IT Jobs
 - **[Software Developer 3](https://www.adzuna.com/land/ad/5788770942?se=6L0DgtR68RGY7JK76yOanA&v=CE331C08AB8A9D80382E835416029493817C2921)**
   Oracle · Charleston, Kanawha County · 2026-06-26 · IT Jobs
-- **[Software Developer - Architect](https://www.adzuna.com/land/ad/5768965317?se=6L0DgtR68RGY7JK76yOanA&v=5C6CC2DC13242154AB1238CDE068BDE2F5D6B702)**
-  Oracle · Charleston, Kanawha County · 2026-06-19 · IT Jobs
-- **[Sr Software Engineer](https://www.adzuna.com/land/ad/5760937114?se=6L0DgtR68RGY7JK76yOanA&v=53E206878F06700A00D48E81456026D35FA6A494)**
-  Oracle · Charleston, Kanawha County · 2026-06-12 · IT Jobs
 - **[Software Developer 5](https://www.adzuna.com/land/ad/5777233799?se=6L0DgtR68RGY7JK76yOanA&v=CFDFB147D8378735A726D884CF0FA978A8407FFE)**
   Oracle · Charleston, Kanawha County · 2026-06-08 · IT Jobs
 - **[HRIS Analyst](https://www.adzuna.com/land/ad/5786371923?se=CMmWeNR68RGNrKp9Qg7ZPA&v=1AC4FBA12311A58AA2DBFC2276CCED9F91B1066E)**

@@ -38,7 +38,11 @@
       "Bash(python scraper.py run --source WeWorkRemotely)",
       "Bash(git commit -q -m 'Country filtering for remote jobs via WWR region field *)",
       "Bash(python -X utf8 -c ' *)",
-      "Bash(git commit -q -m 'Group newsletter jobs into topic categories *)"
+      "Bash(git commit -q -m 'Group newsletter jobs into topic categories *)",
+      "Bash(FILTER_BRANCH_SQUELCH_WARNING=1 git filter-branch -f --msg-filter \"sed '/Co-Authored-By: Claude/d'\" main)",
+      "Bash(git stash *)",
+      "Bash(FILTER_BRANCH_SQUELCH_WARNING=1 git filter-branch -f --env-filter ' *)",
+      "Bash(git commit -q -m 'Exclude senior-title variants: Sr/SVP/VP/chief/head of/architect *)"
     ]
   }
 }

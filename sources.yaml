@@ -62,12 +62,20 @@ filters:
     - machine learning
   exclude_keywords:
     - senior
+    - sr               # catches "Sr.", "Sr", "SR" as whole words
     - staff
     - principal
     - director
     - lead
     - manager
     - supervisor
+    - architect
+    - chief
+    - head of
+    - vp
+    - svp
+    - vice president
+    - executive officer
     - meeting          # recruiting events mislabeled as jobs
     - info session
 
