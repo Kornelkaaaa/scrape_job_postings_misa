@@ -554,9 +554,15 @@ sources:
     include_keywords: *campus_event_keywords
 
   # Community-maintained tech conference list (JSON files on GitHub).
-  # Reads data/security/devops/general topics for this year + next; the
-  # regional location list keeps nearby + online conferences.
+  # Reads data/security/devops/general topics for this year + next.
+  # IN-PERSON REGIONAL ONLY - deliberately no online/virtual keywords:
+  # confs.tech's online listings are mostly paid, foreign-run conference
+  # brands (German webinar series etc.) and it has no price data to filter
+  # on. Free online events come from the campus calendars instead.
   - name: Confs.tech
     type: confstech
     opportunity_type: conference
-    include_locations: *hackathon_locations
+    include_locations: [west virginia, wv, morgantown,
+                        ohio, columbus, cleveland, cincinnati, dayton, akron,
+                        pittsburgh,
+                        dc, d.c, district of columbia, washington dc]
