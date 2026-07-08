@@ -2,6 +2,17 @@
 
 Files-only delivery: paste the HTML into Mailchimp/Substack/Gmail, or share
 the Markdown directly (Slack/Discord/Notion).
+
+LEARNING NOTES:
+- Email HTML is stuck in ~2003: no external CSS, no flexbox - clients like
+  Outlook strip <style> blocks. That's why the HTML here uses <table> layout
+  and repeats style="..." inline on every element. Ugly but bulletproof.
+- html.escape(): job titles come from the internet; one "<script>" or a
+  stray "<" in a title would break (or attack) the page. ALWAYS escape
+  external text before putting it into HTML.
+- Separating render_markdown/render_html from write_newsletter keeps the
+  renderers pure (text in -> text out), so tests can check output without
+  touching the filesystem.
 """
 from __future__ import annotations
 
@@ -12,6 +23,9 @@ import sqlite3
 from datetime import date
 from pathlib import Path
 
+# Section headings per opportunity type - the schema supports hackathons and
+# conferences already, so the newsletter grows new sections automatically
+# when Phase 2 sources are enabled.
 TYPE_HEADINGS = {
     "job": "💼 Jobs & Internships",
     "hackathon": "🚀 Hackathons",
@@ -36,12 +50,15 @@ def is_career_fair_org(org: str, career_fair_orgs: list[str]) -> bool:
 
 
 def _partition(rows: list[sqlite3.Row], career_fair_orgs: list[str]):
+    """Split rows into (career-fair matches, everything else)."""
     fair = [r for r in rows if is_career_fair_org(r["org"], career_fair_orgs)]
     rest = [r for r in rows if not is_career_fair_org(r["org"], career_fair_orgs)]
     return fair, rest
 
 
 def _group_by_type(rows: list[sqlite3.Row]) -> dict[str, list[sqlite3.Row]]:
+    """{"job": [rows...], "hackathon": [rows...]} - setdefault creates each
+    list the first time its key appears."""
     groups: dict[str, list[sqlite3.Row]] = {}
     for row in rows:
         groups.setdefault(row["opportunity_type"], []).append(row)
@@ -52,7 +69,12 @@ OTHER_CATEGORY = "✨ Other"
 
 
 def categorize(row: sqlite3.Row, categories: dict) -> str:
-    """First category whose keywords whole-word-match the title/tags wins."""
+    """First category whose keywords whole-word-match the title/tags wins.
+
+    Order matters, and it comes straight from the YAML: python dicts preserve
+    insertion order, so listing AI before Data & Analytics in sources.yaml
+    means "AI Data Analyst" lands under AI.
+    """
     haystack = f"{row['title']} {' '.join(json.loads(row['tags'] or '[]'))}"
     for name, keywords in categories.items():
         if any(re.search(rf"\b{re.escape(k)}\b", haystack, re.I) for k in keywords):
@@ -66,24 +88,28 @@ def _group_by_category(rows: list[sqlite3.Row], categories: dict) -> dict[str, l
     groups[OTHER_CATEGORY] = []
     for row in rows:
         groups[categorize(row, categories)].append(row)
+    # dict comprehension that keeps only non-empty groups
     return {name: items for name, items in groups.items() if items}
 
 
 def _item_meta(row: sqlite3.Row) -> str:
+    """The grey info line under a title: 'Org · Location · Date · tags'."""
     parts = [p for p in [row["org"], row["location"], row["posted_date"]] if p]
-    tags = json.loads(row["tags"] or "[]")
+    tags = json.loads(row["tags"] or "[]")  # stored as JSON text in SQLite
     if tags:
-        parts.append(", ".join(tags[:4]))
+        parts.append(", ".join(tags[:4]))   # at most 4 tags, keep it short
     return " · ".join(parts)
 
 
 def _md_items(row_list: list[sqlite3.Row]) -> list[str]:
+    """Markdown bullet lines for a list of rows."""
     lines = []
     for row in row_list:
+        # [text](url) is a Markdown link; ** makes it bold
         lines.append(f"- **[{row['title']}]({row['url']})**")
         meta = _item_meta(row)
         if meta:
-            lines.append(f"  {meta}")
+            lines.append(f"  {meta}")  # two-space indent keeps it in the bullet
     return lines
 
 
@@ -99,11 +125,13 @@ def render_markdown(rows: list[sqlite3.Row], since_label: str,
         f"*{len(rows)} new opportunities found in the last {since_label}.*",
         "",
     ]
+    # Career-fair employers get the top slot - if there are any this week
     if fair:
         lines += [f"## {CAREER_FAIR_HEADING}", ""] + _md_items(fair) + [""]
     for opp_type, items in _group_by_type(rest).items():
         lines += [f"## {TYPE_HEADINGS.get(opp_type, opp_type.title())}", ""]
         if opp_type == "job" and categories:
+            # jobs get ### topic subsections; other types stay flat
             for cat_name, cat_items in _group_by_category(items, categories).items():
                 lines += [f"### {cat_name}", ""] + _md_items(cat_items) + [""]
         else:
@@ -114,6 +142,7 @@ def render_markdown(rows: list[sqlite3.Row], since_label: str,
 
 
 def _html_cards(items: list[sqlite3.Row], accent: str = "#1d4ed8") -> str:
+    """One <table> of job 'cards'. Tables, not divs - see module notes."""
     cards = []
     for row in items:
         meta = html.escape(_item_meta(row))
@@ -153,10 +182,12 @@ def render_html(rows: list[sqlite3.Row], since_label: str,
     for opp_type, items in _group_by_type(rest).items():
         sections.append(_html_section(
             TYPE_HEADINGS.get(opp_type, opp_type.title()), items,
+            # only the job section gets category subheadings
             categories=categories if opp_type == "job" else None,
         ))
 
-    # table-based, inline-styled layout for email-client compatibility
+    # 600px centered white card on grey - the classic email layout that
+    # survives every mail client
     return f"""<!doctype html>
 <html><head><meta charset="utf-8"><title>MISA Opportunities — {today}</title></head>
 <body style="margin:0;background:#f3f4f6;font-family:Segoe UI,Arial,sans-serif;">
@@ -177,10 +208,11 @@ def write_newsletter(rows: list[sqlite3.Row], output_dir: str | Path,
                      since_label: str,
                      career_fair_orgs: list[str] | None = None,
                      categories: dict | None = None) -> tuple[Path, Path]:
+    """Render both formats and write date-stamped files; returns their paths."""
     out = Path(output_dir)
     out.mkdir(parents=True, exist_ok=True)
     stamp = date.today().isoformat()
-    md_path = out / f"newsletter_{stamp}.md"
+    md_path = out / f"newsletter_{stamp}.md"       # pathlib's / joins paths
     html_path = out / f"newsletter_{stamp}.html"
     md_path.write_text(render_markdown(rows, since_label, career_fair_orgs, categories),
                        encoding="utf-8")

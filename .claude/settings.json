@@ -42,7 +42,10 @@
       "Bash(FILTER_BRANCH_SQUELCH_WARNING=1 git filter-branch -f --msg-filter \"sed '/Co-Authored-By: Claude/d'\" main)",
       "Bash(git stash *)",
       "Bash(FILTER_BRANCH_SQUELCH_WARNING=1 git filter-branch -f --env-filter ' *)",
-      "Bash(git commit -q -m 'Exclude senior-title variants: Sr/SVP/VP/chief/head of/architect *)"
+      "Bash(git commit -q -m 'Exclude senior-title variants: Sr/SVP/VP/chief/head of/architect *)",
+      "Bash(python scraper.py run --source \"WVU Medicine \\(analyst\\)\")",
+      "Bash(python scraper.py sources)",
+      "Bash(git commit -q -m 'Add learning-oriented comments throughout the Python codebase *)"
     ]
   }
 }

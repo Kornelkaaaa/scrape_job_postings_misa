@@ -6,6 +6,10 @@ and other federal employers hire analysts and students there.
 Credentials come from env vars USAJOBS_API_KEY and USAJOBS_EMAIL (both issued
 at signup); the source is skipped with a warning when missing.
 
+Unlike Adzuna (which takes credentials as URL params), USAJOBS wants them in
+HTTP *headers* - every API has its own authentication style, and the docs
+tell you which. Header auth is slightly nicer: headers don't end up in logs.
+
 options:
   keyword: search phrase (e.g. "analyst")
   location_name: e.g. "West Virginia"
@@ -23,6 +27,8 @@ API_URL = "https://data.usajobs.gov/api/search"
 
 
 def parse(source, payload: dict) -> list[Opportunity]:
+    # Government APIs love nesting: the real job data lives at
+    # SearchResult -> SearchResultItems[] -> MatchedObjectDescriptor
     items = (payload.get("SearchResult") or {}).get("SearchResultItems", [])
     opportunities = []
     for item in items:
@@ -35,6 +41,7 @@ def parse(source, payload: dict) -> list[Opportunity]:
             org=job.get("OrganizationName", ""),
             location=job.get("PositionLocationDisplay", ""),
             url=job.get("PositionURI", ""),
+            # chained (x or {}) guards three levels of maybe-missing nesting
             description=((job.get("UserArea") or {}).get("Details") or {}).get(
                 "JobSummary", "")[:1000],
             posted_date=normalize_date(job.get("PublicationStartDate")),
@@ -55,6 +62,8 @@ def fetch(source, client) -> list[Opportunity]:
         "LocationName": source.options.get("location_name", ""),
         "ResultsPerPage": 100,
     }
+    # USAJOBS quirk: the API key goes in Authorization-Key, and your
+    # registered email must be sent as the User-Agent
     headers = {"Authorization-Key": api_key, "User-Agent": email}
     response = client.get(API_URL, params=params, headers=headers)
     return parse(source, response.json())

@@ -1,7 +1,10 @@
 """Workday CXS job API (used by WVU Medicine and many large employers).
 
-The endpoint is the JSON API behind <host>.myworkdayjobs.com career sites:
+Workday careers sites LOOK like JavaScript-only pages, but the JS talks to a
+JSON endpoint underneath - and that endpoint is publicly reachable:
 POST https://{host}/wday/cxs/{tenant}/{site}/jobs
+(Found by watching the browser's Network tab on their careers page -
+a technique worth learning: many "unscrapeable" sites have an API inside.)
 
 options:
   host: e.g. wvumedicine.wd1.myworkdayjobs.com
@@ -35,6 +38,7 @@ def parse(source, payload: dict) -> list[Opportunity]:
             title=title,
             org=source.org or source.name,
             location=job.get("locationsText", ""),
+            # Workday gives a relative path; we rebuild the public URL
             url=f"https://{host}/en-US/{site}{path}" if path else "",
         ))
     return opportunities
@@ -47,6 +51,10 @@ def fetch(source, client) -> list[Opportunity]:
     endpoint = f"https://{host}/wday/cxs/{tenant}/{site}/jobs"
     max_results = int(source.options.get("max_results", 200))
 
+    # PAGINATION: the API returns at most 20 jobs per call, so we loop,
+    # asking for offset 0, 20, 40... until a short page or the reported
+    # total tells us we're done. max_results is a safety cap so a huge
+    # employer can't make one source take forever.
     opportunities: list[Opportunity] = []
     offset = 0
     while offset < max_results:
@@ -60,5 +68,5 @@ def fetch(source, client) -> list[Opportunity]:
         opportunities.extend(page)
         offset += PAGE_SIZE
         if len(page) < PAGE_SIZE or offset >= int(payload.get("total", 0)):
-            break
+            break  # last page reached
     return opportunities

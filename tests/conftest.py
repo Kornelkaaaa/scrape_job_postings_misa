@@ -1,3 +1,15 @@
+"""Shared pytest fixtures.
+
+LEARNING NOTES:
+- conftest.py is a special pytest file: anything defined here is available
+  to every test in this folder WITHOUT imports.
+- A "fixture" (@pytest.fixture) is reusable setup a test asks for just by
+  naming it as a parameter: def test_x(fixture, make_source) - pytest sees
+  the names and injects them.
+- The tests never hit the network: adapters' parse() functions are fed saved
+  API responses from tests/fixtures/. Fast, free, and they don't break when
+  a website is down.
+"""
 import json
 import sys
 from pathlib import Path
