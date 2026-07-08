@@ -1,6 +1,6 @@
 # MISA Opportunities Newsletter — 2026-07-08
 
-*197 new opportunities found in the last 7d.*
+*185 new opportunities found in the last 7d.*
 
 ## 💼 Jobs & Internships
 
@@ -16,16 +16,6 @@
   Anthropic · Remote-Friendly (Travel-Required) | San Francisco, CA | New York City, NY · 2026-04-07
 - **[Safeguards Enforcement Analyst, Safety Evaluations](https://job-boards.greenhouse.io/anthropic/jobs/5137183008)**
   Anthropic · Remote-Friendly (Travel-Required) | San Francisco, CA | Washington, DC; San Francisco, CA | New York City, NY · 2026-04-03
-- **[Associate Data Analyst](https://remoteOK.com/remote-jobs/remote-associate-data-analyst-arabian-private-holdings-1134566)**
-  Arabian Private Holdings · Manchester, Manchester, England, United Kingdom · 2026-07-07
-- **[Junior Business Analyst](https://remoteOK.com/remote-jobs/remote-junior-business-analyst-arabian-private-holdings-1134577)**
-  Arabian Private Holdings · London, London, England, United Kingdom · 2026-07-07
-- **[Junior UI Engineer](https://remoteOK.com/remote-jobs/remote-junior-ui-engineer-arabian-private-holdings-1134413)**
-  Arabian Private Holdings · Birmingham, Birmingham, England, United Kingdom · 2026-07-02
-- **[Rutgers University, Newark Rutgers Accounting Society Meeting](https://www.adzuna.com/land/ad/5775597112?se=qKzEgNR68RGY7JK76yOanA&v=356F8E348D4B0B6F0F5311CB79F82A01B50576BE)**
-  BDO USA, PC · Charleston, Kanawha County · 2026-06-24 · Accounting & Finance Jobs
-- **[Rutgers University, Newark Rutgers Accounting Society Meeting](https://www.adzuna.com/land/ad/5775592467?se=qKzEgNR68RGY7JK76yOanA&v=E5CCB1FBAAA6EF5423CA12709ED52F9F6E3CBCF8)**
-  BDO USA, PC · Parkersburg, Wood County · 2026-06-24 · Accounting & Finance Jobs
 - **[Business Analyst](https://remoteOK.com/remote-jobs/remote-business-analyst-blockchain-com-1134457)**
   Blockchain.com · New York, New York, United States · 2026-07-03
 - **[Asset Management Analyst Multifamily Real Estate](https://remoteOK.com/remote-jobs/remote-asset-management-analyst-multifamily-real-estate-bluecore-residential-1134402)**
@@ -48,8 +38,6 @@
   Cytel · Charleston, Kanawha County · 2026-07-04 · IT Jobs
 - **[Associate Counsel - Software Licensing & Commercial Contracts (preference Research Triangle Area)](https://www.adzuna.com/land/ad/5758028224?se=aghAg9R68RGY7JK76yOanA&v=BD6E5CCD2A1861B04875C27EF004836069706F4F)**
   Cytel · Charleston, Kanawha County · 2026-06-10 · Legal Jobs
-- **[Supply Chain Analyst](https://remoteOK.com/remote-jobs/remote-supply-chain-analyst-diva-1134516)**
-  DIVA · Kitchener, Kitchener, Ontario, Canada · 2026-07-05
 - **[DTCC Early Access: Summer 2027 Internship and Fulltime Programs](https://www.adzuna.com/land/ad/5791990420?se=vmGgf9R68RG7NNwp_1vy_Q&v=10C3D924B18BD1C7B80EBFE512D02729428C1366)**
   DTCC · Charleston, Kanawha County · 2026-07-08 · Sales Jobs
 - **[DTCC Early Access: Summer 2027 Internship and Fulltime Programs](https://www.adzuna.com/land/ad/5791990611?se=vmGgf9R68RG7NNwp_1vy_Q&v=02CD6639CC703B3BFED59FEC5F0D2C7F77CC067B)**
@@ -180,8 +168,6 @@
   Noblis · Charleston, Kanawha County · 2026-06-26 · IT Jobs
 - **[Information System Security Compliance Analyst (Multiple Levels)](https://www.adzuna.com/land/ad/5777233685?se=aghAg9R68RGY7JK76yOanA&v=7134F76CEF9FA114FB3D0989070960A5371A9691)**
   Noblis · Charleston, Kanawha County · 2026-06-26 · Engineering Jobs
-- **[Junior Data Analyst](https://remoteOK.com/remote-jobs/remote-junior-data-analyst-numa-1134429)**
-  Numa · Lisboa, Lisboa, Lisboa, Portugal · 2026-07-03
 - **[Accounting Specialist](https://www.adzuna.com/details/5786434923)**
   Office of Shared Administration · Charleston, Kanawha County · 2026-07-03 · Healthcare & Nursing Jobs
 - **[Partner AI Deployment Engineer - AWS](https://jobs.ashbyhq.com/openai/87989505-81e5-4513-bba0-5f00bb064216)**
@@ -208,18 +194,10 @@
   Oracle · Charleston, Kanawha County · 2026-06-11 · IT Jobs
 - **[Software Developer 5](https://www.adzuna.com/land/ad/5777233799?se=6L0DgtR68RGY7JK76yOanA&v=CFDFB147D8378735A726D884CF0FA978A8407FFE)**
   Oracle · Charleston, Kanawha County · 2026-06-08 · IT Jobs
-- **[Junior Front End Developer](https://remoteOK.com/remote-jobs/remote-junior-front-end-developer-pulsemedia-mena-1134518)**
-  PULSEMEDIA (MENA) · Ø§ÙØ±ÙØ§Ø¶, Ø§ÙØ±ÙØ§Ø¶ Ø§ÙØ±ÙØ§Ø¶ Ø§ÙØ³Ø¹ÙØ¯ÙØ© · 2026-07-05
 - **[Rehab Therapy Clinical Intern](https://www.adzuna.com/details/5777416401)**
   Parkview Health · Huntington, Cabell County · 2026-06-26 · Healthcare & Nursing Jobs
 - **[HRIS Analyst](https://www.adzuna.com/land/ad/5786371923?se=CMmWeNR68RGNrKp9Qg7ZPA&v=1AC4FBA12311A58AA2DBFC2276CCED9F91B1066E)**
   Public Consulting Group · Charleston, Kanawha County · 2026-07-03 · IT Jobs
-- **[Entry Level Administrative Assistant](https://remoteOK.com/remote-jobs/remote-entry-level-administrative-assistant-relyticx-hr-1134433)**
-  ReLyticx HR · Alberta, Alberta, Canada · 2026-07-03
-- **[Entry Level Administrative Assistant](https://remoteOK.com/remote-jobs/remote-entry-level-administrative-assistant-recruitlytic-hiring-1134524)**
-  Recruitlytic Hiring · Ø§ÙÙØ¯ÙÙØ©, Ø§ÙÙØ¯ÙÙØ© Ø§ÙÙØ¯ÙÙØ© Ø§ÙØ³Ø¹ÙØ¯ÙØ© · 2026-07-06
-- **[Entry Level Administrative Assistant](https://remoteOK.com/remote-jobs/remote-entry-level-administrative-assistant-recruitlytics-hiring-1134471)**
-  Recruitlytics Hiring · Ø§ÙÙØ¯ÙÙØ©, Ø§ÙÙØ¯ÙÙØ© Ø§ÙÙØ¯ÙÙØ© Ø§ÙØ³Ø¹ÙØ¯ÙØ© · 2026-07-04
 - **[Software Engineer I](https://www.adzuna.com/land/ad/5777234003?se=6L0DgtR68RGY7JK76yOanA&v=66F2A6099F37C2CFBC7E839A6A4233D2CB22B6CD)**
   Renaissance · Charleston, Kanawha County · 2026-06-26 · IT Jobs
 - **[Business Analyst](https://remoteOK.com/remote-jobs/remote-business-analyst-rotaract-club-of-nibm-kandy-1134504)**
@@ -256,8 +234,6 @@
   The Hartford · Charleston, Kanawha County · 2026-07-03 · IT Jobs
 - **[Survey Intern](https://www.adzuna.com/land/ad/5792086975?se=vmGgf9R68RG7NNwp_1vy_Q&v=A004DADBC85983DFDDC530D9E70EF85446AD41E7)**
   Triad Engineering · Fairmont, Marion County · 2026-07-08 · Engineering Jobs
-- **[Associate Analyst](https://remoteOK.com/remote-jobs/remote-associate-analyst-trinity-life-sciences-1134551)**
-  Trinity Life Sciences · Gurgaon, Gurgaon, Haryana, India · 2026-07-02
 - **[Analyst, BPO](https://www.adzuna.com/land/ad/5792011215?se=CMmWeNR68RGNrKp9Qg7ZPA&v=F7DD61204612C7583FF9853F438D3687839881BF)**
   Verint Systems, Inc. · Charleston, Kanawha County · 2026-07-08 · IT Jobs
 - **[Management and Program Analyst](https://www.usajobs.gov:443/job/875675000)**

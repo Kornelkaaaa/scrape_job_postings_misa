@@ -68,6 +68,8 @@ filters:
     - lead
     - manager
     - supervisor
+    - meeting          # recruiting events mislabeled as jobs
+    - info session
 
 # Employers attending WVU career fairs. Any posting whose company matches a
 # name here (case-insensitive, partial names fine) is pulled into a special
@@ -270,7 +272,9 @@ sources:
     type: json_api
     opportunity_type: job
     url: https://remoteok.com/api
-    include_locations: ["*"]    # remote-only board; location = company HQ, still doable from WV
+    # mostly remote, but they also list some location-bound foreign jobs -
+    # keep only genuinely remote/US-reachable ones
+    include_locations: [remote, worldwide, anywhere, united states, usa, north america, americas]
     options:
       items_path: ""            # payload itself is the list (first item is metadata, auto-skipped)
       fields:
