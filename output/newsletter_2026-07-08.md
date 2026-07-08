@@ -1,6 +1,6 @@
 # MISA Opportunities Newsletter — 2026-07-08
 
-*185 new opportunities found in the last 7d.*
+*177 new opportunities found in the last 7d.*
 
 ## 💼 Jobs & Internships
 
@@ -261,55 +261,39 @@
 - **[Pharmacy Intern](https://www.adzuna.com/details/5772423563)**
   Walgreens · Morgantown, Monongalia County · 2026-06-22 · Healthcare & Nursing Jobs
 - **[Vidalytics: AI Automation Engineer, In-House MarTech Video SaaS](https://weworkremotely.com/remote-jobs/vidalytics-ai-automation-engineer-in-house-martech-video-saas)**
-  WeWorkRemotely · 2026-07-07 · Back-End Programming
+  WeWorkRemotely · Anywhere in the World · 2026-07-07 · Back-End Programming
 - **[Vidalytics: ✍️ AI-Native Copywriter (VSLs, Funnels, Paid Ads) – MarTech Video SaaS](https://weworkremotely.com/remote-jobs/vidalytics-ai-native-copywriter-vsls-funnels-paid-ads-martech-video-saas)**
-  WeWorkRemotely · 2026-07-07 · Sales and Marketing
+  WeWorkRemotely · Anywhere in the World · 2026-07-07 · Sales and Marketing
 - **[Atom Partners: Junior Crypto Trader (Remote)](https://weworkremotely.com/remote-jobs/atom-partners-junior-crypto-trader-remote)**
-  WeWorkRemotely · 2026-07-02 · All Other Remote
+  WeWorkRemotely · Anywhere in the World · 2026-07-02 · All Other Remote
 - **[Supportyourapp: (fluent German & English) L1 Customer Support Consultant (EU Remote)](https://weworkremotely.com/remote-jobs/supportyourapp-fluent-german-english-l1-customer-support-consultant-eu-remote-1)**
-  WeWorkRemotely · 2026-06-30 · Full-Stack Programming
+  WeWorkRemotely · Anywhere in the World · 2026-06-30 · Full-Stack Programming
 - **[Supportyourapp: (fluent German & English) Customer Support Consultant, Banking (remotely)](https://weworkremotely.com/remote-jobs/supportyourapp-fluent-german-english-customer-support-consultant-banking-remotely)**
-  WeWorkRemotely · 2026-06-30 · Management and Finance
+  WeWorkRemotely · Anywhere in the World · 2026-06-30 · Management and Finance
 - **[Supportyourapp: (fluent German & English) L1 Customer Support Consultant (EU Remote)](https://weworkremotely.com/remote-jobs/supportyourapp-fluent-german-english-l1-customer-support-consultant-eu-remote)**
-  WeWorkRemotely · 2026-06-30 · Full-Stack Programming
+  WeWorkRemotely · Anywhere in the World · 2026-06-30 · Full-Stack Programming
 - **[Supportyourapp: (Native Finnish) Customer Support Consultant (remotely)](https://weworkremotely.com/remote-jobs/supportyourapp-native-finnish-customer-support-consultant-remotely)**
-  WeWorkRemotely · 2026-06-30 · Full-Stack Programming
-- **[Supportyourapp: (Native Danish) Customer Support Consultant (remotely)](https://weworkremotely.com/remote-jobs/supportyourapp-native-danish-customer-support-consultant-remotely)**
-  WeWorkRemotely · 2026-06-30 · Full-Stack Programming
-- **[Toptal :  AI Engineers](https://weworkremotely.com/remote-jobs/toptal-ai-engineers)**
-  WeWorkRemotely · 2026-06-29 · All Other Remote
+  WeWorkRemotely · Anywhere in the World · 2026-06-30 · Full-Stack Programming
 - **[Rimini Street: Forward Deployed Engineer (Agentic AI)](https://weworkremotely.com/remote-jobs/rimini-street-forward-deployed-engineer-agentic-ai)**
-  WeWorkRemotely · 2026-06-24 · Product
+  WeWorkRemotely · Anywhere in the World · 2026-06-24 · Product
 - **[Collaborative Solutions: Workday Financials Analyst Consultant (Global Delivery Center)](https://weworkremotely.com/remote-jobs/collaborative-solutions-workday-financials-analyst-consultant-global-delivery-center)**
-  WeWorkRemotely · 2026-06-22 · Management and Finance
+  WeWorkRemotely · Anywhere in the World · 2026-06-22 · Management and Finance
 - **[Harris Global Business Services: Financial Accountant](https://weworkremotely.com/remote-jobs/harris-global-business-services-financial-accountant)**
-  WeWorkRemotely · 2026-06-22 · Management and Finance
+  WeWorkRemotely · Anywhere in the World · 2026-06-22 · Management and Finance
 - **[KAI Partners: Technical Solutions Engineer/Web Developer](https://weworkremotely.com/remote-jobs/kai-partners-technical-solutions-engineer-web-developer)**
-  WeWorkRemotely · 2026-06-22 · Front-End Programming
-- **[Sonova International: Business & CRM Analyst | Remote](https://weworkremotely.com/remote-jobs/sonova-international-business-crm-analyst-remote-1)**
-  WeWorkRemotely · 2026-06-19 · Customer Support
-- **[Solar Secure Solutions: Web Development Intern](https://weworkremotely.com/remote-jobs/solar-secure-solutions-web-development-intern)**
-  WeWorkRemotely · 2026-06-18 · Back-End Programming
-- **[Remote VA: Web Developer & AI Specialist](https://weworkremotely.com/remote-jobs/remote-va-web-developer-ai-specialist)**
-  WeWorkRemotely · 2026-06-18 · Back-End Programming
+  WeWorkRemotely · Anywhere in the World · 2026-06-22 · Front-End Programming
 - **[Remote VA: Web Developer (BigCommerce Experience Required)](https://weworkremotely.com/remote-jobs/remote-va-web-developer-bigcommerce-experience-required)**
-  WeWorkRemotely · 2026-06-18 · Back-End Programming
-- **[MRIoA: Web Developer (Remote)](https://weworkremotely.com/remote-jobs/mrioa-web-developer-remote)**
-  WeWorkRemotely · 2026-06-18 · Back-End Programming
-- **[Zensors: Frontend Web Developer React/Typescript (Remote)](https://weworkremotely.com/remote-jobs/zensors-frontend-web-developer-react-typescript-remote)**
-  WeWorkRemotely · 2026-06-18 · Front-End Programming
+  WeWorkRemotely · Anywhere in the World · 2026-06-18 · Back-End Programming
 - **[AHU Technologies: Data Analyst/ Curam](https://weworkremotely.com/remote-jobs/ahu-technologies-data-analyst-curam)**
-  WeWorkRemotely · 2026-06-15 · Front-End Programming
+  WeWorkRemotely · Anywhere in the World · 2026-06-15 · Front-End Programming
 - **[Abstract: Full Stack Web Developer ⏤ Remote Contractor](https://weworkremotely.com/remote-jobs/abstract-full-stack-web-developer-remote-contractor)**
-  WeWorkRemotely · 2026-06-11 · Back-End Programming
+  WeWorkRemotely · Anywhere in the World · 2026-06-11 · Back-End Programming
 - **[Reveleer: Full Stack AI Engineer](https://weworkremotely.com/remote-jobs/reveleer-full-stack-ai-engineer)**
-  WeWorkRemotely · 2026-04-02 · Back-End Programming
+  WeWorkRemotely · Anywhere in the World · 2026-04-02 · Back-End Programming
 - **[Tether: AI Research Engineer](https://weworkremotely.com/remote-jobs/tether-ai-research-engineer)**
-  WeWorkRemotely · 2026-04-02 · Back-End Programming
-- **[Elite Software Automation: Business Analyst](https://weworkremotely.com/remote-jobs/elite-software-automation-business-analyst-2)**
-  WeWorkRemotely · 2026-03-23 · Management and Finance
+  WeWorkRemotely · Anywhere in the World · 2026-04-02 · Back-End Programming
 - **[DataAnnotation.tech: FT/PT Remote AI Prompt Engineering & Evaluation - Will Train](https://weworkremotely.com/remote-jobs/dataannotation-tech-ft-pt-remote-ai-prompt-engineering-evaluation-will-train)**
-  WeWorkRemotely · 2023-06-21 · All Other Remote
+  WeWorkRemotely · USA Only · 2023-06-21 · All Other Remote
 - **[Structural Engineering Intern](https://www.adzuna.com/details/5766489486)**
   Worley · Charleston, Kanawha County · 2026-06-17 · Engineering Jobs
 - **[Head of Global Revenue Accounting](https://www.adzuna.com/land/ad/5763206714?se=qKzEgNR68RGY7JK76yOanA&v=35DF08B652B7285498411D2C09AFC60A18346D19)**

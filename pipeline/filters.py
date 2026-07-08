@@ -31,8 +31,11 @@ def _location_matches(opp: Opportunity, locations: list[str]) -> bool:
 def filter_relevant(opportunities: list[Opportunity], config: Config, source: Source) -> list[Opportunity]:
     """Per-source lists override globals; an empty include list means keep everything.
 
-    Location rule: items whose location field is empty pass the include check
-    (we can't judge them), but exclude still applies when a location exists.
+    Location rules: items whose location field is empty pass (we can't judge
+    them). When an include list is set it decides alone; exclude_locations only
+    applies when no include list exists - otherwise a multi-country posting
+    like "London, UK; Remote, United States" would be wrongly dropped for
+    mentioning a foreign office even though US applicants are welcome.
     """
     include = source.include_keywords or config.include_keywords
     exclude = source.exclude_keywords or config.exclude_keywords
@@ -45,9 +48,10 @@ def filter_relevant(opportunities: list[Opportunity], config: Config, source: So
             continue
         if exclude and _matches_any(opp, exclude):
             continue
-        if include_loc and opp.location and not _location_matches(opp, include_loc):
-            continue
-        if exclude_loc and opp.location and _location_matches(opp, exclude_loc):
+        if include_loc and opp.location:
+            if not _location_matches(opp, include_loc):
+                continue
+        elif exclude_loc and opp.location and _location_matches(opp, exclude_loc):
             continue
         kept.append(opp)
     return kept

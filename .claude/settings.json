@@ -34,7 +34,9 @@
       "Bash(python scraper.py run --source \"Adzuna Forvis Mazars\")",
       "Bash(git commit -q -m 'Add WVU accounting career fair employers \\(Sep 9\\) *)",
       "Bash(git commit -q -m 'Add WVU STEM career fair employers \\(Sep 24\\) and tech keywords *)",
-      "Bash(git commit -q -m 'Clean junk from newsletter: recruiting events and location-bound foreign jobs *)"
+      "Bash(git commit -q -m 'Clean junk from newsletter: recruiting events and location-bound foreign jobs *)",
+      "Bash(python scraper.py run --source WeWorkRemotely)",
+      "Bash(git commit -q -m 'Country filtering for remote jobs via WWR region field *)"
     ]
   }
 }

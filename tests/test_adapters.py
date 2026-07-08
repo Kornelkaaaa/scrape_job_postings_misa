@@ -73,6 +73,7 @@ def test_rss_parse(fixture, make_source):
     assert opportunities[0].title == "Graduate Business Analyst"
     assert opportunities[0].org == "Example Org"
     assert opportunities[0].posted_date == "2026-07-01"
+    assert opportunities[0].location == "USA Only"  # WWR-style <region> field
     assert opportunities[1].org == "Feed"  # falls back to source name
 
 

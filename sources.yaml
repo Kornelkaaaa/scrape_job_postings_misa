@@ -291,7 +291,8 @@ sources:
     type: rss
     opportunity_type: job
     url: https://weworkremotely.com/remote-jobs.rss   # all-jobs feed; global filters narrow it down
-    include_locations: ["*"]    # remote-only board
+    # feed's region field says who can apply - drop "Europe Only" etc.
+    include_locations: [anywhere, usa, united states, us only, north america, americas, worldwide, remote]
 
   # ---- Adzuna API (free key from https://developer.adzuna.com) -------------
   # Needs ADZUNA_APP_ID + ADZUNA_APP_KEY env vars; skipped with a warning otherwise.
