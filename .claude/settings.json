@@ -32,7 +32,8 @@
       "Bash(python scraper.py run --source OpenAI)",
       "Bash(git commit -q -m 'Fix json_api adapter dumping raw items into unmapped fields *)",
       "Bash(python scraper.py run --source \"Adzuna Forvis Mazars\")",
-      "Bash(git commit -q -m 'Add WVU accounting career fair employers \\(Sep 9\\) *)"
+      "Bash(git commit -q -m 'Add WVU accounting career fair employers \\(Sep 9\\) *)",
+      "Bash(git commit -q -m 'Add WVU STEM career fair employers \\(Sep 24\\) and tech keywords *)"
     ]
   }
 }

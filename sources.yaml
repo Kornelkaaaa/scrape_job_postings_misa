@@ -50,6 +50,13 @@ filters:
     - audit
     - auditor
     - tax
+    - developer
+    - software
+    - cybersecurity
+    - cyber security
+    - information technology
+    - information systems
+    - data science
     - ai
     - artificial intelligence
     - machine learning
@@ -84,6 +91,67 @@ career_fair_orgs:
   - Suttle & Stalnaker
   - Public Service Commission of West Virginia
   - United Bank
+  # WVU STEM career fair day 2 - Sep 24, 2026
+  - Aerotech
+  - Agile5 Technologies
+  - Agile5
+  - Altec
+  - American Consolidated Natural Resources
+  - Antero Resources
+  - Baillie Lumber
+  - Bi-Con Services
+  - Burns & McDonnell
+  - Canyon Contracting
+  - Commonwealth of Pennsylvania
+  - Constellium
+  - Core Natural Resources
+  - Covestro
+  - Crane ChemPharma
+  - DALB
+  - Department of Environmental Protection
+  - Eaton
+  - Equipment & Controls
+  - First Ascent WV
+  - GAI Consultants
+  - Garney Construction
+  - GMS Mine Repair
+  - Halliburton
+  - HII
+  - Newport News Shipbuilding
+  - I3 Engineering
+  - Innovative Refrigeration
+  - Joint Warfare Analysis Center
+  - Kalkreuth
+  - M.C. Dean
+  - Manhattan Construction
+  - March Westin
+  - Marine Corps
+  - Matrix PDM
+  - Mountaire Farms
+  - Norfolk Naval Shipyard
+  - Oshkosh
+  - JLG Industries
+  - Patterson-UTI
+  - Peabody
+  - Penske
+  - Perryman
+  - Pike Corporation
+  - Pike Engineering
+  - RMF Engineering
+  - Schaeffler
+  - Siemens Energy
+  - Southland Industries
+  - Spang
+  - Syensqo
+  - National Radio Astronomy Observatory
+  - Thermo Fisher
+  - Trinity Consultants
+  - West Virginia Department of Health and Human Resources
+  - Westlake
+  - Weyerhaeuser
+  - Whiting-Turner
+  - WV Department of Transportation
+  - West Virginia Department of Transportation
 
 sources:
   # ---- Greenhouse boards (company career sites backed by Greenhouse) ------
@@ -284,6 +352,16 @@ sources:
     opportunity_type: job
     options: {country: us, what: accounting, where: West Virginia, max_days_old: 30}
 
+  - name: Adzuna WV tech
+    type: adzuna
+    opportunity_type: job
+    options: {country: us, what: software, where: West Virginia, max_days_old: 30}
+
+  - name: Adzuna WV cybersecurity
+    type: adzuna
+    opportunity_type: job
+    options: {country: us, what: cybersecurity, where: West Virginia, max_days_old: 30}
+
   # Career-fair firms without public feeds (Forvis Mazars' Greenhouse board is
   # Europe-only; A&M/CohnReznick/United Bank portals are JS or bot-blocked).
   # FBI CJIS posts on fbijobs.gov (login-only SuccessFactors) - check manually.
@@ -313,6 +391,21 @@ sources:
   # Not automatable (verified 2026-07-07): Bravo Consulting embeds an Angular
   # AgileATS widget, Trilogy Innovations hires via careers@ email, NextGen
   # Federal lists no machine-readable postings. Check those manually.
+
+  # Agile5 Technologies (Fairmont WV, DevSecOps/cyber - STEM fair employer).
+  # Their ADP WorkforceNow API responds but had 0 postings on 2026-07-08, so
+  # field mappings are unverified - enable and check when they post jobs.
+  - name: Agile5 Technologies
+    type: json_api
+    enabled: false
+    opportunity_type: job
+    org: Agile5 Technologies
+    url: https://workforcenow.adp.com/mascsr/default/careercenter/public/events/staffing/v1/job-requisitions?cid=18bcd225-9065-4e78-8585-763a250b6ab5&ccId=19000101_000001&lang=en_US
+    options:
+      items_path: jobRequisitions
+      fields:
+        title: requisitionTitle
+        posted_date: postDate
 
   # ---- USAJOBS API (free key from https://developer.usajobs.gov) ------------
   # Federal jobs are a major WV employer (FBI CJIS Clarksburg, NIOSH Morgantown).
