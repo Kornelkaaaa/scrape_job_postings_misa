@@ -7,31 +7,66 @@ Markdown + HTML newsletter of what's new.
 
 ## The newsletter
 
-Each issue is built from whatever is new in the chosen window and laid out as:
+`newsletter --since 7d` writes **two pairs of files**:
 
-1. **Jump-to navigation** — section links with counts, plus category links
-   under each section (anchor jumps work on GitHub/VS Code and most desktop
-   email clients).
-2. **🎓 WVU Career Fair Employers** — postings from companies on the
-   `career_fair_orgs` list (both WVU fall fairs are loaded) float to the top.
-3. **🎯 Internships & Co-ops** — job postings whose title matches
-   `internship_keywords` (intern, co-op, trainee, summer analyst, ...) get
-   their own section above everything else job-related.
-4. **💼 Jobs** — grouped into topic categories (`categories:` in the config):
-   AI/ML, Cybersecurity, Data & Analytics, Accounting & Finance,
-   Business & Consulting, Software & IT, Other.
-5. **🚀 Hackathons** — grouped by `hackathon_categories:` (In-Person first,
-   then themes). Only shown while ≥ 5 days remain before the submission
-   deadline (`MIN_LEAD_DAYS` in `pipeline/newsletter.py`).
-6. **🎤 Conferences & Events** — campus calendars + regional tech conferences;
-   past events are dropped automatically.
+- `newsletter_<date>.{md,html}` — the **teaser**. This is what you actually
+  send: a navy/gold branded header, a welcome blurb, upcoming MISA events,
+  🎓 WVU Career Fair Employers (postings from the `career_fair_orgs` list),
+  🎯 Internships & Co-ops (job postings matching `internship_keywords` —
+  intern, co-op, trainee, summer analyst, ...), then 💼 Jobs / 🚀 Hackathons /
+  🎤 Conferences & Events, each showing its newest 8 items — deduped by
+  (org, title) so the same posting cross-listed across five counties doesn't
+  burn most of the section on one employer. No nav panel, no pagination;
+  sections with more than 8 items end with a "See all N →" link out to the
+  archive page.
+- `newsletter_<date>_full.{md,html}` — the **archive**. Every opportunity,
+  with 💼 Jobs further grouped into topic categories (`categories:` in the
+  config: AI/ML, Cybersecurity, Data & Analytics, Accounting & Finance,
+  Business & Consulting, Software & IT, Other) and 🚀 Hackathons grouped by
+  `hackathon_categories:` (In-Person first, then themes), a "Jump to" nav
+  panel, and Jobs & Internships pagination (15/page, "◀ Prev · Page 2 of 4 ·
+  Next ▶", anchor links only). This is what the teaser's "See all" links
+  point at — nobody gets this file directly.
 
-Free events carry a **Free** tag in their meta line (from MLH microdata,
-Localist's `free` field, and Devpost's free-to-enter model; confs.tech has no
-price data so those stay unlabeled).
+Hackathons only show while ≥ 5 days remain before the submission deadline
+(`MIN_LEAD_DAYS` in `pipeline/newsletter.py`); past conferences are dropped
+automatically. Free events carry a **Free** tag in their meta line (from MLH
+microdata, Localist's `free` field, and Devpost's free-to-enter model;
+confs.tech has no price data so those stay unlabeled).
 
-The HTML is email-client-safe (inline styles, table layout) — paste into
-Mailchimp/Gmail as-is. The Markdown renders nicely on GitHub/Slack/Discord.
+The teaser HTML is also responsive: a small embedded `<style>` block makes it
+go full-width with tighter padding on phones, while staying a clean 600px
+card on desktop. Both HTML formats are otherwise email-client-safe (inline
+styles, table layout) — paste the teaser into Mailchimp/Gmail as-is. The
+Markdown renders nicely on GitHub/Slack/Discord.
+
+**Hosting the archive pages:** for "See all" to be a real clickable link
+(not just a filename that only works if both files travel together), the
+`_full` pages are published to `docs/` by CI and served over GitHub Pages.
+One-time setup: repo **Settings → Pages → Source: Deploy from a branch →
+main → /docs**. `newsletter: archive_base_url` in `sources.yaml` should
+match that Pages URL (defaults to this repo's); leave it blank to fall back
+to a relative filename instead.
+
+The welcome blurb, upcoming events, and social links aren't scraped — edit
+the `newsletter:` block in `sources.yaml` by hand each week:
+
+```yaml
+newsletter:
+  archive_base_url: https://kornelkaaaa.github.io/scrape_job_postings_misa
+  intro: Welcome back, Mountaineers! ...
+  social:
+    instagram: https://instagram.com/wvumisa
+    linkedin: https://linkedin.com/company/wvu-misa
+    email: misa@mail.wvu.edu
+  events:
+    - title: MISA General Meeting
+      date: 2026-07-15       # YYYY-MM-DD; past events are dropped automatically
+      time: "6:00 PM"
+      location: Chambers Building, Room 150
+      url: https://misa.wvu.edu
+      description: Weekly meeting - guest speaker from a local tech employer.
+```
 
 ## Setup
 

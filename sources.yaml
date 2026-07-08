@@ -578,3 +578,34 @@ sources:
                         ohio, columbus, cleveland, cincinnati, dayton, akron,
                         pittsburgh,
                         dc, d.c, district of columbia, washington dc]
+
+# Newsletter content that isn't scraped: a per-issue welcome blurb, upcoming
+# MISA meetings/events, and social/contact links for the footer. Edit these
+# by hand each week - `events` entries with a `date` in the past are dropped
+# automatically, so stale meetings don't need manual cleanup.
+newsletter:
+  # Where the teaser's "See all N" links point - the "_full" archive pages
+  # get published to docs/ and served by GitHub Pages (Settings -> Pages ->
+  # Deploy from branch -> main -> /docs, one-time setup). Leave blank to fall
+  # back to a relative filename (only works if both files travel together).
+  archive_base_url: https://kornelkaaaa.github.io/scrape_job_postings_misa
+  intro: >
+    Welcome back, Mountaineers! Here's what's new this week - internships,
+    hackathons, and MISA happenings all in one place.
+  social:
+    instagram: https://instagram.com/wvumisa
+    linkedin: https://linkedin.com/company/wvu-misa
+    email: misa@mail.wvu.edu
+  events:
+    # Example entries - replace with real MISA meetings/events.
+    - title: MISA General Meeting
+      date: 2026-07-15
+      time: "6:00 PM"
+      location: John Chambers College of Business and Economics, Room 150
+      url: https://misa.wvu.edu
+      description: Weekly meeting - guest speaker from a local tech employer.
+    - title: Fall Career Fair Prep Workshop
+      date: 2026-08-28
+      time: "5:30 PM"
+      location: Chambers Building, Room B120
+      description: Resume review and mock interviews ahead of the September career fairs.

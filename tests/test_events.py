@@ -7,7 +7,7 @@ from pipeline.config import Config
 from pipeline.db import connect, insert_new, list_since
 from pipeline.filters import filter_relevant
 from pipeline.models import Opportunity
-from pipeline.newsletter import render_markdown
+from pipeline.newsletter import render_full_markdown, render_markdown
 
 
 def test_devpost_parse(fixture, make_source):
@@ -105,7 +105,7 @@ def test_hackathon_categories_independent_of_job_categories(tmp_path):
                     url="https://e.com/3"),
     ])
     rows = list_since(conn, "2000-01-01T00:00:00+00:00")
-    md = render_markdown(
+    md = render_full_markdown(
         rows, "7d",
         categories={"🤖 AI Jobs": ["ai"]},
         hackathon_categories={"🏟 In-Person": ["in-person"], "🤖 AI Hacks": ["machine learning/ai"]},

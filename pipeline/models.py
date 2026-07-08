@@ -90,6 +90,17 @@ def normalize_date(value) -> str | None:
 
 
 @dataclass
+class Event:
+    """A MISA meeting/event, hand-entered in sources.yaml (not scraped)."""
+    title: str
+    date: str = ""   # YYYY-MM-DD
+    time: str = ""
+    location: str = ""
+    url: str = ""
+    description: str = ""
+
+
+@dataclass
 class Opportunity:
     """One job/hackathon/conference posting, as a plain in-memory object.
 

@@ -150,8 +150,13 @@ def main(argv: list[str] | None = None) -> int:
                                               args.since, config.career_fair_orgs,
                                               config.categories,
                                               config.hackathon_categories,
-                                              config.internship_keywords)
-        print(f"{len(rows)} items -> {md_path} and {html_path}")
+                                              config.newsletter.intro,
+                                              config.newsletter.events,
+                                              config.newsletter.social,
+                                              archive_base_url=config.newsletter.archive_base_url,
+                                              internship_keywords=config.internship_keywords)
+        print(f"{len(rows)} items -> {md_path} and {html_path} "
+              f"(plus a '_full' archive pair alongside them)")
         return 0
 
     if args.command == "sources":
