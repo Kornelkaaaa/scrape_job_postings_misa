@@ -28,7 +28,9 @@
       "Bash(python -c \"from pipeline.config import load_config; print\\('config OK, career_fair_orgs =', load_config\\(\\).career_fair_orgs\\)\")",
       "Bash(sed -i 's/^career_fair_orgs:/career_fair_orgs:\\\\n  - WVU Medicine/' sources.yaml)",
       "Bash(sed -i '/^  - WVU Medicine$/d' sources.yaml)",
-      "Bash(git commit -q -m 'Add career-fair employer highlighting in newsletter *)"
+      "Bash(git commit -q -m 'Add career-fair employer highlighting in newsletter *)",
+      "Bash(python scraper.py run --source OpenAI)",
+      "Bash(git commit -q -m 'Fix json_api adapter dumping raw items into unmapped fields *)"
     ]
   }
 }

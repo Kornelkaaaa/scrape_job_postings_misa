@@ -36,21 +36,28 @@ def parse(source, payload) -> list[Opportunity]:
         raise ValueError(f"{source.name}: items_path did not resolve to a list")
 
     fields = source.options.get("fields", {})
+
+    def field_value(item, name, default_path=None):
+        # an unmapped field must yield nothing - never the whole item
+        # (_dig treats an empty path as "return the item itself")
+        path = fields.get(name, default_path)
+        return _dig(item, path) if path else None
+
     opportunities = []
     for item in items:
-        title = str(_dig(item, fields.get("title", "title")) or "").strip()
+        title = str(field_value(item, "title", "title") or "").strip()
         if not title:
             continue
-        tags = _dig(item, fields["tags"]) if "tags" in fields else []
+        tags = field_value(item, "tags")
         opportunities.append(Opportunity(
             opportunity_type=source.opportunity_type,
             source=source.name,
             title=title,
-            org=str(_dig(item, fields.get("org", "")) or source.org or source.name),
-            location=str(_dig(item, fields.get("location", "")) or ""),
-            url=str(_dig(item, fields.get("url", "url")) or ""),
-            description=str(_dig(item, fields.get("description", "")) or "")[:1000],
-            posted_date=normalize_date(_dig(item, fields.get("posted_date", ""))),
+            org=str(field_value(item, "org") or source.org or source.name),
+            location=str(field_value(item, "location") or ""),
+            url=str(field_value(item, "url", "url") or ""),
+            description=str(field_value(item, "description") or "")[:1000],
+            posted_date=normalize_date(field_value(item, "posted_date")),
             tags=[str(t) for t in tags] if isinstance(tags, list) else [],
         ))
     return opportunities

@@ -51,6 +51,20 @@ def test_json_api_parse_skips_metadata_item(fixture, make_source):
     assert opportunities[0].tags == ["data", "analyst", "sql"]
 
 
+def test_json_api_unmapped_fields_fall_back_cleanly(make_source):
+    # regression: unmapped fields (empty dot-path) must not dump the whole item
+    payload = [{"title": "AI Engineer", "jobUrl": "https://jobs.example.com/1",
+                "id": "x", "department": "Eng", "descriptionHtml": "<p>...</p>"}]
+    source = make_source(name="Ashby", org="OpenAI",
+                         options={"items_path": "", "fields": {"title": "title", "url": "jobUrl"}})
+    opp = json_api.parse(source, payload)[0]
+
+    assert opp.org == "OpenAI"          # source org, not str(item)
+    assert opp.location == ""
+    assert opp.description == ""
+    assert opp.posted_date is None
+
+
 def test_rss_parse(fixture, make_source):
     source = make_source(name="Feed", type="rss")
     opportunities = rss.parse(source, fixture("feed.rss"))
