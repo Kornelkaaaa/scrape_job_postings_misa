@@ -59,6 +59,33 @@ def test_global_job_filters_do_not_apply_to_events(make_source):
     assert filter_relevant(jobs, config, job_source) == []  # jobs still filtered
 
 
+def test_hackathon_categories_independent_of_job_categories(tmp_path):
+    conn = connect(tmp_path / "test.db")
+    future = (date.today() + timedelta(days=30)).isoformat()
+    insert_new(conn, [
+        Opportunity(opportunity_type="hackathon", source="MLH", title="HackWV",
+                    url="https://e.com/1", posted_date=future, tags=["In-Person"]),
+        Opportunity(opportunity_type="hackathon", source="Devpost", title="Agent Jam",
+                    url="https://e.com/2", posted_date=future, tags=["Machine Learning/AI"]),
+        Opportunity(opportunity_type="job", source="T", title="AI Analyst Intern",
+                    url="https://e.com/3"),
+    ])
+    rows = list_since(conn, "2000-01-01T00:00:00+00:00")
+    md = render_markdown(
+        rows, "7d",
+        categories={"🤖 AI Jobs": ["ai"]},
+        hackathon_categories={"🏟 In-Person": ["in-person"], "🤖 AI Hacks": ["machine learning/ai"]},
+    )
+
+    # each type is grouped by its OWN scheme
+    assert md.index("### 🏟 In-Person") < md.index("HackWV")
+    assert md.index("### 🤖 AI Hacks") < md.index("Agent Jam")
+    assert "### 🤖 AI Jobs" in md
+    # job categories never appear inside the hackathon section and vice versa
+    assert "AI Jobs" not in md[md.index("## 🚀"):]
+    conn.close()
+
+
 def test_newsletter_drops_past_events_keeps_past_jobs(tmp_path):
     conn = connect(tmp_path / "test.db")
     past = (date.today() - timedelta(days=3)).isoformat()

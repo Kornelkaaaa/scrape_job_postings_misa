@@ -53,7 +53,8 @@ class Config:
     include_locations: list[str] = field(default_factory=list)
     exclude_locations: list[str] = field(default_factory=list)
     career_fair_orgs: list[str] = field(default_factory=list)  # highlighted in newsletter
-    categories: dict = field(default_factory=dict)  # newsletter topic sections, ordered
+    categories: dict = field(default_factory=dict)  # newsletter job topic sections, ordered
+    hackathon_categories: dict = field(default_factory=dict)  # same idea, hackathon themes
 
 
 def load_config(path: str | Path = "sources.yaml") -> Config:
@@ -99,4 +100,5 @@ def load_config(path: str | Path = "sources.yaml") -> Config:
         # the YAML key exists but has no entries under it
         career_fair_orgs=raw.get("career_fair_orgs") or [],
         categories=raw.get("categories") or {},
+        hackathon_categories=raw.get("hackathon_categories") or {},
     )

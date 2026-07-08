@@ -139,11 +139,13 @@ def _md_items(row_list: list[sqlite3.Row]) -> list[str]:
 
 def render_markdown(rows: list[sqlite3.Row], since_label: str,
                     career_fair_orgs: list[str] | None = None,
-                    categories: dict | None = None) -> str:
+                    categories: dict | None = None,
+                    hackathon_categories: dict | None = None) -> str:
     today = date.today().isoformat()
     rows = _drop_past_events(rows)
     fair, rest = _partition(rows, career_fair_orgs or [])
-    categories = categories or {}
+    # each opportunity type can have its own category scheme
+    type_categories = {"job": categories or {}, "hackathon": hackathon_categories or {}}
     lines = [
         f"# MISA Opportunities Newsletter — {today}",
         "",
@@ -155,9 +157,10 @@ def render_markdown(rows: list[sqlite3.Row], since_label: str,
         lines += [f"## {CAREER_FAIR_HEADING}", ""] + _md_items(fair) + [""]
     for opp_type, items in _group_by_type(rest).items():
         lines += [f"## {TYPE_HEADINGS.get(opp_type, opp_type.title())}", ""]
-        if opp_type == "job" and categories:
-            # jobs get ### topic subsections; other types stay flat
-            for cat_name, cat_items in _group_by_category(items, categories).items():
+        cats = type_categories.get(opp_type)
+        if cats:
+            # this type has ### topic subsections; others stay flat
+            for cat_name, cat_items in _group_by_category(items, cats).items():
                 lines += [f"### {cat_name}", ""] + _md_items(cat_items) + [""]
         else:
             lines += _md_items(items) + [""]
@@ -198,18 +201,19 @@ def _html_section(heading: str, items: list[sqlite3.Row], accent: str = "#1d4ed8
 
 def render_html(rows: list[sqlite3.Row], since_label: str,
                 career_fair_orgs: list[str] | None = None,
-                categories: dict | None = None) -> str:
+                categories: dict | None = None,
+                hackathon_categories: dict | None = None) -> str:
     today = date.today().isoformat()
     rows = _drop_past_events(rows)
     fair, rest = _partition(rows, career_fair_orgs or [])
+    type_categories = {"job": categories or {}, "hackathon": hackathon_categories or {}}
     sections = []
     if fair:  # WVU gold accent for employers members can meet in person
         sections.append(_html_section(CAREER_FAIR_HEADING, fair, accent="#b45309"))
     for opp_type, items in _group_by_type(rest).items():
         sections.append(_html_section(
             TYPE_HEADINGS.get(opp_type, opp_type.title()), items,
-            # only the job section gets category subheadings
-            categories=categories if opp_type == "job" else None,
+            categories=type_categories.get(opp_type) or None,
         ))
 
     # 600px centered white card on grey - the classic email layout that
@@ -233,15 +237,18 @@ def render_html(rows: list[sqlite3.Row], since_label: str,
 def write_newsletter(rows: list[sqlite3.Row], output_dir: str | Path,
                      since_label: str,
                      career_fair_orgs: list[str] | None = None,
-                     categories: dict | None = None) -> tuple[Path, Path]:
+                     categories: dict | None = None,
+                     hackathon_categories: dict | None = None) -> tuple[Path, Path]:
     """Render both formats and write date-stamped files; returns their paths."""
     out = Path(output_dir)
     out.mkdir(parents=True, exist_ok=True)
     stamp = date.today().isoformat()
     md_path = out / f"newsletter_{stamp}.md"       # pathlib's / joins paths
     html_path = out / f"newsletter_{stamp}.html"
-    md_path.write_text(render_markdown(rows, since_label, career_fair_orgs, categories),
+    md_path.write_text(render_markdown(rows, since_label, career_fair_orgs,
+                                       categories, hackathon_categories),
                        encoding="utf-8")
-    html_path.write_text(render_html(rows, since_label, career_fair_orgs, categories),
+    html_path.write_text(render_html(rows, since_label, career_fair_orgs,
+                                     categories, hackathon_categories),
                          encoding="utf-8")
     return md_path, html_path

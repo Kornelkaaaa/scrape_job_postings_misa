@@ -363,22 +363,8 @@
 
 ## 🚀 Hackathons
 
-- **[Brainwave 2026](https://brainwaves.devpost.com/)**
-  ACT House · Online · 2026-08-09 · AR/VR, Blockchain, Communication
-- **[Global AI Hackathon Series with Qwen Cloud](https://qwencloud-hackathon.devpost.com/)**
-  Alibaba Cloud · Online · 2026-07-20 · Machine Learning/AI, Design, Productivity
-- **[Backblaze Generative Media Hackathon: Build with Genblaze on B2](https://backblaze-generative-media.devpost.com/)**
-  Backblaze · Online · 2026-08-03 · Machine Learning/AI, Music/Art, Voice skills
-- **[CockroachDB × AWS Hackathon - Build with Agentic Memory](https://cockroachdb-ai.devpost.com/)**
-  Cockroach Labs · Online · 2026-08-18 · Machine Learning/AI, Databases, DevOps
-- **[Build with DataHub: The Agent Hackathon](https://datahub.devpost.com/)**
-  DataHub · Online · 2026-08-10 · Machine Learning/AI, DevOps, Open Ended
-- **[VoltHacks](https://volthacks.devpost.com/)**
-  Dialogate · Online · 2026-09-05 · IoT, Machine Learning/AI, Beginner Friendly
-- **[Hoobit Hacks 2026](https://hoobit-hacks-2026.devpost.com/)**
-  Hoobit · Online · 2026-07-18 · Beginner Friendly, Machine Learning/AI, Social Good
-- **[LUMA Hackathon (July 3rd - 10th)](https://luma-hackathon-500.devpost.com/)**
-  LUMA · Online · 2026-07-10 · Beginner Friendly, Machine Learning/AI, Open Ended
+### 🏟 In-Person
+
 - **[LA Hacks 27](https://lahacks.com)**
   MLH · Los Angeles, California, US · 2027-04-16 · In-Person
 - **[WEHack](https://www.wehackutd.com/)**
@@ -457,20 +443,48 @@
   MLH · Baltimore, Maryland, US · 2026-09-18 · In-Person
 - **[HackRice](https://hackrice.com/)**
   MLH · Houston, Texas, US · 2026-09-11 · In-Person
+
+### 🌱 Beginner Friendly
+
+- **[VoltHacks](https://volthacks.devpost.com/)**
+  Dialogate · Online · 2026-09-05 · IoT, Machine Learning/AI, Beginner Friendly
+- **[Hoobit Hacks 2026](https://hoobit-hacks-2026.devpost.com/)**
+  Hoobit · Online · 2026-07-18 · Beginner Friendly, Machine Learning/AI, Social Good
+- **[LUMA Hackathon (July 3rd - 10th)](https://luma-hackathon-500.devpost.com/)**
+  LUMA · Online · 2026-07-10 · Beginner Friendly, Machine Learning/AI, Open Ended
 - **[Next Byte Hacks V3](https://next-byte-hacks-v3.devpost.com/)**
   Next Bytes · Online · 2026-07-15 · Beginner Friendly, Open Ended, Social Good
-- **[YouCam API Skin AI & Apparel VTO Hackathon](https://youcam-api.devpost.com/)**
-  Perfect Corp · Online · 2026-08-17 · Machine Learning/AI, AR/VR, E-commerce/Retail
 - **[Slack Agent Builder Challenge](https://slackhack.devpost.com/)**
   Salesforce · Online · 2026-07-13 · Beginner Friendly, Enterprise, Low/No Code
+- **[Reddit’s Games with a Hook Hackathon](https://redditgameswithahook.devpost.com/)**
+  reddit · Online · 2026-07-15 · Beginner Friendly, Gaming, Web
+
+### 🤖 AI & Machine Learning
+
+- **[Global AI Hackathon Series with Qwen Cloud](https://qwencloud-hackathon.devpost.com/)**
+  Alibaba Cloud · Online · 2026-07-20 · Machine Learning/AI, Design, Productivity
+- **[Backblaze Generative Media Hackathon: Build with Genblaze on B2](https://backblaze-generative-media.devpost.com/)**
+  Backblaze · Online · 2026-08-03 · Machine Learning/AI, Music/Art, Voice skills
+- **[CockroachDB × AWS Hackathon - Build with Agentic Memory](https://cockroachdb-ai.devpost.com/)**
+  Cockroach Labs · Online · 2026-08-18 · Machine Learning/AI, Databases, DevOps
+- **[Build with DataHub: The Agent Hackathon](https://datahub.devpost.com/)**
+  DataHub · Online · 2026-08-10 · Machine Learning/AI, DevOps, Open Ended
+- **[YouCam API Skin AI & Apparel VTO Hackathon](https://youcam-api.devpost.com/)**
+  Perfect Corp · Online · 2026-08-17 · Machine Learning/AI, AR/VR, E-commerce/Retail
 - **[Build with Gemini XPRIZE](https://xprize.devpost.com/)**
   XPRIZE · Online · 2026-08-17 · Machine Learning/AI, Education, Productivity
 - **[Arm Create: AI Optimization Challenge](https://arm-ai-optimization-challenge.devpost.com/)**
   arm · Online · 2026-08-14 · Machine Learning/AI
+
+### ⛓️ Blockchain & Fintech
+
+- **[Brainwave 2026](https://brainwaves.devpost.com/)**
+  ACT House · Online · 2026-08-09 · AR/VR, Blockchain, Communication
+
+### 🌍 Social Good & Education
+
 - **[Beyond Tomorrow Summit](https://beyond-tomorrow-summit-30094.devpost.com/)**
   beyond Tomorrow Summit · Online · 2026-07-08 · Cybersecurity, E-commerce/Retail, Health
-- **[Reddit’s Games with a Hook Hackathon](https://redditgameswithahook.devpost.com/)**
-  reddit · Online · 2026-07-15 · Beginner Friendly, Gaming, Web
 
 ---
 *Generated automatically by the MISA opportunity pipeline.*

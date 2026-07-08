@@ -179,6 +179,19 @@ categories:
 # locations as "City, State" with no country marker, so matching every state
 # name is how "anywhere in the USA" works. This key itself is ignored by the
 # config loader - only the anchor matters.
+# Same idea for the Hackathons section. Matched against title + tags -
+# Devpost theme tags (Machine Learning/AI, Beginner Friendly, ...) and the
+# MLH In-Person/Digital tag do most of the work. First match wins, so
+# In-Person is listed first: a travel-able event matters more to members
+# than its theme.
+hackathon_categories:
+  "🏟 In-Person": [in-person]
+  "🌱 Beginner Friendly": [beginner friendly, beginner, first-timers, students]
+  "🤖 AI & Machine Learning": [ai, artificial intelligence, machine learning, machine learning/ai, llm, voice skills]
+  "⛓️ Blockchain & Fintech": [blockchain, web3, crypto, fintech]
+  "🎮 Games & AR/VR": [ar/vr, game, gaming, metaverse]
+  "🌍 Social Good & Education": [social good, education, sustainability, health, accessibility]
+
 us_hackathon_locations: &us_hackathon_locations
   [online, virtual, digital, remote, usa, us,
    alabama, alaska, arizona, arkansas, california, colorado, connecticut,
