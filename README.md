@@ -1,5 +1,5 @@
 # MISA Opportunity Pipeline
-
+jaxson
 Scrapes jobs, internships, hackathons, and conferences relevant to MISA
 members — West Virginia students — from a configurable list of sources,
 stores them in SQLite, dedupes across runs, and generates a weekly
