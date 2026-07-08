@@ -36,7 +36,9 @@
       "Bash(git commit -q -m 'Add WVU STEM career fair employers \\(Sep 24\\) and tech keywords *)",
       "Bash(git commit -q -m 'Clean junk from newsletter: recruiting events and location-bound foreign jobs *)",
       "Bash(python scraper.py run --source WeWorkRemotely)",
-      "Bash(git commit -q -m 'Country filtering for remote jobs via WWR region field *)"
+      "Bash(git commit -q -m 'Country filtering for remote jobs via WWR region field *)",
+      "Bash(python -X utf8 -c ' *)",
+      "Bash(git commit -q -m 'Group newsletter jobs into topic categories *)"
     ]
   }
 }

@@ -36,6 +36,7 @@ class Config:
     include_locations: list[str] = field(default_factory=list)
     exclude_locations: list[str] = field(default_factory=list)
     career_fair_orgs: list[str] = field(default_factory=list)  # highlighted in newsletter
+    categories: dict = field(default_factory=dict)  # newsletter topic sections, ordered
 
 
 def load_config(path: str | Path = "sources.yaml") -> Config:
@@ -75,4 +76,5 @@ def load_config(path: str | Path = "sources.yaml") -> Config:
         include_locations=filters.get("include_locations", []),
         exclude_locations=filters.get("exclude_locations", []),
         career_fair_orgs=raw.get("career_fair_orgs") or [],  # tolerate empty key
+        categories=raw.get("categories") or {},
     )

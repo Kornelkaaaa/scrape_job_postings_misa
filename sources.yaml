@@ -155,6 +155,17 @@ career_fair_orgs:
   - WV Department of Transportation
   - West Virginia Department of Transportation
 
+# Newsletter topic categories for jobs. Order matters: the first category
+# whose keywords match a posting's title/tags wins; unmatched jobs land in
+# "Other". Edit freely - names and emoji appear as-is in the newsletter.
+categories:
+  "🤖 AI & Machine Learning": [ai, artificial intelligence, machine learning, llm, deep learning]
+  "🔐 Cybersecurity": [cybersecurity, cyber security, security]
+  "📊 Data & Analytics": [data analyst, data science, data engineer, analytics, business intelligence, sql]
+  "💰 Accounting & Finance": [accountant, accounting, audit, auditor, tax, finance, financial, banking]
+  "💼 Business & Consulting": [business analyst, consultant, consulting, business, operations]
+  "💻 Software & IT": [developer, software, programmer, information technology, information systems, it, web, cloud, devops, engineer]
+
 sources:
   # ---- Greenhouse boards (company career sites backed by Greenhouse) ------
   # Find the token: company careers page URL like boards.greenhouse.io/<token>,

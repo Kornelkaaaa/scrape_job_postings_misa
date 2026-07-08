@@ -1,6 +1,13 @@
 from pipeline.db import connect, insert_new, list_since
 from pipeline.models import Opportunity
-from pipeline.newsletter import is_career_fair_org, render_html, render_markdown
+from pipeline.newsletter import (categorize, is_career_fair_org, render_html,
+                                 render_markdown)
+
+CATEGORIES = {
+    "🤖 AI & Machine Learning": ["ai", "machine learning"],
+    "📊 Data & Analytics": ["data analyst", "analytics"],
+    "💼 Business & Consulting": ["business analyst", "consulting"],
+}
 
 
 def seed(tmp_path):
@@ -45,6 +52,35 @@ def test_no_fair_section_when_list_empty(tmp_path):
     rows = seed(tmp_path)
     assert "Career Fair" not in render_markdown(rows, "7d")
     assert "Career Fair" not in render_html(rows, "7d", career_fair_orgs=[])
+
+
+def test_categorize_first_match_wins(tmp_path):
+    rows = seed(tmp_path)  # "Business Analyst" (Leidos), "AI Analyst Intern" (Stripe)
+    by_title = {r["title"]: r for r in rows}
+    assert categorize(by_title["AI Analyst Intern"], CATEGORIES) == "🤖 AI & Machine Learning"
+    assert categorize(by_title["Business Analyst"], CATEGORIES) == "💼 Business & Consulting"
+
+
+def test_unmatched_job_lands_in_other(tmp_path):
+    rows = seed(tmp_path)
+    assert categorize(rows[0], {"🤖 AI": ["quantum"]}) == "✨ Other"
+
+
+def test_markdown_has_category_subsections(tmp_path):
+    rows = seed(tmp_path)
+    md = render_markdown(rows, "7d", categories=CATEGORIES)
+    assert "### 🤖 AI & Machine Learning" in md
+    assert "### 💼 Business & Consulting" in md
+    assert "### 📊 Data & Analytics" not in md  # empty categories are dropped
+    # AI job listed under the AI subsection
+    assert md.index("### 🤖") < md.index("AI Analyst Intern") < md.index("### 💼")
+
+
+def test_html_has_category_subsections(tmp_path):
+    rows = seed(tmp_path)
+    page = render_html(rows, "7d", categories=CATEGORIES)
+    assert "🤖 AI &amp; Machine Learning" in page
+    assert "✨ Other" not in page
 
 
 def test_career_fair_section_in_html(tmp_path):

@@ -113,7 +113,8 @@ def main(argv: list[str] | None = None) -> int:
         rows = list_since(conn, since_iso, args.type)
         conn.close()
         md_path, html_path = write_newsletter(rows, args.out or config.output_dir,
-                                              args.since, config.career_fair_orgs)
+                                              args.since, config.career_fair_orgs,
+                                              config.categories)
         print(f"{len(rows)} items -> {md_path} and {html_path}")
         return 0
 
