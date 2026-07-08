@@ -193,10 +193,12 @@ hackathon_categories:
 # online/virtual events always pass. The dc/d.c/district-of-columbia variants
 # cover how different sites write the capital (deliberately NOT bare
 # "washington", which would wrongly match Washington state).
+# Ohio city names included because some sources (confs.tech) give only a
+# city with no state.
 hackathon_locations: &hackathon_locations
   [online, virtual, digital, remote,
    west virginia, wv, morgantown,
-   ohio,
+   ohio, columbus, cleveland, cincinnati, dayton, akron,
    pittsburgh,
    dc, d.c, district of columbia, washington dc]
 
@@ -521,8 +523,36 @@ sources:
         location: event.location_name
         posted_date: event.first_date
         description: event.description_text
-    include_keywords: [tech, technology, data, analytics, coding, programming,
+    # "data" alone matched biology seminars ("...Transcriptomic Data") - use
+    # the specific phrases instead
+    include_keywords: &campus_event_keywords
+                      [tech, technology, data science, data analytics, big data,
+                       analytics, coding, programming,
                        hackathon, cyber, cybersecurity, computer, computing,
                        information systems, career fair, networking, ai,
                        artificial intelligence, entrepreneurship, innovation,
                        business, consulting]
+
+  # Pitt's calendar (also Localist) - Pittsburgh is in members' travel range.
+  - name: Pitt Events
+    type: json_api
+    opportunity_type: conference
+    org: University of Pittsburgh
+    url: https://calendar.pitt.edu/api/2/events?days=90&pp=100
+    options:
+      items_path: events
+      fields:
+        title: event.title
+        url: event.localist_url
+        location: event.location_name
+        posted_date: event.first_date
+        description: event.description_text
+    include_keywords: *campus_event_keywords
+
+  # Community-maintained tech conference list (JSON files on GitHub).
+  # Reads data/security/devops/general topics for this year + next; the
+  # regional location list keeps nearby + online conferences.
+  - name: Confs.tech
+    type: confstech
+    opportunity_type: conference
+    include_locations: *hackathon_locations

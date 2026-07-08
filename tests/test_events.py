@@ -2,7 +2,7 @@
 and past-event exclusion in the newsletter."""
 from datetime import date, timedelta
 
-from pipeline.adapters import devpost, mlh
+from pipeline.adapters import confstech, devpost, mlh
 from pipeline.config import Config
 from pipeline.db import connect, insert_new, list_since
 from pipeline.filters import filter_relevant
@@ -39,6 +39,23 @@ def test_mlh_parse(fixture, make_source):
     assert in_person.tags == ["In-Person"]
     assert online.location == "Digital"
     assert online.tags == ["Digital"]
+
+
+def test_confstech_parse(fixture, make_source):
+    source = make_source(name="Confs.tech", type="confstech",
+                         opportunity_type="conference")
+    opportunities = confstech.parse(source, fixture("confstech.json"), topic="data")
+
+    assert len(opportunities) == 3  # nameless entry skipped
+    in_person, online, hybrid = opportunities
+    assert in_person.title == "Data Council East"
+    assert in_person.location == "Washington, DC, U.S.A."
+    assert in_person.posted_date == "2026-10-14"
+    assert in_person.tags == ["data"]
+    assert online.location == "Online"
+    assert online.org == "confs.tech"
+    # hybrid (online=true + city) keeps the city, so far-away hybrids filter out
+    assert hybrid.location == "Berlin, Germany"
 
 
 def test_global_job_filters_do_not_apply_to_events(make_source):

@@ -1,6 +1,6 @@
 # MISA Opportunities Newsletter — 2026-07-08
 
-*184 new opportunities found in the last 7d.*
+*189 new opportunities found in the last 7d.*
 
 ## 💼 Jobs & Internships
 
@@ -406,6 +406,19 @@
 
 - **[Brainwave 2026](https://brainwaves.devpost.com/)**
   ACT House · Online · 2026-08-09 · AR/VR, Blockchain, Communication
+
+## 🎤 Conferences & Events
+
+- **[Ed Tech Days: Confronting AI](https://calendar.pitt.edu/event/ed-tech-days-confronting-ai)**
+  University of Pittsburgh · David Lawrence Hall · 2026-07-16
+- **[AI for Developers](https://aiconference.dev)**
+  confs.tech · Online · 2026-12-17 · data
+- **[XtremeAI Online Conference](https://xtremeai.dev)**
+  confs.tech · Online · 2026-11-24 · data
+- **[Minds Mastering Machines - M3: LLMs im Unternehmen](https://m3-konferenz.de/llm.php)**
+  confs.tech · Online · 2026-10-15 · data
+- **[inside agile: Product Owner AI Day](https://ai.pod.inside-agile.de)**
+  confs.tech · Online · 2026-07-09 · data
 
 ---
 *Generated automatically by the MISA opportunity pipeline.*

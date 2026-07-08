@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Data Council East",
+    "url": "https://www.datacouncil.ai/east-2026",
+    "startDate": "2026-10-14",
+    "endDate": "2026-10-15",
+    "city": "Washington, DC",
+    "country": "U.S.A.",
+    "online": false
+  },
+  {
+    "name": "Observability Days",
+    "url": "https://observabilitydays.example.com",
+    "startDate": "2026-09-01",
+    "endDate": "2026-09-01",
+    "online": true,
+    "locales": "EN"
+  },
+  {
+    "name": "MLCon Berlin",
+    "url": "https://mlconference.example.com/berlin",
+    "startDate": "2026-11-23",
+    "city": "Berlin",
+    "country": "Germany",
+    "online": true
+  },
+  {
+    "name": "",
+    "url": "https://broken.example.com",
+    "startDate": "2026-09-01"
+  }
+]

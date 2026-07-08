@@ -13,10 +13,11 @@ LEARNING NOTES:
   (a "pure function"), so tests can feed it saved fixture files without
   any network. fetch() is the thin networked wrapper around it.
 """
-from . import (adzuna, devpost, greenhouse, html_page, json_api, lever, mlh,
-               rss, usajobs, workday)
+from . import (adzuna, confstech, devpost, greenhouse, html_page, json_api,
+               lever, mlh, rss, usajobs, workday)
 
 ADAPTERS = {
+    "confstech": confstech,
     "greenhouse": greenhouse,
     "lever": lever,
     "rss": rss,
