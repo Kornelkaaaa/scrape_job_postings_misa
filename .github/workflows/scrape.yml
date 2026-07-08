@@ -39,7 +39,7 @@ jobs:
         run: |
           mkdir -p docs
           touch docs/.nojekyll
-          cp output/newsletter_*_full.html output/newsletter_*_full.md docs/
+          cp output/newsletter_*_full*.html output/newsletter_*_full*.md docs/
 
       - name: Commit updated database and newsletter
         run: |

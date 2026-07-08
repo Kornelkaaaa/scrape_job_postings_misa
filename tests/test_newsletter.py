@@ -4,6 +4,7 @@ from pipeline.db import connect, insert_new, list_since
 from pipeline.models import Event, Opportunity
 from pipeline.newsletter import (categorize, is_career_fair_org, render_full_html,
                                  render_full_markdown, render_html, render_markdown,
+                                 render_section_html, render_section_markdown,
                                  write_newsletter)
 
 CATEGORIES = {
@@ -107,17 +108,18 @@ def test_teaser_dedupes_same_posting_cross_listed_across_counties(tmp_path):
     assert "Distinct Role" in md
 
 
-def test_teaser_truncates_and_links_to_full_list(tmp_path):
+def test_teaser_truncates_and_links_to_section_page(tmp_path):
     rows = seed_jobs(tmp_path, 12)  # TEASER_LIMIT is 8
-    md = render_markdown(rows, "7d", full_list_href="full.md")
+    md = render_markdown(rows, "7d", section_href_base="news_full")
     assert "💼 Jobs & Internships (12)" in md
-    assert "[See all 12 →](full.md#jobs)" in md
+    # "See all" opens the section's own page, not an in-page anchor
+    assert "[See all 12 →](news_full_jobs.md)" in md
     # newest-first: Analyst 11 (latest posted_date) is visible, Analyst 0 (oldest) is cut
     assert "Analyst 11" in md
     assert "Analyst 0" not in md
 
-    page = render_html(rows, "7d", full_list_href="full.html")
-    assert "See all 12" in page and 'href="full.html#jobs"' in page
+    page = render_html(rows, "7d", section_href_base="news_full")
+    assert "See all 12" in page and 'href="news_full_jobs.html"' in page
     assert "Analyst 11" in page
     assert "Analyst 0" not in page
 
@@ -248,8 +250,9 @@ def test_teaser_internships_get_their_own_section(tmp_path):
 
 
 # --------------------------------------------------------------------------
-# Archive (render_full_markdown / render_full_html) - everything, with the
-# jump-to panel, category subsections, and Jobs & Internships pagination.
+# Hub (render_full_markdown / render_full_html) - the _full landing page:
+# every top-level section, but only its newest HUB_LIMIT items, each with a
+# "See all" button. Jump-to panel across sections; no pagination.
 # --------------------------------------------------------------------------
 
 def test_full_internships_get_their_own_section(tmp_path):
@@ -290,21 +293,12 @@ def test_full_no_fair_section_when_list_empty(tmp_path):
     assert "Career Fair" not in render_full_html(rows, "7d", career_fair_orgs=[])
 
 
-def test_full_markdown_has_category_subsections(tmp_path):
+def test_full_hub_is_flat_no_category_subsections(tmp_path):
+    # the hub previews items; the category breakdown lives on the section page
     rows = seed(tmp_path)
     md = render_full_markdown(rows, "7d", categories=CATEGORIES)
-    assert "### 🤖 AI & Machine Learning" in md
-    assert "### 💼 Business & Consulting" in md
-    assert "### 📊 Data & Analytics" not in md  # empty categories are dropped
-    # AI job listed under the AI subsection
-    assert md.index("### 🤖") < md.index("AI Analyst Intern") < md.index("### 💼")
-
-
-def test_full_html_has_category_subsections(tmp_path):
-    rows = seed(tmp_path)
-    page = render_full_html(rows, "7d", categories=CATEGORIES)
-    assert "🤖 AI &amp; Machine Learning" in page
-    assert "✨ Other" not in page
+    assert "### 🤖 AI & Machine Learning" not in md
+    assert "AI Analyst Intern" in md  # still previewed, just not under a sub-heading
 
 
 def test_full_career_fair_section_in_html(tmp_path):
@@ -314,61 +308,90 @@ def test_full_career_fair_section_in_html(tmp_path):
     assert page.index("Business Analyst") < page.index("AI Analyst Intern")
 
 
-def test_full_no_pager_when_under_page_size(tmp_path):
-    rows = seed_jobs(tmp_path, 3)
-    md = render_full_markdown(rows, "7d", job_page_size=5)
-    assert "Page 1 of" not in md
-    page = render_full_html(rows, "7d", job_page_size=5)
-    assert "Page 1 of" not in page
+def test_full_hub_has_no_pagination(tmp_path):
+    rows = seed_jobs(tmp_path, 30)
+    md = render_full_markdown(rows, "7d")
+    page = render_full_html(rows, "7d")
+    assert "Page 1 of" not in md and "Page 1 of" not in page
+    assert "◀ Prev" not in md and "Next ▶" not in md
 
 
-def test_full_jobs_paginate_when_over_page_size(tmp_path):
-    rows = seed_jobs(tmp_path, 7)
-    md = render_full_markdown(rows, "7d", job_page_size=3)
-    assert "Page 1 of 3" in md
-    assert '<a id="jobs-p1"></a>' in md
-    assert '<a id="jobs-p2"></a>' in md
-    assert "[Next ▶](#jobs-p2)" in md
-    assert "Analyst 0" in md and "Analyst 6" in md  # every job still present, just paged
+def test_full_hub_previews_limit_and_links_to_section_page(tmp_path):
+    rows = seed_jobs(tmp_path, 30)  # HUB_LIMIT is 10
+    md = render_full_markdown(rows, "7d", section_href_base="news_full")
+    # newest 10 previewed, oldest cut, "See all 30" links out to the job page
+    assert "Analyst 29" in md
+    assert "Analyst 0" not in md
+    assert "[See all 30 →](news_full_jobs.md)" in md
 
-    page = render_full_html(rows, "7d", job_page_size=3)
-    assert "Page 1 of 3" in page
-    assert 'id="jobs-p1"' in page and 'id="jobs-p2"' in page
-    assert "#jobs-p2" in page
-    assert "Analyst 0" in page and "Analyst 6" in page
-
-
-def test_full_non_job_sections_never_paginate(tmp_path):
-    conn = connect(tmp_path / "test.db")
-    insert_new(conn, [
-        Opportunity(opportunity_type="hackathon", source="MLH", title=f"Hack {i}",
-                    org="MLH", url=f"https://example.com/hack{i}",
-                    posted_date=(date.today() + timedelta(days=30)).isoformat())
-        for i in range(7)
-    ])
-    rows = list_since(conn, "2000-01-01T00:00:00+00:00")
-    md = render_full_markdown(rows, "7d", job_page_size=3)
-    assert "Page 1 of" not in md
+    page = render_full_html(rows, "7d", section_href_base="news_full")
+    assert "See all 30" in page and 'href="news_full_jobs.html"' in page
 
 
 # --------------------------------------------------------------------------
-# write_newsletter - both file pairs land on disk and cross-link correctly.
+# Section page (render_section_markdown / render_section_html) - one section
+# in full: every item, category subsections intact, no pagination. This is
+# what the teaser's and hub's "See all" buttons open.
 # --------------------------------------------------------------------------
 
-def test_write_newsletter_creates_teaser_and_full_files(tmp_path):
+def test_section_page_lists_everything_no_truncation(tmp_path):
+    rows = seed_jobs(tmp_path, 30)
+    md = render_section_markdown(rows, "7d", "jobs")
+    for i in range(30):
+        assert f"Analyst {i}" in md          # every single job, none cut
+    assert "See all" not in md and "Page 1 of" not in md
+
+
+def test_section_page_has_category_subsections(tmp_path):
+    rows = seed(tmp_path)
+    md = render_section_markdown(rows, "7d", "jobs", categories=CATEGORIES)
+    assert "### 🤖 AI & Machine Learning" in md
+    assert "### 💼 Business & Consulting" in md
+    assert "### 📊 Data & Analytics" not in md  # empty categories are dropped
+    assert md.index("### 🤖") < md.index("AI Analyst Intern") < md.index("### 💼")
+
+    page = render_section_html(rows, "7d", "jobs", categories=CATEGORIES)
+    assert "🤖 AI &amp; Machine Learning" in page
+    assert "✨ Other" not in page
+
+
+def test_section_page_links_back_to_hub(tmp_path):
+    rows = seed_jobs(tmp_path, 5)
+    md = render_section_markdown(rows, "7d", "jobs", hub_href="news_full.md")
+    assert "[← Back to all opportunities](news_full.md)" in md
+    page = render_section_html(rows, "7d", "jobs", hub_href="news_full.html")
+    assert 'href="news_full.html"' in page and "Back to all opportunities" in page
+
+
+def test_section_page_missing_slug_is_graceful(tmp_path):
+    rows = seed_jobs(tmp_path, 3)  # only jobs exist
+    md = render_section_markdown(rows, "7d", "hackathons")
+    assert "Nothing in this section" in md
+
+
+# --------------------------------------------------------------------------
+# write_newsletter - teaser, hub, and per-section pages land and cross-link.
+# --------------------------------------------------------------------------
+
+def test_write_newsletter_creates_teaser_hub_and_section_files(tmp_path):
     rows = seed_jobs(tmp_path / "db", 12)
     md_path, html_path = write_newsletter(rows, tmp_path / "out", "7d")
 
     assert md_path.exists() and html_path.exists()
-    full_md_path = tmp_path / "out" / f"{md_path.stem}_full.md"
-    full_html_path = tmp_path / "out" / f"{html_path.stem}_full.html"
-    assert full_md_path.exists() and full_html_path.exists()
+    out = tmp_path / "out"
+    stem = md_path.stem  # newsletter_<date>
+    # hub pair
+    assert (out / f"{stem}_full.md").exists()
+    assert (out / f"{stem}_full.html").exists()
+    # per-section pages (12 jobs -> a jobs section page)
+    assert (out / f"{stem}_full_jobs.md").exists()
+    assert (out / f"{stem}_full_jobs.html").exists()
 
-    # teaser's "See all" points at the full file sitting next to it
-    assert full_html_path.name in html_path.read_text(encoding="utf-8")
-    assert full_md_path.name in md_path.read_text(encoding="utf-8")
-    # full page has the jump-to nav the teaser deliberately drops
-    assert "Jump to" in full_html_path.read_text(encoding="utf-8")
+    # teaser's "See all" opens the jobs section page, not the hub
+    assert f"{stem}_full_jobs.html" in html_path.read_text(encoding="utf-8")
+    assert f"{stem}_full_jobs.md" in md_path.read_text(encoding="utf-8")
+    # hub has the jump-to nav the teaser deliberately drops
+    assert "Jump to" in (out / f"{stem}_full.html").read_text(encoding="utf-8")
     assert "Jump to" not in html_path.read_text(encoding="utf-8")
 
 
@@ -378,9 +401,7 @@ def test_write_newsletter_uses_archive_base_url_when_configured(tmp_path):
         rows, tmp_path / "out", "7d",
         archive_base_url="https://kornelkaaaa.github.io/scrape_job_postings_misa",
     )
-    full_html_name = f"{html_path.stem}_full.html"
-    full_md_name = f"{md_path.stem}_full.md"
-    assert (f"https://kornelkaaaa.github.io/scrape_job_postings_misa/{full_html_name}"
-            in html_path.read_text(encoding="utf-8"))
-    assert (f"https://kornelkaaaa.github.io/scrape_job_postings_misa/{full_md_name}"
-            in md_path.read_text(encoding="utf-8"))
+    base = "https://kornelkaaaa.github.io/scrape_job_postings_misa"
+    stem = md_path.stem
+    assert f"{base}/{stem}_full_jobs.html" in html_path.read_text(encoding="utf-8")
+    assert f"{base}/{stem}_full_jobs.md" in md_path.read_text(encoding="utf-8")

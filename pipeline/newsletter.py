@@ -1,11 +1,18 @@
 """Render new opportunities into a Markdown + HTML newsletter.
 
-Two files come out of write_newsletter() for each format:
+Files-only delivery: paste the HTML into Mailchimp/Substack/Gmail, or share
+the Markdown directly (Slack/Discord/Notion).
+
+Three kinds of file come out of write_newsletter() for each format:
 - newsletter_<date>.{md,html} - the TEASER. Short, curated, no navigation
   chrome. This is what you actually paste into Mailchimp/Substack/Gmail.
-- newsletter_<date>_full.{md,html} - the ARCHIVE. Every opportunity, grouped
-  into category subsections with a jump-to panel and pagination, for anyone
-  who clicks "See all" from the teaser and wants to browse everything.
+- newsletter_<date>_full.{md,html} - the HUB. A browse-everything landing
+  page: each top-level section shows its newest ~10 items with a "See all N"
+  button, plus a jump-to panel across sections.
+- newsletter_<date>_full_<slug>.{md,html} - one SECTION PAGE per top-level
+  section (jobs, internships, hackathons, ...). The complete list for that
+  one section - category subsections intact, no pagination - which is what
+  the teaser's and hub's "See all" buttons open.
 
 LEARNING NOTES:
 - Email HTML is stuck in ~2003: no JS, and clients like Outlook strip <style>
@@ -17,9 +24,9 @@ LEARNING NOTES:
 - html.escape(): job titles come from the internet; one "<script>" or a
   stray "<" in a title would break (or attack) the page. ALWAYS escape
   external text before putting it into HTML.
-- Separating render_*/render_full_* from write_newsletter keeps the
-  renderers pure (text in -> text out), so tests can check output without
-  touching the filesystem.
+- Separating render_*/render_full_*/render_section_* from write_newsletter
+  keeps the renderers pure (text in -> text out), so tests can check output
+  without touching the filesystem.
 """
 from __future__ import annotations
 
@@ -44,8 +51,8 @@ TYPE_HEADINGS = {
     "conference": "🎤 Conferences & Events",
     "other": "✨ Other Opportunities",
 }
-# URL-safe anchor ids, used by the archive page's jump-to nav and pagination
-# (emoji don't belong in URLs)
+# URL-safe anchor/filename ids, used by the hub's jump-to nav and to name the
+# per-section pages (emoji don't belong in URLs or filenames)
 TYPE_SLUGS = {"job": "jobs", "hackathon": "hackathons",
               "conference": "conferences", "other": "other"}
 CAREER_FAIR_HEADING = "🎓 WVU Career Fair Employers"
@@ -69,21 +76,12 @@ EVENT_TYPES = ("hackathon", "conference")
 MIN_LEAD_DAYS = {"hackathon": 5, "conference": 0}
 
 # How many items the TEASER shows per opportunity type before linking out to
-# the archive page instead of listing everything inline.
+# the section page instead of listing everything inline.
 TEASER_LIMIT = 8
 
-# The archive page's Jobs & Internships section still runs 100+ listings
-# deep (AI alone can be 50+), so it's further chunked into pages there.
-DEFAULT_JOB_PAGE_SIZE = 15
-
-
-def _paginate(items: list, page_size: int | None) -> list[list]:
-    """Split into `page_size`-item chunks. `page_size=None` (or a list that
-    already fits in one page) returns a single page - callers always get at
-    least one page, even for an empty list, so there's no special case."""
-    if not page_size or len(items) <= page_size:
-        return [items]
-    return [items[i:i + page_size] for i in range(0, len(items), page_size)]
+# How many items the HUB (_full landing page) previews per top-level section
+# before its "See all N" button links out to that section's own page.
+HUB_LIMIT = 10
 
 
 def _drop_past_events(rows: list[sqlite3.Row]) -> list[sqlite3.Row]:
@@ -224,17 +222,19 @@ def _social_footer_html(social: dict[str, str]) -> str:
     return f'<p style="font-size:13px;margin:0 0 8px;">{" &nbsp;·&nbsp; ".join(links)}</p>'
 
 
-# --------------------------------------------------------------------------
-# TEASER - the actual newsletter. Short, no jump-to nav, no pagination: big
-# groups are truncated to TEASER_LIMIT (newest first) with a link out to the
-# archive page instead of a wall of content.
-# --------------------------------------------------------------------------
+def _section_href(base: str, slug: str, ext: str) -> str:
+    """URL of a single section's own page, e.g. 'newsletter_..._full_jobs.html'.
+    `base` is everything up to '_full' (relative filename or absolute Pages
+    URL); the renderer appends '_<slug>.<ext>'. Empty base -> empty string, in
+    which case callers fall back to a plain "...and N more" with no link."""
+    return f"{base}_{slug}.{ext}" if base else ""
 
-def _teaser_slice(items: list[sqlite3.Row]) -> tuple[list[sqlite3.Row], int]:
-    """Newest-first top TEASER_LIMIT; returns (visible, total).
+
+def _top_slice(items: list[sqlite3.Row], limit: int) -> tuple[list[sqlite3.Row], int]:
+    """Newest-first top `limit`; returns (visible, total).
 
     Dedupes by (org, title) while picking the visible set - the same posting
-    cross-listed under five counties would otherwise burn most of the 8 slots
+    cross-listed under five counties would otherwise burn most of the slots
     on one employer instead of showing variety. `total` still counts every
     row, duplicates included, so "See all N" stays accurate.
     """
@@ -247,10 +247,16 @@ def _teaser_slice(items: list[sqlite3.Row]) -> tuple[list[sqlite3.Row], int]:
             continue
         seen.add(key)
         visible.append(row)
-        if len(visible) >= TEASER_LIMIT:
+        if len(visible) >= limit:
             break
     return visible, len(items)
 
+
+# --------------------------------------------------------------------------
+# TEASER - the actual newsletter. Short, no jump-to nav: big groups are
+# truncated to TEASER_LIMIT (newest first) with a "See all" link out to that
+# section's own page instead of a wall of content.
+# --------------------------------------------------------------------------
 
 def _md_items(row_list: list[sqlite3.Row]) -> list[str]:
     """Markdown bullet lines for a list of opportunity rows."""
@@ -280,20 +286,20 @@ def _md_event_items(events: list[Event]) -> list[str]:
 
 
 def _md_teaser_group(lines: list[str], heading: str, slug: str,
-                     items: list[sqlite3.Row], full_list_href: str) -> None:
+                     items: list[sqlite3.Row], section_href_base: str) -> None:
     """Appends one teaser section (heading + top items + See all/more) to
     `lines` in place. Skips entirely if `items` is empty (e.g. every job in
     the group turned out to be an internship, leaving nothing for Jobs)."""
     if not items:
         return
-    visible, count = _teaser_slice(items)
+    visible, count = _top_slice(items, TEASER_LIMIT)
     lines += [f"## {heading} ({count})", ""] + _md_items(visible)
     if count > len(visible):
-        remaining = count - len(visible)
-        if full_list_href:
-            lines.append(f"[See all {count} →]({full_list_href}#{slug})")
+        href = _section_href(section_href_base, slug, "md")
+        if href:
+            lines.append(f"[See all {count} →]({href})")
         else:
-            lines.append(f"...and {remaining} more.")
+            lines.append(f"...and {count - len(visible)} more.")
     lines.append("")
 
 
@@ -302,11 +308,12 @@ def render_markdown(rows: list[sqlite3.Row], since_label: str,
                     intro: str = "",
                     events: list[Event] | None = None,
                     social: dict[str, str] | None = None,
-                    full_list_href: str = "",
+                    section_href_base: str = "",
                     internship_keywords: list[str] | None = None) -> str:
-    """The teaser: what actually gets sent. `full_list_href` is the archive
-    Markdown file's name/URL - each truncated section links there; without
-    it, truncated sections just say how many more there are (no link)."""
+    """The teaser: what actually gets sent. `section_href_base` is everything
+    up to '_full' in the section pages' URL; each truncated section links to
+    its own '..._full_<slug>.md' page. Without it, truncated sections just say
+    how many more there are (no link)."""
     today = date.today().isoformat()
     rows = _drop_past_events(rows)
     fair, rest = _partition(rows, career_fair_orgs or [])
@@ -334,9 +341,9 @@ def render_markdown(rows: list[sqlite3.Row], since_label: str,
             if internships:
                 heading = JOBS_ONLY_HEADING
                 _md_teaser_group(lines, INTERNSHIPS_HEADING, "internships",
-                                 internships, full_list_href)
+                                 internships, section_href_base)
         _md_teaser_group(lines, heading, TYPE_SLUGS.get(opp_type, opp_type),
-                         items, full_list_href)
+                         items, section_href_base)
 
     lines.append("---")
     social_line = _social_line_markdown(social or {})
@@ -395,27 +402,29 @@ def _html_see_all(count: int, href: str) -> str:
     )
 
 
-def _html_teaser_section(heading: str, inner_html: str) -> str:
+def _html_teaser_section(heading: str, inner_html: str, anchor: str = "") -> str:
     """Clean section heading with a thin gold underline instead of a boxed
-    nav panel or bordered card table."""
+    nav panel or bordered card table. `anchor` adds an id for jump-to nav
+    (used by the hub); the teaser leaves it blank."""
+    id_attr = f' id="{anchor}"' if anchor else ""
     return (
-        f'<h2 style="font-size:16px;color:{NAVY};margin:26px 0 12px;'
+        f'<h2{id_attr} style="font-size:16px;color:{NAVY};margin:26px 0 12px;'
         f'padding-bottom:6px;border-bottom:2px solid {GOLD};">{html.escape(heading)}</h2>'
         f'{inner_html}'
     )
 
 
 def _html_teaser_group(sections: list[str], heading: str, slug: str,
-                       items: list[sqlite3.Row], full_list_href: str) -> None:
+                       items: list[sqlite3.Row], section_href_base: str) -> None:
     """Appends one teaser section (as HTML) to `sections` in place. Skips
     entirely if `items` is empty (e.g. every job in the group turned out to
     be an internship, leaving nothing for Jobs)."""
     if not items:
         return
-    visible, count = _teaser_slice(items)
+    visible, count = _top_slice(items, TEASER_LIMIT)
     inner = "".join(_html_teaser_item(r) for r in visible)
     if count > len(visible):
-        href = f"{full_list_href}#{slug}" if full_list_href else ""
+        href = _section_href(section_href_base, slug, "html")
         if href:
             inner += _html_see_all(count, href)
         else:
@@ -429,13 +438,14 @@ def render_html(rows: list[sqlite3.Row], since_label: str,
                 intro: str = "",
                 events: list[Event] | None = None,
                 social: dict[str, str] | None = None,
-                full_list_href: str = "",
+                section_href_base: str = "",
                 internship_keywords: list[str] | None = None) -> str:
-    """The teaser: what actually gets sent. `full_list_href` is the archive
-    HTML file's name/URL - each truncated section links there; without it,
-    truncated sections just say how many more there are (no link). Responsive
-    for phone vs desktop via an embedded @media block - clients that strip
-    <style> (older Outlook) just get the inline-styled fallback layout."""
+    """The teaser: what actually gets sent. `section_href_base` is everything
+    up to '_full' in the section pages' URL; each truncated section links to
+    its own '..._full_<slug>.html' page. Without it, truncated sections just
+    say how many more there are (no link). Responsive for phone vs desktop via
+    an embedded @media block - clients that strip <style> (older Outlook) just
+    get the inline-styled fallback layout."""
     today = date.today().isoformat()
     rows = _drop_past_events(rows)
     fair, rest = _partition(rows, career_fair_orgs or [])
@@ -459,9 +469,9 @@ def render_html(rows: list[sqlite3.Row], since_label: str,
             if internships:
                 heading = JOBS_ONLY_HEADING
                 _html_teaser_group(sections, INTERNSHIPS_HEADING, "internships",
-                                   internships, full_list_href)
+                                   internships, section_href_base)
         _html_teaser_group(sections, heading, TYPE_SLUGS.get(opp_type, opp_type),
-                           items, full_list_href)
+                           items, section_href_base)
 
     intro_html = (f'<p style="font-size:14px;color:#374151;margin:16px 0 0;">{html.escape(intro)}</p>'
                   if intro else "")
@@ -505,82 +515,63 @@ def render_html(rows: list[sqlite3.Row], since_label: str,
 
 
 # --------------------------------------------------------------------------
-# ARCHIVE - everything, with category subsections, a jump-to panel, and
-# Jobs & Internships pagination. Only linked to from the teaser's "See all".
+# SHARED OUTLINE - the section plan both the hub and the section pages walk,
+# so the navigation, the "See all" links, and the actual pages can never
+# disagree about which sections exist or how many items each has.
 # --------------------------------------------------------------------------
 
 def _section_plan(rows: list[sqlite3.Row], career_fair_orgs: list[str],
                   type_categories: dict,
                   misa_events: list[Event] | None = None,
-                  job_page_size: int | None = DEFAULT_JOB_PAGE_SIZE,
                   internship_keywords: list[str] | None = None) -> tuple[list[dict], int]:
-    """Shared outline both archive renderers (and the nav) walk: a list of
-    {slug, heading, items, subs, kind, pages} dicts. Computing this ONCE
-    guarantees the navigation links and the actual sections can never
-    disagree. `pages` is `items` chunked for pagination - a single page
-    ([items]) for every section except Jobs & Internships, which is the one
-    section that regularly runs long enough to need it."""
+    """A list of {slug, heading, items, subs, kind} dicts, in display order.
+    `subs` is the category breakdown (AI/ML, Cybersecurity, ...) for sections
+    that have one, else []. Computed ONCE so nav and content stay in sync."""
     rows = _drop_past_events(rows)
     fair, rest = _partition(rows, career_fair_orgs)
     plan = []
     upcoming = _upcoming_misa_events(misa_events)
     if upcoming:
         plan.append({"slug": "events", "heading": EVENTS_HEADING,
-                     "items": upcoming, "subs": [], "kind": "events", "pages": [upcoming]})
+                     "items": upcoming, "subs": [], "kind": "events"})
     if fair:
         plan.append({"slug": "career-fair", "heading": CAREER_FAIR_HEADING,
-                     "items": fair, "subs": [], "kind": "listing", "pages": [fair]})
+                     "items": fair, "subs": [], "kind": "listing"})
     for opp_type, items in _group_by_type(rest).items():
         slug = TYPE_SLUGS.get(opp_type, opp_type)
         cats = type_categories.get(opp_type) or {}
-        page_size = job_page_size if opp_type == "job" else None
         heading = TYPE_HEADINGS.get(opp_type, opp_type.title())
         if opp_type == "job":
             internships, items = _split_internships(items, internship_keywords)
             if internships:
                 heading = JOBS_ONLY_HEADING  # no longer "& Internships" - they moved up
                 # kept flat (no category subsections): a couple dozen
-                # internships don't need them, but pagination still applies
-                # if a semester's worth piles up.
+                # internships don't need them.
                 plan.append({"slug": "internships", "heading": INTERNSHIPS_HEADING,
-                             "items": internships, "subs": [], "kind": "listing",
-                             "pages": _paginate(internships, page_size)})
+                             "items": internships, "subs": [], "kind": "listing"})
         subs = []
         if cats:
             for i, (name, cat_items) in enumerate(_group_by_category(items, cats).items()):
-                sub_slug = f"{slug}-{i}"
-                subs.append({"slug": sub_slug, "heading": name, "items": cat_items,
-                             "pages": _paginate(cat_items, page_size)})
+                subs.append({"slug": f"{slug}-{i}", "heading": name, "items": cat_items})
         if items:
             plan.append({"slug": slug, "heading": heading,
-                         "items": items, "subs": subs, "kind": "listing",
-                         "pages": _paginate(items, page_size)})
+                         "items": items, "subs": subs, "kind": "listing"})
     return plan, len(rows)
 
 
-def _md_pager(slug: str, page_num: int, total_pages: int) -> str:
-    """'◀ Prev · Page 2 of 4 · Next ▶' - anchor jumps only, no JS. Every page
-    stays in the document; this is a fast-forward, not a hide/show toggle."""
-    parts = []
-    if page_num > 1:
-        parts.append(f"[◀ Prev](#{slug}-p{page_num - 1})")
-    parts.append(f"Page {page_num} of {total_pages}")
-    if page_num < total_pages:
-        parts.append(f"[Next ▶](#{slug}-p{page_num + 1})")
-    return " · ".join(parts)
+def _plan_section(rows, career_fair_orgs, type_categories, misa_events,
+                  internship_keywords, slug):
+    """The single plan section with this slug, or None if absent."""
+    plan, _ = _section_plan(rows, career_fair_orgs, type_categories,
+                            misa_events, internship_keywords)
+    return next((s for s in plan if s["slug"] == slug), None)
 
 
-def _md_paginated_items(slug: str, pages: list[list[sqlite3.Row]]) -> list[str]:
-    """Item bullets for a (possibly multi-page) listing, with a pager and a
-    per-page anchor when there's more than one page."""
-    if len(pages) <= 1:
-        return _md_items(pages[0] if pages else [])
-    lines = []
-    for i, chunk in enumerate(pages, start=1):
-        lines += [f'<a id="{slug}-p{i}"></a>', "", _md_pager(slug, i, len(pages)), ""]
-        lines += _md_items(chunk) + [""]
-    return lines
-
+# --------------------------------------------------------------------------
+# HUB - the _full landing page. Every top-level section, but only its newest
+# HUB_LIMIT items, each with a "See all N" button that opens the section page.
+# A jump-to panel links to each section block within this page.
+# --------------------------------------------------------------------------
 
 def render_full_markdown(rows: list[sqlite3.Row], since_label: str,
                          career_fair_orgs: list[str] | None = None,
@@ -589,15 +580,14 @@ def render_full_markdown(rows: list[sqlite3.Row], since_label: str,
                          intro: str = "",
                          events: list[Event] | None = None,
                          social: dict[str, str] | None = None,
-                         job_page_size: int | None = DEFAULT_JOB_PAGE_SIZE,
+                         section_href_base: str = "",
                          internship_keywords: list[str] | None = None) -> str:
-    """The archive: every opportunity, with category subsections, a jump-to
-    panel, and pagination. Not sent directly - linked to from the teaser."""
+    """The hub: newest HUB_LIMIT items per top-level section, each linking out
+    to its own section page. Not sent directly - linked from the teaser."""
     today = date.today().isoformat()
-    # each opportunity type can have its own category scheme
     type_categories = {"job": categories or {}, "hackathon": hackathon_categories or {}}
-    plan, total = _section_plan(rows, career_fair_orgs or [], type_categories, events,
-                                job_page_size, internship_keywords)
+    plan, total = _section_plan(rows, career_fair_orgs or [], type_categories,
+                                events, internship_keywords)
     lines = [
         f"# MISA Opportunities — Full List — {today}",
         "",
@@ -605,8 +595,7 @@ def render_full_markdown(rows: list[sqlite3.Row], since_label: str,
         "",
     ]
     if intro:
-        lines.append(intro)
-        lines.append("")
+        lines += [intro, ""]
     # Jump-to navigation. Raw <a id=...> anchors work on GitHub and in
     # VS Code; markdown heading auto-anchors vary per renderer, explicit
     # ids don't.
@@ -614,19 +603,20 @@ def render_full_markdown(rows: list[sqlite3.Row], since_label: str,
         nav = " · ".join(f"[{s['heading']} ({len(s['items'])})](#{s['slug']})" for s in plan)
         lines += [f"**Jump to:** {nav}", ""]
     for section in plan:
-        lines += [f'<a id="{section["slug"]}"></a>', "", f"## {section['heading']}", ""]
+        lines += [f'<a id="{section["slug"]}"></a>', "",
+                  f"## {section['heading']} ({len(section['items'])})", ""]
         if section["kind"] == "events":
             lines += _md_event_items(section["items"]) + [""]
-        elif section["subs"]:
-            # per-section mini-nav so 100+ jobs are one click, not a scroll
-            sub_nav = " · ".join(f"[{s['heading']} ({len(s['items'])})](#{s['slug']})"
-                                 for s in section["subs"])
-            lines += [sub_nav, ""]
-            for sub in section["subs"]:
-                lines += [f'<a id="{sub["slug"]}"></a>', "", f"### {sub['heading']}", ""]
-                lines += _md_paginated_items(sub["slug"], sub["pages"]) + [""]
-        else:
-            lines += _md_paginated_items(section["slug"], section["pages"]) + [""]
+            continue
+        visible, count = _top_slice(section["items"], HUB_LIMIT)
+        lines += _md_items(visible)
+        if count > len(visible):
+            href = _section_href(section_href_base, section["slug"], "md")
+            if href:
+                lines.append(f"[See all {count} →]({href})")
+            else:
+                lines.append(f"...and {count - len(visible)} more.")
+        lines.append("")
     lines.append("---")
     social_line = _social_line_markdown(social or {})
     if social_line:
@@ -653,7 +643,7 @@ def _html_cards(items: list[sqlite3.Row], accent: str = NAVY) -> str:
 
 
 def _html_event_cards_table(events: list[Event]) -> str:
-    """Table-row variant of the event cards, used on the archive page where
+    """Table-row variant of the event cards, used on the archive pages where
     everything else is table-based too."""
     cards = []
     for event in events:
@@ -678,114 +668,40 @@ def _html_event_cards_table(events: list[Event]) -> str:
             f'{"".join(cards)}</table>')
 
 
-def _html_pager(slug: str, page_num: int, total_pages: int) -> str:
-    """'◀ Prev · Page 2 of 4 · Next ▶' - anchor jumps only, no JS. Every page
-    stays in the document; this is a fast-forward, not a hide/show toggle."""
-    link = ('<a href="#{slug}-p{n}" style="color:{color};text-decoration:none;'
-            'font-size:12px;">{label}</a>')
-    parts = []
-    if page_num > 1:
-        parts.append(link.format(slug=slug, n=page_num - 1, color=NAVY, label="◀ Prev"))
-    parts.append(f'<span style="font-size:12px;color:#6b7280;">Page {page_num} of {total_pages}</span>')
-    if page_num < total_pages:
-        parts.append(link.format(slug=slug, n=page_num + 1, color=NAVY, label="Next ▶"))
-    return '<div style="margin:8px 0;">' + " &nbsp;·&nbsp; ".join(parts) + "</div>"
-
-
-def _html_paginated_cards(slug: str, pages: list[list[sqlite3.Row]], accent: str = NAVY) -> str:
-    """Item cards for a (possibly multi-page) listing, with a pager and a
-    per-page anchor when there's more than one page."""
-    if len(pages) <= 1:
-        return _html_cards(pages[0] if pages else [], accent)
-    parts = []
-    for i, chunk in enumerate(pages, start=1):
-        parts.append(f'<a id="{slug}-p{i}"></a>')
-        parts.append(_html_pager(slug, i, len(pages)))
-        parts.append(_html_cards(chunk, accent))
-    return "".join(parts)
-
-
-def _html_section(section: dict, accent: str = NAVY) -> str:
-    """One section from the plan: anchored h2, optional anchored h3 subs."""
-    parts = [f'<h2 id="{section["slug"]}" '
-             f'style="font-size:18px;color:#111827;margin:28px 0 4px;">'
-             f'{html.escape(section["heading"])}</h2>']
-    if section["kind"] == "events":
-        parts.append(_html_event_cards_table(section["items"]))
-    elif section["subs"]:
-        for sub in section["subs"]:
-            parts.append(f'<h3 id="{sub["slug"]}" '
-                         f'style="font-size:15px;color:#374151;margin:18px 0 2px;">'
-                         f'{html.escape(sub["heading"])}</h3>')
-            parts.append(_html_paginated_cards(sub["slug"], sub["pages"], accent))
-    else:
-        parts.append(_html_paginated_cards(section["slug"], section["pages"], accent))
-    return "".join(parts)
-
-
-def _html_nav(plan: list[dict]) -> str:
-    """Jump-to panel under the header: one line per section (bold link with
-    count), followed by its category links. Anchor jumps work in most
-    desktop/webmail clients; where unsupported they render as plain text."""
+def _html_hub_nav(plan: list[dict]) -> str:
+    """Jump-to panel under the header: one link per top-level section (with
+    count) to its block on this hub page."""
     link = ('<a href="#{slug}" style="color:{color};text-decoration:none;'
-            'font-size:13px;{extra}">{label}</a>')
-    rows_html = []
-    for section in plan:
-        parts = [link.format(slug=section["slug"], color=NAVY, extra="font-weight:600;",
-                             label=f'{html.escape(section["heading"])} ({len(section["items"])})')]
-        parts += [link.format(slug=sub["slug"], color=NAVY, extra="",
-                              label=f'{html.escape(sub["heading"])} ({len(sub["items"])})')
-                  for sub in section["subs"]]
-        rows_html.append('<div style="margin:3px 0;">' + " &nbsp;·&nbsp; ".join(parts) + "</div>")
+            'font-size:13px;font-weight:600;">{label}</a>')
+    parts = [link.format(slug=s["slug"], color=NAVY,
+                         label=f'{html.escape(s["heading"])} ({len(s["items"])})')
+             for s in plan]
     return ('<table role="presentation" width="100%" cellpadding="0" cellspacing="0">'
             '<tr><td style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:6px;'
             'padding:12px 16px;margin-top:16px;">'
             '<div style="font-size:12px;color:#6b7280;text-transform:uppercase;'
             'letter-spacing:0.05em;margin-bottom:6px;">Jump to</div>'
-            + "".join(rows_html) + "</td></tr></table>")
+            '<div style="margin:3px 0;">' + " &nbsp;·&nbsp; ".join(parts)
+            + "</div></td></tr></table>")
 
 
-def render_full_html(rows: list[sqlite3.Row], since_label: str,
-                     career_fair_orgs: list[str] | None = None,
-                     categories: dict | None = None,
-                     hackathon_categories: dict | None = None,
-                     intro: str = "",
-                     events: list[Event] | None = None,
-                     social: dict[str, str] | None = None,
-                     job_page_size: int | None = DEFAULT_JOB_PAGE_SIZE,
-                     internship_keywords: list[str] | None = None) -> str:
-    """The archive: every opportunity, with category subsections, a jump-to
-    panel, and pagination. Not sent directly - linked to from the teaser."""
-    today = date.today().isoformat()
-    type_categories = {"job": categories or {}, "hackathon": hackathon_categories or {}}
-    plan, total = _section_plan(rows, career_fair_orgs or [], type_categories, events,
-                                job_page_size, internship_keywords)
-    sections = []
-    if plan:
-        sections.append(_html_nav(plan))
-    for section in plan:
-        # WVU gold accent for employers members can meet in person
-        accent = GOLD if section["slug"] == "career-fair" else NAVY
-        sections.append(_html_section(section, accent))
-
-    intro_html = (f'<p style="font-size:14px;color:#374151;margin:16px 0 0;">{html.escape(intro)}</p>'
-                  if intro else "")
+def _html_shell(subtitle: str, meta_line: str, inner_html: str,
+                social: dict[str, str], width: int = 600) -> str:
+    """The navy-banded white card that wraps the hub and section pages."""
     footer_social = _social_footer_html(social or {})
-
     return f"""<!doctype html>
-<html><head><meta charset="utf-8"><title>MISA Opportunities — Full List — {today}</title></head>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>MISA Opportunities — {html.escape(subtitle)}</title></head>
 <body style="margin:0;background:#f3f4f6;font-family:Segoe UI,Arial,sans-serif;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:24px 12px;">
-<table role="presentation" width="600" cellpadding="0" cellspacing="0"
-       style="background:#ffffff;border-radius:8px;overflow:hidden;">
+<table role="presentation" width="{width}" cellpadding="0" cellspacing="0"
+       style="background:#ffffff;border-radius:8px;overflow:hidden;max-width:{width}px;">
 <tr><td style="background:{NAVY};padding:24px 32px;">
 <span style="font-size:28px;font-weight:800;color:#ffffff;letter-spacing:0.5px;">M<span style="color:{GOLD};">i</span>SA</span>
-<div style="font-size:13px;color:{GOLD};font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-top:2px;">Full Opportunity List</div>
-<p style="font-size:13px;color:#cbd5e1;margin:8px 0 0;">{today} — {total} new opportunities in the last {since_label}</p>
+<div style="font-size:13px;color:{GOLD};font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-top:2px;">{html.escape(subtitle)}</div>
+<p style="font-size:13px;color:#cbd5e1;margin:8px 0 0;">{meta_line}</p>
 </td></tr>
-<tr><td style="padding:0 32px 32px;">
-{intro_html}
-{"".join(sections)}
+<tr><td style="padding:16px 32px 32px;">
+{inner_html}
 </td></tr>
 <tr><td style="background:{NAVY};padding:20px 32px;">
 {footer_social}
@@ -796,6 +712,152 @@ def render_full_html(rows: list[sqlite3.Row], since_label: str,
 </body></html>"""
 
 
+def render_full_html(rows: list[sqlite3.Row], since_label: str,
+                     career_fair_orgs: list[str] | None = None,
+                     categories: dict | None = None,
+                     hackathon_categories: dict | None = None,
+                     intro: str = "",
+                     events: list[Event] | None = None,
+                     social: dict[str, str] | None = None,
+                     section_href_base: str = "",
+                     internship_keywords: list[str] | None = None) -> str:
+    """The hub: newest HUB_LIMIT items per top-level section, each linking out
+    to its own section page. Not sent directly - linked from the teaser."""
+    today = date.today().isoformat()
+    type_categories = {"job": categories or {}, "hackathon": hackathon_categories or {}}
+    plan, total = _section_plan(rows, career_fair_orgs or [], type_categories,
+                                events, internship_keywords)
+    intro_html = (f'<p style="font-size:14px;color:#374151;margin:16px 0 0;">{html.escape(intro)}</p>'
+                  if intro else "")
+    blocks = [intro_html]
+    if plan:
+        blocks.append(_html_hub_nav(plan))
+    for section in plan:
+        accent = GOLD if section["slug"] == "career-fair" else NAVY
+        heading = f'{section["heading"]} ({len(section["items"])})'
+        if section["kind"] == "events":
+            inner = _html_event_cards_table(section["items"])
+        else:
+            visible, count = _top_slice(section["items"], HUB_LIMIT)
+            inner = "".join(_html_teaser_item(r, accent) for r in visible)
+            if count > len(visible):
+                href = _section_href(section_href_base, section["slug"], "html")
+                if href:
+                    inner += _html_see_all(count, href)
+                else:
+                    inner += (f'<div style="font-size:13px;color:#6b7280;">'
+                              f'...and {count - len(visible)} more.</div>')
+        blocks.append(_html_teaser_section(heading, inner, anchor=section["slug"]))
+
+    meta = f"{today} — {total} new opportunities in the last {since_label}"
+    return _html_shell("Full Opportunity List", meta, "".join(blocks), social or {})
+
+
+# --------------------------------------------------------------------------
+# SECTION PAGE - one top-level section in full. Category subsections intact,
+# no pagination: this is the "See all" destination for both teaser and hub.
+# --------------------------------------------------------------------------
+
+def _md_section_body(section: dict) -> list[str]:
+    """The full listing for one section (no top-level heading; the caller's
+    title/header already names it). Category subsections rendered in full."""
+    if section["kind"] == "events":
+        return _md_event_items(section["items"])
+    if section["subs"]:
+        lines = []
+        sub_nav = " · ".join(f"[{s['heading']} ({len(s['items'])})](#{s['slug']})"
+                             for s in section["subs"])
+        lines += [sub_nav, ""]
+        for sub in section["subs"]:
+            lines += [f'<a id="{sub["slug"]}"></a>', "", f"### {sub['heading']}", ""]
+            lines += _md_items(sub["items"]) + [""]
+        return lines
+    return _md_items(section["items"])
+
+
+def _html_section_body(section: dict, accent: str = NAVY) -> str:
+    """The full listing for one section as HTML (no top-level heading)."""
+    if section["kind"] == "events":
+        return _html_event_cards_table(section["items"])
+    if section["subs"]:
+        parts = []
+        for sub in section["subs"]:
+            parts.append(f'<h3 id="{sub["slug"]}" '
+                         f'style="font-size:15px;color:#374151;margin:18px 0 2px;">'
+                         f'{html.escape(sub["heading"])}</h3>')
+            parts.append(_html_cards(sub["items"], accent))
+        return "".join(parts)
+    return _html_cards(section["items"], accent)
+
+
+def render_section_markdown(rows: list[sqlite3.Row], since_label: str, slug: str,
+                            career_fair_orgs: list[str] | None = None,
+                            categories: dict | None = None,
+                            hackathon_categories: dict | None = None,
+                            events: list[Event] | None = None,
+                            social: dict[str, str] | None = None,
+                            internship_keywords: list[str] | None = None,
+                            hub_href: str = "") -> str:
+    """One section's own page: every item in it, category subsections intact.
+    `hub_href` is a back-link to the hub. Returns a short placeholder page if
+    the section turned out to be empty (nothing matched `slug`)."""
+    today = date.today().isoformat()
+    type_categories = {"job": categories or {}, "hackathon": hackathon_categories or {}}
+    section = _plan_section(rows, career_fair_orgs or [], type_categories,
+                            events, internship_keywords, slug)
+    back = f"[← Back to all opportunities]({hub_href})" if hub_href else ""
+    if not section:
+        lines = [f"# MISA Opportunities — {today}", ""]
+        if back:
+            lines += [back, ""]
+        lines.append("*Nothing in this section right now.*")
+        return "\n".join(lines)
+    lines = [
+        f"# {section['heading']} — {today}",
+        "",
+        f"*{len(section['items'])} opportunities, found in the last {since_label}.*",
+        "",
+    ]
+    if back:
+        lines += [back, ""]
+    lines += _md_section_body(section)
+    lines.append("---")
+    social_line = _social_line_markdown(social or {})
+    if social_line:
+        lines.append(social_line)
+    lines.append("*Generated automatically by the MISA opportunity pipeline.*")
+    return "\n".join(lines)
+
+
+def render_section_html(rows: list[sqlite3.Row], since_label: str, slug: str,
+                        career_fair_orgs: list[str] | None = None,
+                        categories: dict | None = None,
+                        hackathon_categories: dict | None = None,
+                        events: list[Event] | None = None,
+                        social: dict[str, str] | None = None,
+                        internship_keywords: list[str] | None = None,
+                        hub_href: str = "") -> str:
+    """One section's own page as HTML: every item, subsections intact."""
+    today = date.today().isoformat()
+    type_categories = {"job": categories or {}, "hackathon": hackathon_categories or {}}
+    section = _plan_section(rows, career_fair_orgs or [], type_categories,
+                            events, internship_keywords, slug)
+    back = ""
+    if hub_href:
+        back = (f'<p style="margin:16px 0 0;"><a href="{html.escape(hub_href, quote=True)}" '
+                f'style="font-size:13px;font-weight:600;color:{NAVY};text-decoration:none;">'
+                f'← Back to all opportunities</a></p>')
+    if not section:
+        return _html_shell("Opportunities", today,
+                           back + '<p style="font-size:14px;color:#374151;">'
+                           'Nothing in this section right now.</p>', social or {})
+    accent = GOLD if section["slug"] == "career-fair" else NAVY
+    meta = (f"{today} — {len(section['items'])} opportunities "
+            f"in the last {since_label}")
+    inner = back + _html_section_body(section, accent)
+    return _html_shell(section["heading"], meta, inner, social or {})
+
+
 def write_newsletter(rows: list[sqlite3.Row], output_dir: str | Path,
                      since_label: str,
                      career_fair_orgs: list[str] | None = None,
@@ -804,45 +866,60 @@ def write_newsletter(rows: list[sqlite3.Row], output_dir: str | Path,
                      intro: str = "",
                      events: list[Event] | None = None,
                      social: dict[str, str] | None = None,
-                     job_page_size: int | None = DEFAULT_JOB_PAGE_SIZE,
                      archive_base_url: str = "",
                      internship_keywords: list[str] | None = None) -> tuple[Path, Path]:
-    """Writes the teaser (what you actually send) plus a companion "_full"
-    archive page with everything, and returns the teaser's (md_path,
-    html_path). `archive_base_url` (e.g. a GitHub Pages URL) makes the
-    teaser's "See all" links real absolute URLs; without it, they fall back
-    to a relative filename that only resolves when both files travel
-    together (e.g. attached side by side, or opened from the same folder)."""
+    """Writes the teaser (what you actually send), a companion "_full" hub
+    page, and one "_full_<slug>" page per top-level section, then returns the
+    teaser's (md_path, html_path). `archive_base_url` (e.g. a GitHub Pages
+    URL) makes the "See all" links real absolute URLs; without it, they fall
+    back to relative filenames that only resolve when the files travel
+    together (opened from the same folder)."""
     out = Path(output_dir)
     out.mkdir(parents=True, exist_ok=True)
     stamp = date.today().isoformat()
     md_path = out / f"newsletter_{stamp}.md"
     html_path = out / f"newsletter_{stamp}.html"
-    full_md_path = out / f"newsletter_{stamp}_full.md"
-    full_html_path = out / f"newsletter_{stamp}_full.html"
 
-    full_md_path.write_text(
-        render_full_markdown(rows, since_label, career_fair_orgs, categories,
-                             hackathon_categories, intro, events, social, job_page_size,
-                             internship_keywords),
-        encoding="utf-8",
-    )
-    full_html_path.write_text(
-        render_full_html(rows, since_label, career_fair_orgs, categories,
-                         hackathon_categories, intro, events, social, job_page_size,
-                         internship_keywords),
-        encoding="utf-8",
-    )
-    md_href = f"{archive_base_url}/{full_md_path.name}" if archive_base_url else full_md_path.name
-    html_href = f"{archive_base_url}/{full_html_path.name}" if archive_base_url else full_html_path.name
+    # Everything up to '_full', shared by the hub file and every section page.
+    # Relative filename by default; absolute Pages URL when configured.
+    stem = f"newsletter_{stamp}_full"
+    base = f"{archive_base_url}/{stem}" if archive_base_url else stem
+
+    kw = dict(career_fair_orgs=career_fair_orgs, categories=categories,
+              hackathon_categories=hackathon_categories, events=events,
+              social=social, internship_keywords=internship_keywords)
+
+    # Hub (_full) - links each section's "See all" out via `base`.
+    (out / f"{stem}.md").write_text(
+        render_full_markdown(rows, since_label, intro=intro, section_href_base=base, **kw),
+        encoding="utf-8")
+    (out / f"{stem}.html").write_text(
+        render_full_html(rows, since_label, intro=intro, section_href_base=base, **kw),
+        encoding="utf-8")
+
+    # One page per top-level section (events shown in full on the hub, so no
+    # page of their own). Each links back to the hub.
+    type_categories = {"job": categories or {}, "hackathon": hackathon_categories or {}}
+    plan, _ = _section_plan(rows, career_fair_orgs or [], type_categories,
+                            events, internship_keywords)
+    for section in plan:
+        if section["kind"] == "events":
+            continue
+        slug = section["slug"]
+        (out / f"{stem}_{slug}.md").write_text(
+            render_section_markdown(rows, since_label, slug, hub_href=f"{base}.md", **kw),
+            encoding="utf-8")
+        (out / f"{stem}_{slug}.html").write_text(
+            render_section_html(rows, since_label, slug, hub_href=f"{base}.html", **kw),
+            encoding="utf-8")
+
+    # Teaser - its "See all" links point straight at the section pages too.
     md_path.write_text(
         render_markdown(rows, since_label, career_fair_orgs, intro, events, social,
-                        full_list_href=md_href, internship_keywords=internship_keywords),
-        encoding="utf-8",
-    )
+                        section_href_base=base, internship_keywords=internship_keywords),
+        encoding="utf-8")
     html_path.write_text(
         render_html(rows, since_label, career_fair_orgs, intro, events, social,
-                   full_list_href=html_href, internship_keywords=internship_keywords),
-        encoding="utf-8",
-    )
+                    section_href_base=base, internship_keywords=internship_keywords),
+        encoding="utf-8")
     return md_path, html_path

@@ -7,7 +7,8 @@ Markdown + HTML newsletter of what's new.
 
 ## The newsletter
 
-`newsletter --since 7d` writes **two pairs of files**:
+`newsletter --since 7d` writes **three kinds of file** (each in both `.md`
+and `.html`):
 
 - `newsletter_<date>.{md,html}` — the **teaser**. This is what you actually
   send: a navy/gold branded header, a welcome blurb, upcoming MISA events,
@@ -16,17 +17,20 @@ Markdown + HTML newsletter of what's new.
   intern, co-op, trainee, summer analyst, ...), then 💼 Jobs / 🚀 Hackathons /
   🎤 Conferences & Events, each showing its newest 8 items — deduped by
   (org, title) so the same posting cross-listed across five counties doesn't
-  burn most of the section on one employer. No nav panel, no pagination;
-  sections with more than 8 items end with a "See all N →" link out to the
-  archive page.
-- `newsletter_<date>_full.{md,html}` — the **archive**. Every opportunity,
-  with 💼 Jobs further grouped into topic categories (`categories:` in the
-  config: AI/ML, Cybersecurity, Data & Analytics, Accounting & Finance,
-  Business & Consulting, Software & IT, Other) and 🚀 Hackathons grouped by
-  `hackathon_categories:` (In-Person first, then themes), a "Jump to" nav
-  panel, and Jobs & Internships pagination (15/page, "◀ Prev · Page 2 of 4 ·
-  Next ▶", anchor links only). This is what the teaser's "See all" links
-  point at — nobody gets this file directly.
+  burn most of the section on one employer. No nav panel; sections with more
+  than 8 items end with a "See all N →" link out to that section's own page.
+- `newsletter_<date>_full.{md,html}` — the **hub**: a browse-everything
+  landing page. Each top-level section previews its newest 10 items with a
+  "See all N →" button, plus a "Jump to" panel linking to each section block.
+- `newsletter_<date>_full_<slug>.{md,html}` — one **section page** per
+  top-level section (`_full_jobs`, `_full_internships`, `_full_hackathons`,
+  `_full_conferences`, `_full_career-fair`). The complete list for that one
+  section — no pagination — with 💼 Jobs grouped into topic categories
+  (`categories:` in the config: AI/ML, Cybersecurity, Data & Analytics,
+  Accounting & Finance, Business & Consulting, Software & IT, Other) and
+  🚀 Hackathons grouped by `hackathon_categories:` (In-Person first, then
+  themes). This is what the teaser's and hub's "See all" buttons open; each
+  links back to the hub. Nobody gets these files directly.
 
 Hackathons only show while ≥ 5 days remain before the submission deadline
 (`MIN_LEAD_DAYS` in `pipeline/newsletter.py`); past conferences are dropped
@@ -192,7 +196,7 @@ pytest
 Tests parse saved fixtures in `tests/fixtures/` — they never hit live sites.
 Every Python module carries LEARNING NOTES comments explaining the concepts
 it uses (dataclasses, regex word boundaries, SQL injection, polite scraping,
-pagination, email HTML, ...).
+email HTML, ...).
 
 ## Politeness
 
@@ -215,6 +219,24 @@ pagination, email HTML, ...).
 
 ## Roadmap
 
-- Optional: direct email sending (Resend/SendGrid) instead of files-only.
-- Possible: more nearby campus calendars (CMU, Ohio State — likely Localist),
-  newsletter branding (navy/gold MISA layout — in progress separately).
+**Next steps (the big ones):**
+
+- **Actually send the newsletter.** Today it's files-only — you paste the
+  teaser HTML into Mailchimp/Gmail by hand each week. Wire up direct sending
+  (e.g. Resend/SendGrid, or a Mailchimp audience) so the weekly CI run mails
+  the teaser to the MISA list automatically instead of just committing files.
+- **Link it into the MISA website.** Publish the hub + section pages (already
+  written to `docs/` and served by GitHub Pages) and surface them from
+  misa.wvu.edu — e.g. an "Opportunities" page that embeds or links the latest
+  `newsletter_<date>_full.html`, or a permalink like `/opportunities` that
+  always points at the newest issue.
+- **Pull "Upcoming MISA Events" from a shared Google Calendar.** Today the
+  events are hand-entered in the `newsletter:` block of `sources.yaml` each
+  week. Instead, read them from a shared MISA Google Calendar (public iCal
+  feed, or the Calendar API) so officers just add events to the calendar and
+  the newsletter picks them up automatically — the same past-event filtering
+  already applies.
+
+**Nice-to-haves:**
+
+- More nearby campus calendars (CMU, Ohio State — likely Localist).

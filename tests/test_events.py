@@ -7,7 +7,7 @@ from pipeline.config import Config
 from pipeline.db import connect, insert_new, list_since
 from pipeline.filters import filter_relevant
 from pipeline.models import Opportunity
-from pipeline.newsletter import render_full_markdown, render_markdown
+from pipeline.newsletter import render_markdown, render_section_markdown
 
 
 def test_devpost_parse(fixture, make_source):
@@ -105,18 +105,20 @@ def test_hackathon_categories_independent_of_job_categories(tmp_path):
                     url="https://e.com/3"),
     ])
     rows = list_since(conn, "2000-01-01T00:00:00+00:00")
-    md = render_full_markdown(
-        rows, "7d",
-        categories={"🤖 AI Jobs": ["ai"]},
-        hackathon_categories={"🏟 In-Person": ["in-person"], "🤖 AI Hacks": ["machine learning/ai"]},
-    )
+    kw = dict(categories={"🤖 AI Jobs": ["ai"]},
+              hackathon_categories={"🏟 In-Person": ["in-person"],
+                                    "🤖 AI Hacks": ["machine learning/ai"]})
+    # category subsections live on each section's own page, grouped by that
+    # type's OWN scheme - so check the two pages separately
+    hacks = render_section_markdown(rows, "7d", "hackathons", **kw)
+    jobs = render_section_markdown(rows, "7d", "jobs", **kw)
 
-    # each type is grouped by its OWN scheme
-    assert md.index("### 🏟 In-Person") < md.index("HackWV")
-    assert md.index("### 🤖 AI Hacks") < md.index("Agent Jam")
-    assert "### 🤖 AI Jobs" in md
-    # job categories never appear inside the hackathon section and vice versa
-    assert "AI Jobs" not in md[md.index("## 🚀"):]
+    assert hacks.index("### 🏟 In-Person") < hacks.index("HackWV")
+    assert hacks.index("### 🤖 AI Hacks") < hacks.index("Agent Jam")
+    assert "### 🤖 AI Jobs" in jobs
+    # neither scheme leaks into the other type's page
+    assert "AI Jobs" not in hacks
+    assert "In-Person" not in jobs
     conn.close()
 
 

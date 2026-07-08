@@ -1,6 +1,6 @@
 # MISA Opportunities Newsletter — 2026-07-08
 
-*190 new opportunities this 7d.*
+*190 new opportunities this 30d.*
 
 Welcome back, Mountaineers! Here's what's new this week - internships, hackathons, and MISA happenings all in one place.
 
@@ -33,7 +33,7 @@ Welcome back, Mountaineers! Here's what's new this week - internships, hackathon
   CVS Health · Martinsburg, Berkeley County · 2026-06-24 · Healthcare & Nursing Jobs
 - **[Pharmacy Intern](https://www.adzuna.com/details/5772423563)**
   Walgreens · Morgantown, Monongalia County · 2026-06-22 · Healthcare & Nursing Jobs
-[See all 14 →](https://kornelkaaaa.github.io/scrape_job_postings_misa/newsletter_2026-07-08_full.md#internships)
+[See all 14 →](https://kornelkaaaa.github.io/scrape_job_postings_misa/newsletter_2026-07-08_full_internships.md)
 
 ## 💼 Jobs (159)
 
@@ -53,7 +53,7 @@ Welcome back, Mountaineers! Here's what's new this week - internships, hackathon
   Veterans Health Administration · Martinsburg, West Virginia · 2026-07-08 · Management And Program Analysis
 - **[Vidalytics: AI Automation Engineer, In-House MarTech Video SaaS](https://weworkremotely.com/remote-jobs/vidalytics-ai-automation-engineer-in-house-martech-video-saas)**
   WeWorkRemotely · Anywhere in the World · 2026-07-07 · Back-End Programming
-[See all 159 →](https://kornelkaaaa.github.io/scrape_job_postings_misa/newsletter_2026-07-08_full.md#jobs)
+[See all 159 →](https://kornelkaaaa.github.io/scrape_job_postings_misa/newsletter_2026-07-08_full_jobs.md)
 
 ## 🚀 Hackathons (16)
 
@@ -73,7 +73,7 @@ Welcome back, Mountaineers! Here's what's new this week - internships, hackathon
   XPRIZE · Online · 2026-08-17 · Free, Machine Learning/AI, Education, Productivity
 - **[Arm Create: AI Optimization Challenge](https://arm-ai-optimization-challenge.devpost.com/)**
   arm · Online · 2026-08-14 · Free, Machine Learning/AI
-[See all 16 →](https://kornelkaaaa.github.io/scrape_job_postings_misa/newsletter_2026-07-08_full.md#hackathons)
+[See all 16 →](https://kornelkaaaa.github.io/scrape_job_postings_misa/newsletter_2026-07-08_full_hackathons.md)
 
 ## 🎤 Conferences & Events (1)
 
