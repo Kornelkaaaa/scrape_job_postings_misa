@@ -22,6 +22,14 @@ def test_is_career_fair_org_partial_match():
     assert not is_career_fair_org("", ["Leidos"])
 
 
+def test_short_names_match_whole_words_only():
+    assert is_career_fair_org("EY", ["EY"])
+    assert is_career_fair_org("EY LLP", ["EY"])
+    assert not is_career_fair_org("Keyence", ["EY"])
+    assert not is_career_fair_org("Harvey Industries", ["EY"])
+    assert is_career_fair_org("Federal Bureau of Investigation", ["Federal Bureau of Investigation"])
+
+
 def test_career_fair_section_in_markdown(tmp_path):
     rows = seed(tmp_path)
     md = render_markdown(rows, "7d", career_fair_orgs=["Leidos"])

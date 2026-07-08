@@ -45,6 +45,11 @@ filters:
     - analyst
     - consultant
     - consulting
+    - accountant
+    - accounting
+    - audit
+    - auditor
+    - tax
     - ai
     - artificial intelligence
     - machine learning
@@ -55,15 +60,30 @@ filters:
     - director
     - lead
     - manager
+    - supervisor
 
 # Employers attending WVU career fairs. Any posting whose company matches a
 # name here (case-insensitive, partial names fine) is pulled into a special
 # "WVU Career Fair Employers" section at the top of the newsletter and starred
 # in `list-new`. Paste names below, one per line.
 career_fair_orgs:
-  # - Leidos
-  # - Northrop Grumman
-  # - WVU Medicine
+  # WVU accounting/consulting career fair - Sep 9, 2026
+  - Alvarez & Marsal
+  - Brown Edwards
+  - Calibre CPA
+  - CohnReznick
+  - EY
+  - Ernst & Young
+  - Federal Bureau of Investigation
+  - FBI
+  - Forvis Mazars
+  - Forvis
+  - Gray Griffith & Mays
+  - Gray, Griffith & Mays
+  - Perry & Associates
+  - Suttle & Stalnaker
+  - Public Service Commission of West Virginia
+  - United Bank
 
 sources:
   # ---- Greenhouse boards (company career sites backed by Greenhouse) ------
@@ -258,6 +278,37 @@ sources:
     type: adzuna
     opportunity_type: job
     options: {country: us, what: intern, where: West Virginia, max_days_old: 30}
+
+  - name: Adzuna WV accounting
+    type: adzuna
+    opportunity_type: job
+    options: {country: us, what: accounting, where: West Virginia, max_days_old: 30}
+
+  # Career-fair firms without public feeds (Forvis Mazars' Greenhouse board is
+  # Europe-only; A&M/CohnReznick/United Bank portals are JS or bot-blocked).
+  # FBI CJIS posts on fbijobs.gov (login-only SuccessFactors) - check manually.
+  - name: Adzuna Forvis Mazars
+    type: adzuna
+    opportunity_type: job
+    options: {country: us, company: Forvis, max_days_old: 30}   # "Forvis Mazars" 400s; "Forvis" works
+
+  # Alvarez & Marsal: no company-name variant is queryable in Adzuna and their
+  # own careers site bot-blocks - postings only reachable manually.
+  - name: Adzuna Alvarez & Marsal
+    type: adzuna
+    enabled: false
+    opportunity_type: job
+    options: {country: us, company: Alvarez & Marsal, max_days_old: 30}
+
+  - name: Adzuna CohnReznick
+    type: adzuna
+    opportunity_type: job
+    options: {country: us, company: CohnReznick, max_days_old: 30}
+
+  - name: Adzuna United Bank
+    type: adzuna
+    opportunity_type: job
+    options: {country: us, company: United Bank, where: West Virginia, max_days_old: 30}
 
   # Not automatable (verified 2026-07-07): Bravo Consulting embeds an Angular
   # AgileATS widget, Trilogy Innovations hires via careers@ email, NextGen

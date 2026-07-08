@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import html
 import json
+import re
 import sqlite3
 from datetime import date
 from pathlib import Path
@@ -21,13 +22,15 @@ CAREER_FAIR_HEADING = "🎓 WVU Career Fair Employers"
 
 
 def is_career_fair_org(org: str, career_fair_orgs: list[str]) -> bool:
-    """Case-insensitive containment either way, so a config entry 'Deloitte'
-    matches org 'Deloitte Consulting LLP' and 'Leidos Inc.' matches 'Leidos'."""
-    org_l = org.lower().strip()
-    if not org_l:
+    """Whole-word match either way, so a config entry 'Deloitte' matches org
+    'Deloitte Consulting LLP' and 'Leidos Inc.' matches 'Leidos' - but a short
+    entry like 'EY' can't match inside unrelated names (Keyence, Harvey)."""
+    org_c = org.strip()
+    if not org_c:
         return False
     return any(
-        name.lower() in org_l or org_l in name.lower()
+        re.search(rf"\b{re.escape(name.strip())}\b", org_c, re.I)
+        or re.search(rf"\b{re.escape(org_c)}\b", name, re.I)
         for name in career_fair_orgs if name.strip()
     )
 

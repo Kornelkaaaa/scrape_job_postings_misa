@@ -30,7 +30,9 @@
       "Bash(sed -i '/^  - WVU Medicine$/d' sources.yaml)",
       "Bash(git commit -q -m 'Add career-fair employer highlighting in newsletter *)",
       "Bash(python scraper.py run --source OpenAI)",
-      "Bash(git commit -q -m 'Fix json_api adapter dumping raw items into unmapped fields *)"
+      "Bash(git commit -q -m 'Fix json_api adapter dumping raw items into unmapped fields *)",
+      "Bash(python scraper.py run --source \"Adzuna Forvis Mazars\")",
+      "Bash(git commit -q -m 'Add WVU accounting career fair employers \\(Sep 9\\) *)"
     ]
   }
 }
