@@ -1,6 +1,6 @@
 # MISA Opportunities Newsletter — 2026-07-08
 
-*191 new opportunities found in the last 7d.*
+*222 new opportunities found in the last 7d.*
 
 ## 💼 Jobs & Internships
 
@@ -365,14 +365,10 @@
 
 - **[Brainwave 2026](https://brainwaves.devpost.com/)**
   ACT House · Online · 2026-08-09 · AR/VR, Blockchain, Communication
-- **[Africa Deep Tech Challenge 2026](https://adtc-2026.devpost.com/)**
-  Africa Deep Tech Foundation · Online · 2026-08-25 · Machine Learning/AI, Productivity
 - **[Global AI Hackathon Series with Qwen Cloud](https://qwencloud-hackathon.devpost.com/)**
   Alibaba Cloud · Online · 2026-07-20 · Machine Learning/AI, Design, Productivity
 - **[Backblaze Generative Media Hackathon: Build with Genblaze on B2](https://backblaze-generative-media.devpost.com/)**
   Backblaze · Online · 2026-08-03 · Machine Learning/AI, Music/Art, Voice skills
-- **[India High School Exoplanet Data Challenge](https://celesta-exoplanet-challenge.devpost.com/)**
-  Celesta · Online · 2026-07-31 · Beginner Friendly, Low/No Code, Machine Learning/AI
 - **[CockroachDB × AWS Hackathon - Build with Agentic Memory](https://cockroachdb-ai.devpost.com/)**
   Cockroach Labs · Online · 2026-08-18 · Machine Learning/AI, Databases, DevOps
 - **[Build with DataHub: The Agent Hackathon](https://datahub.devpost.com/)**
@@ -381,20 +377,86 @@
   Dialogate · Online · 2026-09-05 · IoT, Machine Learning/AI, Beginner Friendly
 - **[Hoobit Hacks 2026](https://hoobit-hacks-2026.devpost.com/)**
   Hoobit · Online · 2026-07-18 · Beginner Friendly, Machine Learning/AI, Social Good
-- **[Kaya AI India Hackathon 2026](https://kaya-ai-iit-hackathon-2026.devpost.com/)**
-  Kaya · Online · 2026-07-10 · IoT, Machine Learning/AI, Enterprise
 - **[LUMA Hackathon (July 3rd - 10th)](https://luma-hackathon-500.devpost.com/)**
   LUMA · Online · 2026-07-10 · Beginner Friendly, Machine Learning/AI, Open Ended
+- **[LA Hacks 27](https://lahacks.com)**
+  MLH · Los Angeles, California, US · 2027-04-16 · In-Person
+- **[WEHack](https://www.wehackutd.com/)**
+  MLH · Richardson, TX, US · 2027-04-10 · In-Person
+- **[HackKU27](https://www.hackku.org/)**
+  MLH · Lawrence, Kansas, US · 2027-04-09 · In-Person
+- **[Diamondhacks](https://diamondhacks.acmucsd.com/)**
+  MLH · La Jolla, California , US · 2027-04-04 · In-Person
 - **[Kent Hack Enough](https://khe.io/)**
   MLH · Kent, Ohio, US · 2027-03-06 · In-Person
+- **[HenHacks](https://www.henhackshackathon.com/)**
+  MLH · Newark, Delaware, US · 2027-03-06 · In-Person
 - **[RevolutionUC](https://www.revolutionuc.com/)**
   MLH · Cincinnati, Ohio, US · 2027-02-27 · In-Person
+- **[WiCHacks](https://wichacks.io/)**
+  MLH · Rochester, New York, US · 2027-02-27 · In-Person
+- **[Hacklytics 2027](https://hacklytics2027.web.app/)**
+  MLH · Atlanta, GA, US · 2027-02-26 · In-Person
+- **[HackIllinois](https://www.hackillinois.org/)**
+  MLH · Urbana, Illinois, US · 2027-02-26 · In-Person
+- **[CUhackit](https://cuhack.it/)**
+  MLH · Clemson, SC, US · 2027-02-20 · In-Person
+- **[SF Hacks](https://sfhacks.io)**
+  MLH · San Francisco, CA, US · 2027-02-19 · In-Person
+- **[SpartaHack](https://events.mlh.com/events/14442-spartahack-12)**
+  MLH · East Lansing, Michigan, US · 2027-02-06 · In-Person
+- **[InnovateHer](https://innovateherhacks.org/)**
+  MLH · West Lafayette, Indiana, US · 2027-02-06 · In-Person
+- **[Hack_NCState](https://hackncstate.org/)**
+  MLH · Raleigh, North Carolina, US · 2027-02-06 · In-Person
+- **[UGAHacks](https://ugahacks.com/)**
+  MLH · Athens , Georgia, US · 2027-02-05 · In-Person
+- **[Hack@Brown 2027](https://hackatbrown.org/)**
+  MLH · Providence, RI, US · 2027-02-05 · In-Person
 - **[Hoya Hacks](https://www.hoyahacks.com/)**
   MLH · Washington, DC, US · 2027-01-22 · In-Person
+- **[HackUMass](https://www.hackumass.com/)**
+  MLH · Amherst, MA, US · 2026-11-13 · In-Person
+- **[HackRPI 2026](https://hackrpi.com/)**
+  MLH · Troy, New York, US · 2026-11-07 · In-Person
+- **[MakeCU](https://v0-curc-makecu.vercel.app/)**
+  MLH · New York, New York, US · 2026-11-07 · In-Person
+- **[HackTX 26](https://hacktx.com/)**
+  MLH · Austin, TX, US · 2026-10-17 · In-Person
+- **[SwampHacks XII](https://swamphacks.com/)**
+  MLH · Gainesville, Florida, US · 2026-10-16 · In-Person
+- **[CodeRED Orion](https://uhcode.red/)**
+  MLH · Houston, Texas, US · 2026-10-10 · In-Person
+- **[SBUHacks](https://hack.sbcs.io/)**
+  MLH · Stony Brook, New York, US · 2026-10-09 · In-Person
+- **[HackNC](https://hacknc.com/)**
+  MLH · Chapel Hill, North Carolina, US · 2026-10-09 · In-Person
+- **[Knight Hacks IX](https://2026.knighthacks.org/)**
+  MLH · Orlando, Florida, US · 2026-10-09 · In-Person
+- **[Hack Dearborn 5: Conjure Reality](https://www.hackdearborn.org/)**
+  MLH · Dearborn, Michigan, US · 2026-10-03 · In-Person
+- **[Rowdy Hacks](https://rowdyhacks.org)**
+  MLH · San Antonio, Texas, US · 2026-10-03 · In-Person
+- **[GirlHacks](https://www.njitgirlhacks.com/)**
+  MLH · Newark, NJ, US · 2026-10-03 · In-Person
+- **[MHacks](https://www.mhacks.org/)**
+  MLH · Ann Arbor, MI, US · 2026-10-03 · In-Person
+- **[BigRed//Hacks 2026](https://www.bigredhacks.com/)**
+  MLH · Ithaca, New York, US · 2026-10-02 · In-Person
+- **[DivHacks](https://www.columbiadivhacks.org/)**
+  MLH · New York, NY, US · 2026-09-26 · In-Person
+- **[hackUMBC](https://hackumbc.tech/)**
+  MLH · Baltimore, MD, US · 2026-09-26 · In-Person
 - **[VTHacks 14](https://vthacks.com/)**
   MLH · Blacksburg, Virginia, US · 2026-09-25 · In-Person
+- **[HackGT 13](http://hack.gt/)**
+  MLH · Atlanta, GA, US · 2026-09-25 · In-Person
+- **[ShellHacks](https://shellhacks.net/)**
+  MLH · Miami, Florida, US · 2026-09-25 · In-Person
 - **[HopHacks](https://www.hophacks.com/)**
   MLH · Baltimore, Maryland, US · 2026-09-18 · In-Person
+- **[HackRice](https://hackrice.com/)**
+  MLH · Houston, Texas, US · 2026-09-11 · In-Person
 - **[Next Byte Hacks V3](https://next-byte-hacks-v3.devpost.com/)**
   Next Bytes · Online · 2026-07-15 · Beginner Friendly, Open Ended, Social Good
 - **[YouCam API Skin AI & Apparel VTO Hackathon](https://youcam-api.devpost.com/)**
