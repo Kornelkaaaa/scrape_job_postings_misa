@@ -17,7 +17,7 @@ from pathlib import Path
 
 import yaml
 
-from .models import OPPORTUNITY_TYPES
+from .models import OPPORTUNITY_TYPES, Event
 
 
 @dataclass
@@ -34,6 +34,17 @@ class Source:
     exclude_keywords: list[str] = field(default_factory=list)
     include_locations: list[str] = field(default_factory=list)  # ["*"] = opt out of location filter
     exclude_locations: list[str] = field(default_factory=list)
+
+
+@dataclass
+class NewsletterSettings:
+    intro: str = ""
+    social: dict[str, str] = field(default_factory=dict)
+    events: list[Event] = field(default_factory=list)
+    # Public base URL the teaser's "See all" links point at (the archive
+    # HTML/MD files land in docs/, published via GitHub Pages). Empty means
+    # "no hosting configured yet" - links fall back to a relative filename.
+    archive_base_url: str = ""
 
 
 @dataclass
@@ -56,6 +67,7 @@ class Config:
     categories: dict = field(default_factory=dict)  # newsletter job topic sections, ordered
     hackathon_categories: dict = field(default_factory=dict)  # same idea, hackathon themes
     internship_keywords: list[str] = field(default_factory=list)  # split into own section
+    newsletter: NewsletterSettings = field(default_factory=NewsletterSettings)
 
 
 def load_config(path: str | Path = "sources.yaml") -> Config:
@@ -87,6 +99,20 @@ def load_config(path: str | Path = "sources.yaml") -> Config:
             )
         sources.append(source)
 
+    newsletter_raw = raw.get("newsletter") or {}
+    events = []
+    for entry in newsletter_raw.get("events") or []:
+        entry = dict(entry)
+        if entry.get("date") is not None:  # YAML parses unquoted dates as date objects
+            entry["date"] = str(entry["date"])
+        events.append(Event(**entry))
+    newsletter = NewsletterSettings(
+        intro=newsletter_raw.get("intro", ""),
+        social=newsletter_raw.get("social") or {},
+        events=events,
+        archive_base_url=(newsletter_raw.get("archive_base_url") or "").rstrip("/"),
+    )
+
     return Config(
         sources=sources,
         db_path=settings.get("db_path", "data/opportunities.db"),
@@ -103,4 +129,5 @@ def load_config(path: str | Path = "sources.yaml") -> Config:
         categories=raw.get("categories") or {},
         hackathon_categories=raw.get("hackathon_categories") or {},
         internship_keywords=raw.get("internship_keywords") or [],
+        newsletter=newsletter,
     )
