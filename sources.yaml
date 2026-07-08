@@ -56,6 +56,15 @@ filters:
     - lead
     - manager
 
+# Employers attending WVU career fairs. Any posting whose company matches a
+# name here (case-insensitive, partial names fine) is pulled into a special
+# "WVU Career Fair Employers" section at the top of the newsletter and starred
+# in `list-new`. Paste names below, one per line.
+career_fair_orgs:
+  # - Leidos
+  # - Northrop Grumman
+  # - WVU Medicine
+
 sources:
   # ---- Greenhouse boards (company career sites backed by Greenhouse) ------
   # Find the token: company careers page URL like boards.greenhouse.io/<token>,

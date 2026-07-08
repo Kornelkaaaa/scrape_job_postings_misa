@@ -17,6 +17,25 @@ TYPE_HEADINGS = {
     "conference": "🎤 Conferences & Events",
     "other": "✨ Other Opportunities",
 }
+CAREER_FAIR_HEADING = "🎓 WVU Career Fair Employers"
+
+
+def is_career_fair_org(org: str, career_fair_orgs: list[str]) -> bool:
+    """Case-insensitive containment either way, so a config entry 'Deloitte'
+    matches org 'Deloitte Consulting LLP' and 'Leidos Inc.' matches 'Leidos'."""
+    org_l = org.lower().strip()
+    if not org_l:
+        return False
+    return any(
+        name.lower() in org_l or org_l in name.lower()
+        for name in career_fair_orgs if name.strip()
+    )
+
+
+def _partition(rows: list[sqlite3.Row], career_fair_orgs: list[str]):
+    fair = [r for r in rows if is_career_fair_org(r["org"], career_fair_orgs)]
+    rest = [r for r in rows if not is_career_fair_org(r["org"], career_fair_orgs)]
+    return fair, rest
 
 
 def _group_by_type(rows: list[sqlite3.Row]) -> dict[str, list[sqlite3.Row]]:
@@ -34,16 +53,22 @@ def _item_meta(row: sqlite3.Row) -> str:
     return " · ".join(parts)
 
 
-def render_markdown(rows: list[sqlite3.Row], since_label: str) -> str:
+def render_markdown(rows: list[sqlite3.Row], since_label: str,
+                    career_fair_orgs: list[str] | None = None) -> str:
     today = date.today().isoformat()
+    fair, rest = _partition(rows, career_fair_orgs or [])
     lines = [
         f"# MISA Opportunities Newsletter — {today}",
         "",
         f"*{len(rows)} new opportunities found in the last {since_label}.*",
         "",
     ]
-    for opp_type, items in _group_by_type(rows).items():
-        lines.append(f"## {TYPE_HEADINGS.get(opp_type, opp_type.title())}")
+    sections = ([(CAREER_FAIR_HEADING, fair)] if fair else []) + [
+        (TYPE_HEADINGS.get(t, t.title()), items)
+        for t, items in _group_by_type(rest).items()
+    ]
+    for heading, items in sections:
+        lines.append(f"## {heading}")
         lines.append("")
         for row in items:
             lines.append(f"- **[{row['title']}]({row['url']})**")
@@ -56,27 +81,34 @@ def render_markdown(rows: list[sqlite3.Row], since_label: str) -> str:
     return "\n".join(lines)
 
 
-def render_html(rows: list[sqlite3.Row], since_label: str) -> str:
-    today = date.today().isoformat()
-    sections = []
-    for opp_type, items in _group_by_type(rows).items():
-        cards = []
-        for row in items:
-            meta = html.escape(_item_meta(row))
-            cards.append(
-                '<tr><td style="padding:10px 0;border-bottom:1px solid #e5e7eb;">'
-                f'<a href="{html.escape(row["url"], quote=True)}" '
-                'style="font-size:16px;font-weight:600;color:#1d4ed8;text-decoration:none;">'
-                f'{html.escape(row["title"])}</a>'
-                f'<div style="font-size:13px;color:#6b7280;margin-top:2px;">{meta}</div>'
-                "</td></tr>"
-            )
-        heading = html.escape(TYPE_HEADINGS.get(opp_type, opp_type.title()))
-        sections.append(
-            f'<h2 style="font-size:18px;color:#111827;margin:28px 0 4px;">{heading}</h2>'
-            f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0">'
-            f'{"".join(cards)}</table>'
+def _html_section(heading: str, items: list[sqlite3.Row], accent: str = "#1d4ed8") -> str:
+    cards = []
+    for row in items:
+        meta = html.escape(_item_meta(row))
+        cards.append(
+            '<tr><td style="padding:10px 0;border-bottom:1px solid #e5e7eb;">'
+            f'<a href="{html.escape(row["url"], quote=True)}" '
+            f'style="font-size:16px;font-weight:600;color:{accent};text-decoration:none;">'
+            f'{html.escape(row["title"])}</a>'
+            f'<div style="font-size:13px;color:#6b7280;margin-top:2px;">{meta}</div>'
+            "</td></tr>"
         )
+    return (
+        f'<h2 style="font-size:18px;color:#111827;margin:28px 0 4px;">{html.escape(heading)}</h2>'
+        f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0">'
+        f'{"".join(cards)}</table>'
+    )
+
+
+def render_html(rows: list[sqlite3.Row], since_label: str,
+                career_fair_orgs: list[str] | None = None) -> str:
+    today = date.today().isoformat()
+    fair, rest = _partition(rows, career_fair_orgs or [])
+    sections = []
+    if fair:  # WVU gold accent for employers members can meet in person
+        sections.append(_html_section(CAREER_FAIR_HEADING, fair, accent="#b45309"))
+    for opp_type, items in _group_by_type(rest).items():
+        sections.append(_html_section(TYPE_HEADINGS.get(opp_type, opp_type.title()), items))
 
     # table-based, inline-styled layout for email-client compatibility
     return f"""<!doctype html>
@@ -96,12 +128,13 @@ def render_html(rows: list[sqlite3.Row], since_label: str) -> str:
 
 
 def write_newsletter(rows: list[sqlite3.Row], output_dir: str | Path,
-                     since_label: str) -> tuple[Path, Path]:
+                     since_label: str,
+                     career_fair_orgs: list[str] | None = None) -> tuple[Path, Path]:
     out = Path(output_dir)
     out.mkdir(parents=True, exist_ok=True)
     stamp = date.today().isoformat()
     md_path = out / f"newsletter_{stamp}.md"
     html_path = out / f"newsletter_{stamp}.html"
-    md_path.write_text(render_markdown(rows, since_label), encoding="utf-8")
-    html_path.write_text(render_html(rows, since_label), encoding="utf-8")
+    md_path.write_text(render_markdown(rows, since_label, career_fair_orgs), encoding="utf-8")
+    html_path.write_text(render_html(rows, since_label, career_fair_orgs), encoding="utf-8")
     return md_path, html_path

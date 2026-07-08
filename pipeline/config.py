@@ -35,6 +35,7 @@ class Config:
     exclude_keywords: list[str] = field(default_factory=list)
     include_locations: list[str] = field(default_factory=list)
     exclude_locations: list[str] = field(default_factory=list)
+    career_fair_orgs: list[str] = field(default_factory=list)  # highlighted in newsletter
 
 
 def load_config(path: str | Path = "sources.yaml") -> Config:
@@ -73,4 +74,5 @@ def load_config(path: str | Path = "sources.yaml") -> Config:
         exclude_keywords=filters.get("exclude_keywords", []),
         include_locations=filters.get("include_locations", []),
         exclude_locations=filters.get("exclude_locations", []),
+        career_fair_orgs=raw.get("career_fair_orgs") or [],  # tolerate empty key
     )

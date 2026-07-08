@@ -21,7 +21,7 @@ from pathlib import Path
 from pipeline.config import load_config
 from pipeline.db import connect, list_since
 from pipeline.models import OPPORTUNITY_TYPES
-from pipeline.newsletter import write_newsletter
+from pipeline.newsletter import is_career_fair_org, write_newsletter
 from pipeline.run import format_summary, run
 
 _SINCE_PATTERN = re.compile(r"^(\d+)([hdw])$")
@@ -102,7 +102,8 @@ def main(argv: list[str] | None = None) -> int:
             print(f"{len(rows)} new since {args.since} ago:")
             for row in rows:
                 loc = f" ({row['location']})" if row["location"] else ""
-                print(f"  [{row['opportunity_type']}] {row['title']} - {row['org']}{loc}")
+                star = "* " if is_career_fair_org(row["org"], config.career_fair_orgs) else ""
+                print(f"  {star}[{row['opportunity_type']}] {row['title']} - {row['org']}{loc}")
                 print(f"      {row['url']}")
         return 0
 
@@ -111,7 +112,8 @@ def main(argv: list[str] | None = None) -> int:
         conn = connect(config.db_path)
         rows = list_since(conn, since_iso, args.type)
         conn.close()
-        md_path, html_path = write_newsletter(rows, args.out or config.output_dir, args.since)
+        md_path, html_path = write_newsletter(rows, args.out or config.output_dir,
+                                              args.since, config.career_fair_orgs)
         print(f"{len(rows)} items -> {md_path} and {html_path}")
         return 0
 
