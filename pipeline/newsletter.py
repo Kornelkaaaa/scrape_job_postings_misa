@@ -32,6 +32,9 @@ TYPE_HEADINGS = {
     "conference": "🎤 Conferences & Events",
     "other": "✨ Other Opportunities",
 }
+# URL-safe anchor ids for the jump-to navigation (emoji don't belong in URLs)
+TYPE_SLUGS = {"job": "jobs", "hackathon": "hackathons",
+              "conference": "conferences", "other": "other"}
 CAREER_FAIR_HEADING = "🎓 WVU Career Fair Employers"
 
 # opportunity types whose date means "when it happens" (vs "when posted") -
@@ -125,6 +128,29 @@ def _group_by_category(rows: list[sqlite3.Row], categories: dict) -> dict[str, l
     return {name: items for name, items in groups.items() if items}
 
 
+def _section_plan(rows: list[sqlite3.Row], career_fair_orgs: list[str],
+                  type_categories: dict) -> tuple[list[dict], int]:
+    """Shared outline both renderers (and the nav) walk: a list of
+    {slug, heading, items, subs} dicts. Computing this ONCE guarantees the
+    navigation links and the actual sections can never disagree."""
+    rows = _drop_past_events(rows)
+    fair, rest = _partition(rows, career_fair_orgs)
+    plan = []
+    if fair:
+        plan.append({"slug": "career-fair", "heading": CAREER_FAIR_HEADING,
+                     "items": fair, "subs": []})
+    for opp_type, items in _group_by_type(rest).items():
+        slug = TYPE_SLUGS.get(opp_type, opp_type)
+        cats = type_categories.get(opp_type) or {}
+        subs = []
+        if cats:
+            for i, (name, cat_items) in enumerate(_group_by_category(items, cats).items()):
+                subs.append({"slug": f"{slug}-{i}", "heading": name, "items": cat_items})
+        plan.append({"slug": slug, "heading": TYPE_HEADINGS.get(opp_type, opp_type.title()),
+                     "items": items, "subs": subs})
+    return plan, len(rows)
+
+
 def _item_meta(row: sqlite3.Row) -> str:
     """The grey info line under a title: 'Org · Location · Date · tags'."""
     parts = [p for p in [row["org"], row["location"], row["posted_date"]] if p]
@@ -151,28 +177,33 @@ def render_markdown(rows: list[sqlite3.Row], since_label: str,
                     categories: dict | None = None,
                     hackathon_categories: dict | None = None) -> str:
     today = date.today().isoformat()
-    rows = _drop_past_events(rows)
-    fair, rest = _partition(rows, career_fair_orgs or [])
     # each opportunity type can have its own category scheme
     type_categories = {"job": categories or {}, "hackathon": hackathon_categories or {}}
+    plan, total = _section_plan(rows, career_fair_orgs or [], type_categories)
     lines = [
         f"# MISA Opportunities Newsletter — {today}",
         "",
-        f"*{len(rows)} new opportunities found in the last {since_label}.*",
+        f"*{total} new opportunities found in the last {since_label}.*",
         "",
     ]
-    # Career-fair employers get the top slot - if there are any this week
-    if fair:
-        lines += [f"## {CAREER_FAIR_HEADING}", ""] + _md_items(fair) + [""]
-    for opp_type, items in _group_by_type(rest).items():
-        lines += [f"## {TYPE_HEADINGS.get(opp_type, opp_type.title())}", ""]
-        cats = type_categories.get(opp_type)
-        if cats:
-            # this type has ### topic subsections; others stay flat
-            for cat_name, cat_items in _group_by_category(items, cats).items():
-                lines += [f"### {cat_name}", ""] + _md_items(cat_items) + [""]
+    # Jump-to navigation. Raw <a id=...> anchors work on GitHub and in
+    # VS Code; markdown heading auto-anchors vary per renderer, explicit
+    # ids don't.
+    if plan:
+        nav = " · ".join(f"[{s['heading']} ({len(s['items'])})](#{s['slug']})" for s in plan)
+        lines += [f"**Jump to:** {nav}", ""]
+    for section in plan:
+        lines += [f'<a id="{section["slug"]}"></a>', "", f"## {section['heading']}", ""]
+        if section["subs"]:
+            # per-section mini-nav so 100+ jobs are one click, not a scroll
+            sub_nav = " · ".join(f"[{s['heading']} ({len(s['items'])})](#{s['slug']})"
+                                 for s in section["subs"])
+            lines += [sub_nav, ""]
+            for sub in section["subs"]:
+                lines += [f'<a id="{sub["slug"]}"></a>', "",
+                          f"### {sub['heading']}", ""] + _md_items(sub["items"]) + [""]
         else:
-            lines += _md_items(items) + [""]
+            lines += _md_items(section["items"]) + [""]
     lines.append("---")
     lines.append("*Generated automatically by the MISA opportunity pipeline.*")
     return "\n".join(lines)
@@ -195,17 +226,42 @@ def _html_cards(items: list[sqlite3.Row], accent: str = "#1d4ed8") -> str:
             f'{"".join(cards)}</table>')
 
 
-def _html_section(heading: str, items: list[sqlite3.Row], accent: str = "#1d4ed8",
-                  categories: dict | None = None) -> str:
-    parts = [f'<h2 style="font-size:18px;color:#111827;margin:28px 0 4px;">{html.escape(heading)}</h2>']
-    if categories:
-        for cat_name, cat_items in _group_by_category(items, categories).items():
-            parts.append(f'<h3 style="font-size:15px;color:#374151;margin:18px 0 2px;">'
-                         f'{html.escape(cat_name)}</h3>')
-            parts.append(_html_cards(cat_items, accent))
+def _html_section(section: dict, accent: str = "#1d4ed8") -> str:
+    """One section from the plan: anchored h2, optional anchored h3 subs."""
+    parts = [f'<h2 id="{section["slug"]}" '
+             f'style="font-size:18px;color:#111827;margin:28px 0 4px;">'
+             f'{html.escape(section["heading"])}</h2>']
+    if section["subs"]:
+        for sub in section["subs"]:
+            parts.append(f'<h3 id="{sub["slug"]}" '
+                         f'style="font-size:15px;color:#374151;margin:18px 0 2px;">'
+                         f'{html.escape(sub["heading"])}</h3>')
+            parts.append(_html_cards(sub["items"], accent))
     else:
-        parts.append(_html_cards(items, accent))
+        parts.append(_html_cards(section["items"], accent))
     return "".join(parts)
+
+
+def _html_nav(plan: list[dict]) -> str:
+    """Jump-to panel under the header: one line per section (bold link with
+    count), followed by its category links. Anchor jumps work in most
+    desktop/webmail clients; where unsupported they render as plain text."""
+    link = ('<a href="#{slug}" style="color:#1d4ed8;text-decoration:none;'
+            'font-size:13px;{extra}">{label}</a>')
+    rows_html = []
+    for section in plan:
+        parts = [link.format(slug=section["slug"], extra="font-weight:600;",
+                             label=f'{html.escape(section["heading"])} ({len(section["items"])})')]
+        parts += [link.format(slug=sub["slug"], extra="",
+                              label=f'{html.escape(sub["heading"])} ({len(sub["items"])})')
+                  for sub in section["subs"]]
+        rows_html.append('<div style="margin:3px 0;">' + " &nbsp;·&nbsp; ".join(parts) + "</div>")
+    return ('<table role="presentation" width="100%" cellpadding="0" cellspacing="0">'
+            '<tr><td style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:6px;'
+            'padding:12px 16px;margin-top:16px;">'
+            '<div style="font-size:12px;color:#6b7280;text-transform:uppercase;'
+            'letter-spacing:0.05em;margin-bottom:6px;">Jump to</div>'
+            + "".join(rows_html) + "</td></tr></table>")
 
 
 def render_html(rows: list[sqlite3.Row], since_label: str,
@@ -213,17 +269,16 @@ def render_html(rows: list[sqlite3.Row], since_label: str,
                 categories: dict | None = None,
                 hackathon_categories: dict | None = None) -> str:
     today = date.today().isoformat()
-    rows = _drop_past_events(rows)
-    fair, rest = _partition(rows, career_fair_orgs or [])
     type_categories = {"job": categories or {}, "hackathon": hackathon_categories or {}}
+    plan, total = _section_plan(rows, career_fair_orgs or [], type_categories)
+    rows_count = total
     sections = []
-    if fair:  # WVU gold accent for employers members can meet in person
-        sections.append(_html_section(CAREER_FAIR_HEADING, fair, accent="#b45309"))
-    for opp_type, items in _group_by_type(rest).items():
-        sections.append(_html_section(
-            TYPE_HEADINGS.get(opp_type, opp_type.title()), items,
-            categories=type_categories.get(opp_type) or None,
-        ))
+    if plan:
+        sections.append(_html_nav(plan))
+    for section in plan:
+        # WVU gold accent for employers members can meet in person
+        accent = "#b45309" if section["slug"] == "career-fair" else "#1d4ed8"
+        sections.append(_html_section(section, accent))
 
     # 600px centered white card on grey - the classic email layout that
     # survives every mail client
@@ -235,7 +290,7 @@ def render_html(rows: list[sqlite3.Row], since_label: str,
        style="background:#ffffff;border-radius:8px;padding:32px;">
 <tr><td>
 <h1 style="font-size:22px;color:#111827;margin:0 0 4px;">MISA Opportunities Newsletter</h1>
-<p style="font-size:14px;color:#6b7280;margin:0;">{today} — {len(rows)} new opportunities in the last {since_label}</p>
+<p style="font-size:14px;color:#6b7280;margin:0 0 16px;">{today} — {rows_count} new opportunities in the last {since_label}</p>
 {"".join(sections)}
 <p style="font-size:12px;color:#9ca3af;margin-top:32px;">Generated automatically by the MISA opportunity pipeline.</p>
 </td></tr></table>

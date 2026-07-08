@@ -41,11 +41,16 @@ def test_career_fair_section_in_markdown(tmp_path):
     rows = seed(tmp_path)
     md = render_markdown(rows, "7d", career_fair_orgs=["Leidos"])
 
-    fair_pos = md.index("WVU Career Fair Employers")
-    jobs_pos = md.index("Jobs & Internships")
+    # "## " prefix skips past the jump-to navigation, which also names sections
+    fair_pos = md.index("## 🎓 WVU Career Fair Employers")
+    jobs_pos = md.index("## 💼 Jobs & Internships")
     assert fair_pos < jobs_pos                       # fair section comes first
-    assert md.index("Business Analyst") < jobs_pos   # Leidos job in fair section
+    assert fair_pos < md.index("Business Analyst") < jobs_pos   # Leidos job in fair section
     assert md.index("AI Analyst Intern") > jobs_pos  # Stripe job stays in jobs
+    # navigation panel present with per-section counts and anchors
+    assert "**Jump to:**" in md
+    assert "(#career-fair)" in md and "(#jobs)" in md
+    assert '<a id="career-fair"></a>' in md
 
 
 def test_no_fair_section_when_list_empty(tmp_path):

@@ -2,7 +2,15 @@
 
 *189 new opportunities found in the last 7d.*
 
+**Jump to:** [💼 Jobs & Internships (168)](#jobs) · [🚀 Hackathons (16)](#hackathons) · [🎤 Conferences & Events (5)](#conferences)
+
+<a id="jobs"></a>
+
 ## 💼 Jobs & Internships
+
+[🤖 AI & Machine Learning (50)](#jobs-0) · [🔐 Cybersecurity (9)](#jobs-1) · [📊 Data & Analytics (4)](#jobs-2) · [💰 Accounting & Finance (16)](#jobs-3) · [💼 Business & Consulting (8)](#jobs-4) · [💻 Software & IT (44)](#jobs-5) · [✨ Other (37)](#jobs-6)
+
+<a id="jobs-0"></a>
 
 ### 🤖 AI & Machine Learning
 
@@ -107,6 +115,8 @@
 - **[AI Tutor - Vietnamese](https://job-boards.greenhouse.io/xai/jobs/5090274007)**
   xAI · Remote · 2026-06-29
 
+<a id="jobs-1"></a>
+
 ### 🔐 Cybersecurity
 
 - **[Cyber Security GTM Leader](https://databricks.com/company/careers/open-positions/job?gh_jid=8582312002)**
@@ -128,6 +138,8 @@
 - **[Software Engineer, Security Analytics Infrastructure](https://stripe.com/jobs/search?gh_jid=7826761)**
   Stripe · US - Remote · 2026-06-26
 
+<a id="jobs-2"></a>
+
 ### 📊 Data & Analytics
 
 - **[Patient Accounting and Revenue Cycle Analytics Reporting Consultant](https://www.adzuna.com/land/ad/5759492846?se=qKzEgNR68RGY7JK76yOanA&v=92CF68B77F625481AD1D2D8167B7CF065AB16F21)**
@@ -138,6 +150,8 @@
   WeWorkRemotely · Anywhere in the World · 2026-06-15 · Front-End Programming
 - **[Data Science Tutor](https://job-boards.greenhouse.io/xai/jobs/4925835007)**
   xAI · Remote · 2026-06-29
+
+<a id="jobs-3"></a>
 
 ### 💰 Accounting & Finance
 
@@ -174,6 +188,8 @@
 - **[Harris Global Business Services: Financial Accountant](https://weworkremotely.com/remote-jobs/harris-global-business-services-financial-accountant)**
   WeWorkRemotely · Anywhere in the World · 2026-06-22 · Management and Finance
 
+<a id="jobs-4"></a>
+
 ### 💼 Business & Consulting
 
 - **[Business Analyst](https://www.adzuna.com/land/ad/5759492252?se=fFQRQkF68RGQ3ei2eSKTnQ&v=D824225BED9B5FDBE35C2E4BFF0649C782DEC623)**
@@ -192,6 +208,8 @@
   WeWorkRemotely · Anywhere in the World · 2026-06-30 · Full-Stack Programming
 - **[Supportyourapp: (Native Finnish) Customer Support Consultant (remotely)](https://weworkremotely.com/remote-jobs/supportyourapp-native-finnish-customer-support-consultant-remotely)**
   WeWorkRemotely · Anywhere in the World · 2026-06-30 · Full-Stack Programming
+
+<a id="jobs-5"></a>
 
 ### 💻 Software & IT
 
@@ -284,6 +302,8 @@
 - **[Abstract: Full Stack Web Developer ⏤ Remote Contractor](https://weworkremotely.com/remote-jobs/abstract-full-stack-web-developer-remote-contractor)**
   WeWorkRemotely · Anywhere in the World · 2026-06-11 · Back-End Programming
 
+<a id="jobs-6"></a>
+
 ### ✨ Other
 
 - **[Safeguards Policy Analyst, Fraud & Scams](https://job-boards.greenhouse.io/anthropic/jobs/5174857008)**
@@ -361,7 +381,13 @@
 - **[Structural Engineering Intern](https://www.adzuna.com/details/5766489486)**
   Worley · Charleston, Kanawha County · 2026-06-17 · Engineering Jobs
 
+<a id="hackathons"></a>
+
 ## 🚀 Hackathons
+
+[🏟 In-Person (3)](#hackathons-0) · [🌱 Beginner Friendly (5)](#hackathons-1) · [🤖 AI & Machine Learning (7)](#hackathons-2) · [⛓️ Blockchain & Fintech (1)](#hackathons-3)
+
+<a id="hackathons-0"></a>
 
 ### 🏟 In-Person
 
@@ -371,6 +397,8 @@
   MLH · Cincinnati, Ohio, US · 2027-02-27 · Free, In-Person
 - **[Hoya Hacks](https://www.hoyahacks.com/)**
   MLH · Washington, DC, US · 2027-01-22 · Free, In-Person
+
+<a id="hackathons-1"></a>
 
 ### 🌱 Beginner Friendly
 
@@ -384,6 +412,8 @@
   Salesforce · Online · 2026-07-13 · Free, Beginner Friendly, Enterprise, Low/No Code
 - **[Reddit’s Games with a Hook Hackathon](https://redditgameswithahook.devpost.com/)**
   reddit · Online · 2026-07-15 · Free, Beginner Friendly, Gaming, Web
+
+<a id="hackathons-2"></a>
 
 ### 🤖 AI & Machine Learning
 
@@ -402,10 +432,14 @@
 - **[Arm Create: AI Optimization Challenge](https://arm-ai-optimization-challenge.devpost.com/)**
   arm · Online · 2026-08-14 · Free, Machine Learning/AI
 
+<a id="hackathons-3"></a>
+
 ### ⛓️ Blockchain & Fintech
 
 - **[Brainwave 2026](https://brainwaves.devpost.com/)**
   ACT House · Online · 2026-08-09 · Free, AR/VR, Blockchain, Communication
+
+<a id="conferences"></a>
 
 ## 🎤 Conferences & Events
 
