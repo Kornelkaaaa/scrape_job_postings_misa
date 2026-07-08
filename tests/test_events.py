@@ -20,7 +20,7 @@ def test_devpost_parse(fixture, make_source):
     assert first.title == "AI for Good Hackathon"
     assert first.location == "Online"
     assert first.posted_date == "2026-08-17"  # END of the range = deadline
-    assert first.tags == ["Machine Learning/AI", "Education"]
+    assert first.tags == ["Free", "Machine Learning/AI", "Education"]
     # single-date format and missing org fall back sensibly
     assert opportunities[1].posted_date == "2026-09-12"
     assert opportunities[1].org == "Devpost"
@@ -36,9 +36,26 @@ def test_mlh_parse(fixture, make_source):
     assert in_person.location == "Morgantown, West Virginia, US"
     assert in_person.url == "https://hackwv.example.com/"  # microdata url, no utm
     assert in_person.posted_date == "2026-10-03"
-    assert in_person.tags == ["In-Person"]
+    assert in_person.tags == ["Free", "In-Person"]  # isAccessibleForFree=true
     assert online.location == "Digital"
-    assert online.tags == ["Digital"]
+    assert online.tags == ["Digital"]  # no isAccessibleForFree meta -> no label
+
+
+def test_json_api_flags_become_tags(make_source):
+    from pipeline.adapters import json_api
+    payload = {"events": [
+        {"event": {"title": "Free Workshop", "localist_url": "https://e.com/1", "free": True}},
+        {"event": {"title": "Paid Gala", "localist_url": "https://e.com/2", "free": False}},
+    ]}
+    source = make_source(
+        name="Campus", opportunity_type="conference",
+        options={"items_path": "events",
+                 "fields": {"title": "event.title", "url": "event.localist_url"},
+                 "flags": {"Free": "event.free"}},
+    )
+    free, paid = json_api.parse(source, payload)
+    assert free.tags == ["Free"]
+    assert paid.tags == []
 
 
 def test_confstech_parse(fixture, make_source):

@@ -48,7 +48,9 @@ def parse(source, payload: dict) -> list[Opportunity]:
             location=(hack.get("displayed_location") or {}).get("location", ""),
             url=hack.get("url", ""),
             posted_date=_deadline(hack.get("submission_period_dates")),
-            tags=themes[:4],
+            # Devpost hackathons are free to enter - label them so students
+            # can see it at a glance
+            tags=["Free"] + themes[:3],
         ))
     return opportunities
 

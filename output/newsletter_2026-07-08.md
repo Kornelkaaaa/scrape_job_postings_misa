@@ -366,51 +366,51 @@
 ### 🏟 In-Person
 
 - **[Kent Hack Enough](https://khe.io/)**
-  MLH · Kent, Ohio, US · 2027-03-06 · In-Person
+  MLH · Kent, Ohio, US · 2027-03-06 · Free, In-Person
 - **[RevolutionUC](https://www.revolutionuc.com/)**
-  MLH · Cincinnati, Ohio, US · 2027-02-27 · In-Person
+  MLH · Cincinnati, Ohio, US · 2027-02-27 · Free, In-Person
 - **[Hoya Hacks](https://www.hoyahacks.com/)**
-  MLH · Washington, DC, US · 2027-01-22 · In-Person
+  MLH · Washington, DC, US · 2027-01-22 · Free, In-Person
 
 ### 🌱 Beginner Friendly
 
 - **[VoltHacks](https://volthacks.devpost.com/)**
-  Dialogate · Online · 2026-09-05 · IoT, Machine Learning/AI, Beginner Friendly
+  Dialogate · Online · 2026-09-05 · Free, IoT, Machine Learning/AI, Beginner Friendly
 - **[Hoobit Hacks 2026](https://hoobit-hacks-2026.devpost.com/)**
-  Hoobit · Online · 2026-07-18 · Beginner Friendly, Machine Learning/AI, Social Good
+  Hoobit · Online · 2026-07-18 · Free, Beginner Friendly, Machine Learning/AI, Social Good
 - **[Next Byte Hacks V3](https://next-byte-hacks-v3.devpost.com/)**
-  Next Bytes · Online · 2026-07-15 · Beginner Friendly, Open Ended, Social Good
+  Next Bytes · Online · 2026-07-15 · Free, Beginner Friendly, Open Ended, Social Good
 - **[Slack Agent Builder Challenge](https://slackhack.devpost.com/)**
-  Salesforce · Online · 2026-07-13 · Beginner Friendly, Enterprise, Low/No Code
+  Salesforce · Online · 2026-07-13 · Free, Beginner Friendly, Enterprise, Low/No Code
 - **[Reddit’s Games with a Hook Hackathon](https://redditgameswithahook.devpost.com/)**
-  reddit · Online · 2026-07-15 · Beginner Friendly, Gaming, Web
+  reddit · Online · 2026-07-15 · Free, Beginner Friendly, Gaming, Web
 
 ### 🤖 AI & Machine Learning
 
 - **[Global AI Hackathon Series with Qwen Cloud](https://qwencloud-hackathon.devpost.com/)**
-  Alibaba Cloud · Online · 2026-07-20 · Machine Learning/AI, Design, Productivity
+  Alibaba Cloud · Online · 2026-07-20 · Free, Machine Learning/AI, Design, Productivity
 - **[Backblaze Generative Media Hackathon: Build with Genblaze on B2](https://backblaze-generative-media.devpost.com/)**
-  Backblaze · Online · 2026-08-03 · Machine Learning/AI, Music/Art, Voice skills
+  Backblaze · Online · 2026-08-03 · Free, Machine Learning/AI, Music/Art, Voice skills
 - **[CockroachDB × AWS Hackathon - Build with Agentic Memory](https://cockroachdb-ai.devpost.com/)**
-  Cockroach Labs · Online · 2026-08-18 · Machine Learning/AI, Databases, DevOps
+  Cockroach Labs · Online · 2026-08-18 · Free, Machine Learning/AI, Databases, DevOps
 - **[Build with DataHub: The Agent Hackathon](https://datahub.devpost.com/)**
-  DataHub · Online · 2026-08-10 · Machine Learning/AI, DevOps, Open Ended
+  DataHub · Online · 2026-08-10 · Free, Machine Learning/AI, DevOps, Open Ended
 - **[YouCam API Skin AI & Apparel VTO Hackathon](https://youcam-api.devpost.com/)**
-  Perfect Corp · Online · 2026-08-17 · Machine Learning/AI, AR/VR, E-commerce/Retail
+  Perfect Corp · Online · 2026-08-17 · Free, Machine Learning/AI, AR/VR, E-commerce/Retail
 - **[Build with Gemini XPRIZE](https://xprize.devpost.com/)**
-  XPRIZE · Online · 2026-08-17 · Machine Learning/AI, Education, Productivity
+  XPRIZE · Online · 2026-08-17 · Free, Machine Learning/AI, Education, Productivity
 - **[Arm Create: AI Optimization Challenge](https://arm-ai-optimization-challenge.devpost.com/)**
-  arm · Online · 2026-08-14 · Machine Learning/AI
+  arm · Online · 2026-08-14 · Free, Machine Learning/AI
 
 ### ⛓️ Blockchain & Fintech
 
 - **[Brainwave 2026](https://brainwaves.devpost.com/)**
-  ACT House · Online · 2026-08-09 · AR/VR, Blockchain, Communication
+  ACT House · Online · 2026-08-09 · Free, AR/VR, Blockchain, Communication
 
 ## 🎤 Conferences & Events
 
 - **[Ed Tech Days: Confronting AI](https://calendar.pitt.edu/event/ed-tech-days-confronting-ai)**
-  University of Pittsburgh · David Lawrence Hall · 2026-07-16
+  University of Pittsburgh · David Lawrence Hall · 2026-07-16 · Free
 - **[AI for Developers](https://aiconference.dev)**
   confs.tech · Online · 2026-12-17 · data
 - **[XtremeAI Online Conference](https://xtremeai.dev)**

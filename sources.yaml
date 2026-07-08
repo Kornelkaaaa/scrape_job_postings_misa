@@ -523,6 +523,8 @@ sources:
         location: event.location_name
         posted_date: event.first_date
         description: event.description_text
+      flags:
+        Free: event.free        # Localist marks free events; shows as a tag
     # "data" alone matched biology seminars ("...Transcriptomic Data") - use
     # the specific phrases instead
     include_keywords: &campus_event_keywords
@@ -547,6 +549,8 @@ sources:
         location: event.location_name
         posted_date: event.first_date
         description: event.description_text
+      flags:
+        Free: event.free
     include_keywords: *campus_event_keywords
 
   # Community-maintained tech conference list (JSON files on GitHub).

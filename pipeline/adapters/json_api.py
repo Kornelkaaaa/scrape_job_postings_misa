@@ -9,6 +9,8 @@ options:
   items_path: dot path to the list of items ("" = payload itself is the list)
   fields: mapping of Opportunity field -> dot path within one item
           (title, org, location, url, description, posted_date, tags)
+  flags: mapping of tag label -> dot path; when the value is truthy the
+         label is prepended to tags (e.g. {Free: event.free})
 
 Items with an empty title are skipped (handles feeds whose first element is
 metadata, like RemoteOK's legal notice).
@@ -62,6 +64,11 @@ def parse(source, payload) -> list[Opportunity]:
         if not title:
             continue  # metadata/malformed item - skip it
         tags = field_value(item, "tags")
+        tags = [str(t) for t in tags] if isinstance(tags, list) else []
+        # boolean flag fields become leading tags ("Free" shows in the meta line)
+        for label, path in (source.options.get("flags") or {}).items():
+            if _dig(item, path):
+                tags = [label] + tags
         opportunities.append(Opportunity(
             opportunity_type=source.opportunity_type,
             source=source.name,
@@ -73,8 +80,7 @@ def parse(source, payload) -> list[Opportunity]:
             url=str(field_value(item, "url", "url") or ""),
             description=str(field_value(item, "description") or "")[:1000],
             posted_date=normalize_date(field_value(item, "posted_date")),
-            # isinstance check: only trust tags if the API really sent a list
-            tags=[str(t) for t in tags] if isinstance(tags, list) else [],
+            tags=tags,
         ))
     return opportunities
 

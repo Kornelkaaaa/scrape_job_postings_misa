@@ -35,6 +35,11 @@ def parse(source, payload: str) -> list[Opportunity]:
             parts = [meta.get(k, "") for k in ("addressLocality", "addressRegion", "addressCountry")]
             location = ", ".join(p for p in parts if p)
 
+        tags = ["Digital" if online else "In-Person"]
+        # note the == "true": meta content is a STRING, and bool("false") is
+        # True in Python - a classic trap when reading HTML attributes
+        if meta.get("isAccessibleForFree", "") == "true":
+            tags = ["Free"] + tags
         opportunities.append(Opportunity(
             opportunity_type=source.opportunity_type,
             source=source.name,
@@ -45,7 +50,7 @@ def parse(source, payload: str) -> list[Opportunity]:
             # a stable dedupe key across weekly scrapes
             url=meta.get("url", "") or card.get("href", "").split("?")[0],
             posted_date=normalize_date(meta.get("startDate")),
-            tags=["Digital" if online else "In-Person"],
+            tags=tags,
         ))
     return opportunities
 
