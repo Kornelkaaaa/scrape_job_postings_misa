@@ -174,11 +174,6 @@ categories:
   "💼 Business & Consulting": [business analyst, consultant, consulting, business, operations]
   "💻 Software & IT": [developer, software, programmer, information technology, information systems, it, web, cloud, devops, engineer]
 
-# Reusable list of US-reachable locations for hackathon sources (YAML anchor:
-# defined once here with &name, reused below with *name). Devpost writes
-# locations as "City, State" with no country marker, so matching every state
-# name is how "anywhere in the USA" works. This key itself is ignored by the
-# config loader - only the anchor matters.
 # Same idea for the Hackathons section. Matched against title + tags -
 # Devpost theme tags (Machine Learning/AI, Beginner Friendly, ...) and the
 # MLH In-Person/Digital tag do most of the work. First match wins, so
@@ -192,16 +187,18 @@ hackathon_categories:
   "🎮 Games & AR/VR": [ar/vr, game, gaming, metaverse]
   "🌍 Social Good & Education": [social good, education, sustainability, health, accessibility]
 
-us_hackathon_locations: &us_hackathon_locations
-  [online, virtual, digital, remote, usa, us,
-   alabama, alaska, arizona, arkansas, california, colorado, connecticut,
-   delaware, florida, georgia, hawaii, idaho, illinois, indiana, iowa,
-   kansas, kentucky, louisiana, maine, maryland, massachusetts, michigan,
-   minnesota, mississippi, missouri, montana, nebraska, nevada,
-   new hampshire, new jersey, new mexico, new york, north carolina,
-   north dakota, ohio, oklahoma, oregon, pennsylvania, rhode island,
-   south carolina, south dakota, tennessee, texas, utah, vermont,
-   virginia, washington, west virginia, wv, wisconsin, wyoming]
+# Locations for hackathon sources (YAML anchor: defined once with &name,
+# reused below with *name). In-person hackathons only within reach of
+# Morgantown - Washington DC, West Virginia, Ohio, Pittsburgh - while
+# online/virtual events always pass. The dc/d.c/district-of-columbia variants
+# cover how different sites write the capital (deliberately NOT bare
+# "washington", which would wrongly match Washington state).
+hackathon_locations: &hackathon_locations
+  [online, virtual, digital, remote,
+   west virginia, wv, morgantown,
+   ohio,
+   pittsburgh,
+   dc, d.c, district of columbia, washington dc]
 
 sources:
   # ---- Greenhouse boards (company career sites backed by Greenhouse) ------
@@ -498,7 +495,7 @@ sources:
   - name: Devpost
     type: devpost
     opportunity_type: hackathon
-    include_locations: *us_hackathon_locations
+    include_locations: *hackathon_locations
     exclude_keywords: [india, africa, europe, apac, mena]
 
   # Bump the season in the URL each summer (2027 = fall 2026 - spring 2027).
@@ -506,7 +503,7 @@ sources:
     type: mlh
     opportunity_type: hackathon
     url: https://mlh.io/seasons/2027/events
-    include_locations: *us_hackathon_locations
+    include_locations: *hackathon_locations
 
   # WVU's own events calendar (Localist). The 138+ events per quarter include
   # everything from concerts to payment-plan reminders, so the per-source
