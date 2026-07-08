@@ -115,8 +115,24 @@ Tests parse saved fixtures in `tests/fixtures/` — they never hit live sites.
   (Greenhouse/Lever/Adzuna) use officially public endpoints.
 - LinkedIn/Indeed are deliberately not scraped (their ToS prohibit it).
 
+## Hackathons & conferences (Phase 2 — live)
+
+Three event sources run alongside the job sources:
+
+- **Devpost** (`devpost` adapter) — open/upcoming hackathons only;
+  `posted_date` holds the *submission deadline*.
+- **MLH** (`mlh` adapter) — season events page, parsed via its schema.org
+  microdata (stable, unlike its CSS classes). Bump the season URL each summer.
+- **WVU Events** (Localist JSON via `json_api`) — the campus calendar,
+  keyword-filtered to tech/career/business events.
+
+Event rules differ from jobs: global keyword/location filters apply **only to
+job sources** (they'd kill titles like "HackWV 2026"); each event source sets
+its own lists (nearby states + online). The newsletter automatically drops
+events whose date has passed — jobs never expire this way.
+
 ## Roadmap
 
-- Phase 2: enable hackathon/conference sources (Devpost, MLH, Eventbrite) — the
-  schema and newsletter already support them via `opportunity_type`.
 - Optional: direct email sending (Resend/SendGrid) instead of files-only.
+- Possible extra event sources: confs.tech (JSON on GitHub), specific
+  Eventbrite organizers (their public search API was discontinued).

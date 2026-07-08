@@ -34,6 +34,27 @@ TYPE_HEADINGS = {
 }
 CAREER_FAIR_HEADING = "🎓 WVU Career Fair Employers"
 
+# opportunity types whose date means "when it happens" (vs "when posted") -
+# these expire and must not be advertised after the fact
+EVENT_TYPES = ("hackathon", "conference")
+
+
+def _drop_past_events(rows: list[sqlite3.Row]) -> list[sqlite3.Row]:
+    """Never advertise a hackathon whose deadline already passed.
+
+    For event rows, posted_date holds the event/deadline date (see the
+    devpost/mlh adapters). ISO dates compare correctly as plain strings.
+    Rows without a date are kept - better to show a maybe-stale event than
+    silently hide a live one.
+    """
+    today = date.today().isoformat()
+    return [
+        r for r in rows
+        if r["opportunity_type"] not in EVENT_TYPES
+        or not r["posted_date"]
+        or r["posted_date"] >= today
+    ]
+
 
 def is_career_fair_org(org: str, career_fair_orgs: list[str]) -> bool:
     """Whole-word match either way, so a config entry 'Deloitte' matches org
@@ -58,11 +79,14 @@ def _partition(rows: list[sqlite3.Row], career_fair_orgs: list[str]):
 
 def _group_by_type(rows: list[sqlite3.Row]) -> dict[str, list[sqlite3.Row]]:
     """{"job": [rows...], "hackathon": [rows...]} - setdefault creates each
-    list the first time its key appears."""
+    list the first time its key appears. Sections come out in TYPE_HEADINGS
+    order (jobs first), not the incidental order rows arrived in."""
     groups: dict[str, list[sqlite3.Row]] = {}
     for row in rows:
         groups.setdefault(row["opportunity_type"], []).append(row)
-    return groups
+    order = list(TYPE_HEADINGS)
+    return dict(sorted(groups.items(),
+                       key=lambda kv: order.index(kv[0]) if kv[0] in order else 99))
 
 
 OTHER_CATEGORY = "✨ Other"
@@ -117,6 +141,7 @@ def render_markdown(rows: list[sqlite3.Row], since_label: str,
                     career_fair_orgs: list[str] | None = None,
                     categories: dict | None = None) -> str:
     today = date.today().isoformat()
+    rows = _drop_past_events(rows)
     fair, rest = _partition(rows, career_fair_orgs or [])
     categories = categories or {}
     lines = [
@@ -175,6 +200,7 @@ def render_html(rows: list[sqlite3.Row], since_label: str,
                 career_fair_orgs: list[str] | None = None,
                 categories: dict | None = None) -> str:
     today = date.today().isoformat()
+    rows = _drop_past_events(rows)
     fair, rest = _partition(rows, career_fair_orgs or [])
     sections = []
     if fair:  # WVU gold accent for employers members can meet in person

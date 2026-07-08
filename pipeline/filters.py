@@ -57,10 +57,14 @@ def filter_relevant(opportunities: list[Opportunity], config: Config, source: So
     like "London, UK; Remote, United States" would be wrongly dropped for
     mentioning a foreign office even though US applicants are welcome.
     """
-    include = source.include_keywords or config.include_keywords
-    exclude = source.exclude_keywords or config.exclude_keywords
-    include_loc = source.include_locations or config.include_locations
-    exclude_loc = source.exclude_locations or config.exclude_locations
+    # Global filters are written for JOBS ("intern", "analyst", not "senior")
+    # and would wrongly kill event titles like "HackWVU 2026" - so they only
+    # apply to job sources. Event sources use their own per-source lists.
+    is_job = source.opportunity_type == "job"
+    include = source.include_keywords or (config.include_keywords if is_job else [])
+    exclude = source.exclude_keywords or (config.exclude_keywords if is_job else [])
+    include_loc = source.include_locations or (config.include_locations if is_job else [])
+    exclude_loc = source.exclude_locations or (config.exclude_locations if is_job else [])
 
     kept = []
     for opp in opportunities:

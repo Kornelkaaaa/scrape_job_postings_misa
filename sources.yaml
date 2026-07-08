@@ -460,17 +460,43 @@ sources:
         date: ".job-date"
 
   # ---- Phase 2: hackathons & conferences ------------------------------------
-  # Same pipeline, different opportunity_type. Enable/extend when ready.
-  - name: Devpost hackathons
-    type: json_api
-    enabled: false
+  # Same pipeline, different opportunity_type. NOTE: global keyword/location
+  # filters only apply to jobs - event sources rely on their own lists here.
+
+  # Only open/upcoming hackathons are fetched; posted_date = submission
+  # deadline, and the newsletter drops events whose date has passed.
+  - name: Devpost
+    type: devpost
     opportunity_type: hackathon
-    url: https://devpost.com/api/hackathons
+    include_locations: [online, virtual, west virginia, wv, morgantown,
+                        pittsburgh, washington, virginia, ohio, pennsylvania, maryland]
+
+  # Bump the season in the URL each summer (2027 = fall 2026 - spring 2027).
+  - name: MLH
+    type: mlh
+    opportunity_type: hackathon
+    url: https://mlh.io/seasons/2027/events
+    include_locations: [digital, online, west virginia, wv, morgantown,
+                        pittsburgh, washington, virginia, ohio, pennsylvania, maryland]
+
+  # WVU's own events calendar (Localist). The 138+ events per quarter include
+  # everything from concerts to payment-plan reminders, so the per-source
+  # keywords keep only tech/career/business events.
+  - name: WVU Events
+    type: json_api
+    opportunity_type: conference
+    org: WVU
+    url: https://wvu.enterprise.localist.com/api/2/events?days=90&pp=100
     options:
-      items_path: hackathons
+      items_path: events
       fields:
-        title: title
-        org: organization_name
-        location: displayed_location.location
-        url: url
-        posted_date: submission_period_dates
+        title: event.title
+        url: event.localist_url
+        location: event.location_name
+        posted_date: event.first_date
+        description: event.description_text
+    include_keywords: [tech, technology, data, analytics, coding, programming,
+                       hackathon, cyber, cybersecurity, computer, computing,
+                       information systems, career fair, networking, ai,
+                       artificial intelligence, entrepreneurship, innovation,
+                       business, consulting]

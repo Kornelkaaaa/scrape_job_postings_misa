@@ -1,6 +1,6 @@
 # MISA Opportunities Newsletter — 2026-07-08
 
-*168 new opportunities found in the last 7d.*
+*191 new opportunities found in the last 7d.*
 
 ## 💼 Jobs & Internships
 
@@ -360,6 +360,55 @@
   WeWorkRemotely · Anywhere in the World · 2026-07-02 · All Other Remote
 - **[Structural Engineering Intern](https://www.adzuna.com/details/5766489486)**
   Worley · Charleston, Kanawha County · 2026-06-17 · Engineering Jobs
+
+## 🚀 Hackathons
+
+- **[Brainwave 2026](https://brainwaves.devpost.com/)**
+  ACT House · Online · 2026-08-09 · AR/VR, Blockchain, Communication
+- **[Africa Deep Tech Challenge 2026](https://adtc-2026.devpost.com/)**
+  Africa Deep Tech Foundation · Online · 2026-08-25 · Machine Learning/AI, Productivity
+- **[Global AI Hackathon Series with Qwen Cloud](https://qwencloud-hackathon.devpost.com/)**
+  Alibaba Cloud · Online · 2026-07-20 · Machine Learning/AI, Design, Productivity
+- **[Backblaze Generative Media Hackathon: Build with Genblaze on B2](https://backblaze-generative-media.devpost.com/)**
+  Backblaze · Online · 2026-08-03 · Machine Learning/AI, Music/Art, Voice skills
+- **[India High School Exoplanet Data Challenge](https://celesta-exoplanet-challenge.devpost.com/)**
+  Celesta · Online · 2026-07-31 · Beginner Friendly, Low/No Code, Machine Learning/AI
+- **[CockroachDB × AWS Hackathon - Build with Agentic Memory](https://cockroachdb-ai.devpost.com/)**
+  Cockroach Labs · Online · 2026-08-18 · Machine Learning/AI, Databases, DevOps
+- **[Build with DataHub: The Agent Hackathon](https://datahub.devpost.com/)**
+  DataHub · Online · 2026-08-10 · Machine Learning/AI, DevOps, Open Ended
+- **[VoltHacks](https://volthacks.devpost.com/)**
+  Dialogate · Online · 2026-09-05 · IoT, Machine Learning/AI, Beginner Friendly
+- **[Hoobit Hacks 2026](https://hoobit-hacks-2026.devpost.com/)**
+  Hoobit · Online · 2026-07-18 · Beginner Friendly, Machine Learning/AI, Social Good
+- **[Kaya AI India Hackathon 2026](https://kaya-ai-iit-hackathon-2026.devpost.com/)**
+  Kaya · Online · 2026-07-10 · IoT, Machine Learning/AI, Enterprise
+- **[LUMA Hackathon (July 3rd - 10th)](https://luma-hackathon-500.devpost.com/)**
+  LUMA · Online · 2026-07-10 · Beginner Friendly, Machine Learning/AI, Open Ended
+- **[Kent Hack Enough](https://khe.io/)**
+  MLH · Kent, Ohio, US · 2027-03-06 · In-Person
+- **[RevolutionUC](https://www.revolutionuc.com/)**
+  MLH · Cincinnati, Ohio, US · 2027-02-27 · In-Person
+- **[Hoya Hacks](https://www.hoyahacks.com/)**
+  MLH · Washington, DC, US · 2027-01-22 · In-Person
+- **[VTHacks 14](https://vthacks.com/)**
+  MLH · Blacksburg, Virginia, US · 2026-09-25 · In-Person
+- **[HopHacks](https://www.hophacks.com/)**
+  MLH · Baltimore, Maryland, US · 2026-09-18 · In-Person
+- **[Next Byte Hacks V3](https://next-byte-hacks-v3.devpost.com/)**
+  Next Bytes · Online · 2026-07-15 · Beginner Friendly, Open Ended, Social Good
+- **[YouCam API Skin AI & Apparel VTO Hackathon](https://youcam-api.devpost.com/)**
+  Perfect Corp · Online · 2026-08-17 · Machine Learning/AI, AR/VR, E-commerce/Retail
+- **[Slack Agent Builder Challenge](https://slackhack.devpost.com/)**
+  Salesforce · Online · 2026-07-13 · Beginner Friendly, Enterprise, Low/No Code
+- **[Build with Gemini XPRIZE](https://xprize.devpost.com/)**
+  XPRIZE · Online · 2026-08-17 · Machine Learning/AI, Education, Productivity
+- **[Arm Create: AI Optimization Challenge](https://arm-ai-optimization-challenge.devpost.com/)**
+  arm · Online · 2026-08-14 · Machine Learning/AI
+- **[Beyond Tomorrow Summit](https://beyond-tomorrow-summit-30094.devpost.com/)**
+  beyond Tomorrow Summit · Online · 2026-07-08 · Cybersecurity, E-commerce/Retail, Health
+- **[Reddit’s Games with a Hook Hackathon](https://redditgameswithahook.devpost.com/)**
+  reddit · Online · 2026-07-15 · Beginner Friendly, Gaming, Web
 
 ---
 *Generated automatically by the MISA opportunity pipeline.*
